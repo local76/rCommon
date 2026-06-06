@@ -3,6 +3,7 @@ use std::io;
 use winreg::RegKey;
 use winreg::enums::KEY_READ;
 pub use winreg::enums::{HKEY_CLASSES_ROOT, HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE, HKEY_USERS};
+pub use winreg::HKEY;
 
 /// Read a string value from the registry.
 pub fn read_string(hive: winreg::HKEY, path: &str, key: &str) -> Option<String> {
@@ -77,5 +78,12 @@ pub fn write_binary(hive: winreg::HKEY, path: &str, key: &str, val: &[u8]) -> io
         bytes: std::borrow::Cow::Borrowed(val),
     };
     subkey.set_raw_value(key, &reg_val)
+}
+
+/// Delete a value from the registry.
+pub fn delete_value(hive: winreg::HKEY, path: &str, key: &str) -> io::Result<()> {
+    let root = RegKey::predef(hive);
+    let subkey = root.open_subkey_with_flags(path, winreg::enums::KEY_WRITE)?;
+    subkey.delete_value(key)
 }
 
