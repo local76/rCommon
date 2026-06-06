@@ -3,6 +3,8 @@ name = "rcommon"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.85"
+license = "MIT"
+description = "Shared utility library, stubs, and TUI widgets for the rApps ecosystem"
 
 [dependencies]
 ratatui = "0.29"
