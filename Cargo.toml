@@ -7,8 +7,10 @@ rust-version = "1.85"
 [dependencies]
 ratatui = "0.29"
 crossterm = "0.28"
-winreg = "0.56.0"
 sysinfo = "0.30"
+
+[target.'cfg(windows)'.dependencies]
+winreg = "0.56.0"
 windows-sys = { version = "0.59", features = [
     "Win32_Foundation",
     "Win32_System_Console",
