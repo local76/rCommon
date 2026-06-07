@@ -23,6 +23,11 @@ pub mod widgets;
 #[cfg(feature = "rgb")]
 pub mod rgb;
 
+pub mod game;
+
+#[cfg(feature = "gui")]
+pub mod gui;
+
 // Deprecated backwards-compatibility module.
 #[cfg(feature = "win32")]
 #[deprecated(since = "1.0.0", note = "Use the domain-specific modules instead")]
