@@ -1000,23 +1000,17 @@ pub fn relaunch_in_conhost_if_needed() {
         };
 
         if !is_conhost {
-            // Relaunch in conhost.exe
+            // Relaunch in conhost.exe directly to avoid cmd.exe quoting/escaping bugs
             let current_exe = std::env::current_exe().unwrap();
-            let mut cmd_args = vec![
-                "/c".to_string(),
-                "start".to_string(),
-                "".to_string(),
-                "conhost.exe".to_string(),
-                current_exe.to_str().unwrap().to_string(),
-            ];
+            let mut con_args = vec![current_exe.to_str().unwrap().to_string()];
             // Pass all original args, plus the --relaunched flag
             for arg in args.into_iter().skip(1) {
-                cmd_args.push(arg);
+                con_args.push(arg);
             }
-            cmd_args.push("--relaunched".to_string());
+            con_args.push("--relaunched".to_string());
 
-            let _ = std::process::Command::new("cmd.exe")
-                .args(&cmd_args)
+            let _ = std::process::Command::new("conhost.exe")
+                .args(&con_args)
                 .spawn();
             std::process::exit(0);
         }
