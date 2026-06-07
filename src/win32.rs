@@ -366,6 +366,29 @@ pub fn center_console_window() {
             return;
         }
 
+        // Wait up to 200ms for the window size to stabilize after a resize
+        let mut last_width = 0;
+        let mut last_height = 0;
+        let mut stable_count = 0;
+        for _ in 0..20 {
+            let mut rect = RECT::default();
+            if GetWindowRect(hwnd, &mut rect) != 0 {
+                let w = rect.right - rect.left;
+                let h = rect.bottom - rect.top;
+                if w == last_width && h == last_height && w > 0 && h > 0 {
+                    stable_count += 1;
+                    if stable_count >= 2 {
+                        break;
+                    }
+                } else {
+                    stable_count = 0;
+                    last_width = w;
+                    last_height = h;
+                }
+            }
+            std::thread::sleep(std::time::Duration::from_millis(10));
+        }
+
         let mut rect = RECT::default();
         if GetWindowRect(hwnd, &mut rect) != 0 {
             let width = rect.right - rect.left;
@@ -989,14 +1012,17 @@ pub fn relaunch_in_conhost_if_needed() {
         }
 
         // 3. Detect if we are in conhost or a pseudoconsole (like Windows Terminal)
-        let hwnd = unsafe { GetConsoleWindow() };
-        let is_conhost = if hwnd.is_null() {
-            false
-        } else {
-            let mut rect = RECT::default();
-            let ok = unsafe { GetWindowRect(hwnd, &mut rect) };
-            let style = unsafe { GetWindowLongPtrW(hwnd, -16) }; // GWL_STYLE = -16
-            ok != 0 && (rect.right - rect.left) > 0 && style != 0
+        let (_, terminal) = query_shell_and_terminal();
+        let is_conhost = terminal == "Windows Console Host" && {
+            let hwnd = unsafe { GetConsoleWindow() };
+            if hwnd.is_null() {
+                false
+            } else {
+                let mut rect = RECT::default();
+                let ok = unsafe { GetWindowRect(hwnd, &mut rect) };
+                let style = unsafe { GetWindowLongPtrW(hwnd, -16) }; // GWL_STYLE = -16
+                ok != 0 && (rect.right - rect.left) > 0 && style != 0
+            }
         };
 
         if !is_conhost {
