@@ -2,21 +2,7 @@ use std::io::{Read, Write};
 use std::net::{SocketAddr, TcpStream};
 use std::time::Duration;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-struct RgbColor {
-    r: u8,
-    g: u8,
-    b: u8,
-}
-
-#[derive(Debug)]
-struct OpenRGBDevice {
-    index: u32,
-    device_type: u32,
-    name: String,
-    num_leds: u16,
-    initial_colors: Vec<RgbColor>,
-}
+use rcommon::rgb::parse_device_payload;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("===================================================");
@@ -182,103 +168,4 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn parse_device_payload(index: u32, data: &[u8]) -> Result<OpenRGBDevice, &'static str> {
-    let mut cursor = 0;
 
-    let read_u16 = |cur: &mut usize| -> Result<u16, &'static str> {
-        if *cur + 2 > data.len() { return Err("EOF u16"); }
-        let val = u16::from_le_bytes(data[*cur..*cur+2].try_into().unwrap());
-        *cur += 2;
-        Ok(val)
-    };
-
-    let read_u32 = |cur: &mut usize| -> Result<u32, &'static str> {
-        if *cur + 4 > data.len() { return Err("EOF u32"); }
-        let val = u32::from_le_bytes(data[*cur..*cur+4].try_into().unwrap());
-        *cur += 4;
-        Ok(val)
-    };
-
-    let read_i32 = |cur: &mut usize| -> Result<i32, &'static str> {
-        if *cur + 4 > data.len() { return Err("EOF i32"); }
-        let val = i32::from_le_bytes(data[*cur..*cur+4].try_into().unwrap());
-        *cur += 4;
-        Ok(val)
-    };
-
-    let read_string = |cur: &mut usize| -> Result<String, &'static str> {
-        let len = read_u16(cur)? as usize;
-        if len == 0 { return Ok(String::new()); }
-        if *cur + len > data.len() { return Err("EOF String"); }
-        let s_bytes = &data[*cur..*cur + len];
-        *cur += len;
-        let clean_len = if len > 0 && s_bytes[len - 1] == 0 { len - 1 } else { len };
-        let s = String::from_utf8_lossy(&s_bytes[..clean_len]).into_owned();
-        Ok(s)
-    };
-
-    let _data_size = read_u32(&mut cursor)?;
-    let device_type = read_u32(&mut cursor)?;
-    let name = read_string(&mut cursor)?;
-    let _vendor = read_string(&mut cursor)?;
-    let _description = read_string(&mut cursor)?;
-    let _version = read_string(&mut cursor)?;
-    let _serial = read_string(&mut cursor)?;
-    let _location = read_string(&mut cursor)?;
-
-    let num_modes = read_u16(&mut cursor)?;
-    let _active_mode = read_i32(&mut cursor)?;
-
-    for _ in 0..num_modes {
-        let _m_name = read_string(&mut cursor)?;
-        let _m_value = read_i32(&mut cursor)?;
-        let _m_flags = read_u32(&mut cursor)?;
-        let _m_speed_min = read_u32(&mut cursor)?;
-        let _m_speed_max = read_u32(&mut cursor)?;
-        let _m_colors_min = read_u32(&mut cursor)?;
-        let _m_colors_max = read_u32(&mut cursor)?;
-        let _m_speed = read_u32(&mut cursor)?;
-        let _m_direction = read_u32(&mut cursor)?;
-        let _m_color_mode = read_u32(&mut cursor)?;
-        let colors_len = read_u16(&mut cursor)? as usize;
-        if cursor + colors_len * 4 > data.len() { return Err("EOF Mode Colors"); }
-        cursor += colors_len * 4;
-    }
-
-    let num_zones = read_u16(&mut cursor)?;
-    for _ in 0..num_zones {
-        let _z_name = read_string(&mut cursor)?;
-        let _z_type = read_u32(&mut cursor)?;
-        let _z_leds_min = read_u32(&mut cursor)?;
-        let _z_leds_max = read_u32(&mut cursor)?;
-        let _z_leds_count = read_u32(&mut cursor)?;
-        let matrix_len = read_u16(&mut cursor)? as usize;
-        if cursor + matrix_len > data.len() { return Err("EOF Zone Matrix"); }
-        cursor += matrix_len;
-    }
-
-    let num_leds = read_u16(&mut cursor)?;
-    for _ in 0..num_leds {
-        let _l_name = read_string(&mut cursor)?;
-        let _l_value = read_u32(&mut cursor)?;
-    }
-
-    let num_colors = read_u16(&mut cursor)?;
-    let mut initial_colors = Vec::new();
-    for _ in 0..num_colors {
-        if cursor + 4 > data.len() { return Err("EOF Colors"); }
-        let r = data[cursor];
-        let g = data[cursor + 1];
-        let b = data[cursor + 2];
-        cursor += 4;
-        initial_colors.push(RgbColor { r, g, b });
-    }
-
-    Ok(OpenRGBDevice {
-        index,
-        device_type,
-        name,
-        num_leds: num_colors,
-        initial_colors,
-    })
-}

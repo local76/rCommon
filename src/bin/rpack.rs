@@ -174,7 +174,7 @@ fn main() {
         if let Ok(entries) = fs::read_dir(search_dir) {
             for entry in entries.flatten() {
                 let path = entry.path();
-                if path.extension().map_or(false, |ext| ext == "deb") {
+                if path.extension().is_some_and(|ext| ext == "deb") {
                     let filename = path.file_name().unwrap().to_str().unwrap();
                     let deb_dest = packages_dir.join(filename);
                     fs::copy(&path, &deb_dest).expect("failed to copy .deb to dist/packages/");
@@ -204,7 +204,7 @@ fn main() {
         if let Ok(entries) = fs::read_dir(search_dir) {
             for entry in entries.flatten() {
                 let path = entry.path();
-                if path.extension().map_or(false, |ext| ext == "rpm") {
+                if path.extension().is_some_and(|ext| ext == "rpm") {
                     let filename = path.file_name().unwrap().to_str().unwrap();
                     let rpm_dest = packages_dir.join(filename);
                     fs::copy(&path, &rpm_dest).expect("failed to copy .rpm to dist/packages/");
@@ -221,7 +221,7 @@ fn main() {
         if let Ok(entries) = fs::read_dir(wix_dir) {
             for entry in entries.flatten() {
                 let path = entry.path();
-                if path.extension().map_or(false, |ext| ext == "msi") {
+                if path.extension().is_some_and(|ext| ext == "msi") {
                     let filename = path.file_name().unwrap().to_str().unwrap();
                     let msi_dest = packages_dir.join(filename);
                     fs::copy(&path, &msi_dest).expect("failed to copy .msi to dist/packages/");
