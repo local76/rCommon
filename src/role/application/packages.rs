@@ -249,6 +249,58 @@ pub fn count_snap() -> usize {
     0
 }
 
+pub fn count_apk() -> usize {
+    #[cfg(target_os = "linux")]
+    {
+        if let Ok(content) = fs::read_to_string("/lib/apk/db/installed") {
+            return content.lines().filter(|line| line.starts_with("P:")).count();
+        }
+    }
+    0
+}
+
+pub fn count_rpm() -> usize {
+    #[cfg(target_os = "linux")]
+    {
+        if let Ok(output) = std::process::Command::new("rpm").arg("-qa").output() {
+            let s = String::from_utf8_lossy(&output.stdout);
+            return s.lines().count();
+        }
+    }
+    0
+}
+
+pub fn count_brew() -> usize {
+    let paths = [
+        "/opt/homebrew/Cellar",
+        "/usr/local/Cellar",
+        "/home/linuxbrew/.linuxbrew/Cellar",
+    ];
+    let mut count = 0;
+    for path in &paths {
+        if let Ok(entries) = fs::read_dir(path) {
+            count += entries.filter_map(|e| e.ok()).filter(|e| e.path().is_dir()).count();
+        }
+    }
+    count
+}
+
+pub fn count_emerge() -> usize {
+    #[cfg(target_os = "linux")]
+    {
+        let mut count = 0;
+        if let Ok(categories) = fs::read_dir("/var/db/pkg") {
+            for cat in categories.filter_map(|e| e.ok()).filter(|e| e.path().is_dir()) {
+                if let Ok(pkgs) = fs::read_dir(cat.path()) {
+                    count += pkgs.filter_map(|e| e.ok()).filter(|e| e.path().is_dir()).count();
+                }
+            }
+        }
+        return count;
+    }
+    0
+}
+
 /// Information about a package manager supported by rCommon.
 #[derive(Debug, Clone, Copy)]
 pub struct PackageManager {
@@ -271,6 +323,10 @@ pub static PACKAGE_MANAGERS: &[PackageManager] = &[
     PackageManager { name: "pacman", count_fn: count_pacman },
     PackageManager { name: "flatpak", count_fn: count_flatpak },
     PackageManager { name: "snap", count_fn: count_snap },
+    PackageManager { name: "apk", count_fn: count_apk },
+    PackageManager { name: "rpm", count_fn: count_rpm },
+    PackageManager { name: "brew", count_fn: count_brew },
+    PackageManager { name: "emerge", count_fn: count_emerge },
 ];
 
 /// Returns a human-readable breakdown of installed packages.

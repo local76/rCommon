@@ -97,7 +97,7 @@ pub use role::application::rgb;
 pub use role::application::game;
 pub use role::application::packages::{
     count_scoop, count_choco, count_npm, count_steam, count_ms_store, count_native, count_winget, count_dpkg, count_pacman,
-    count_flatpak, count_snap, PackageManager, PACKAGE_MANAGERS, get_packages_breakdown
+    count_flatpak, count_snap, count_apk, count_rpm, count_brew, count_emerge, PackageManager, PACKAGE_MANAGERS, get_packages_breakdown
 };
 
 // Platform native additions (monitors)
