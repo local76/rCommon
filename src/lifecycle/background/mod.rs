@@ -23,12 +23,12 @@ pub mod worker;
 // Re-exports
 pub use worker::{WorkerEvent, Worker, SampleWorker, spawn_background_task};
 #[cfg(feature = "service")]
-#[allow(deprecated)]
+#[allow(deprecated)] // Intentional: Re-exporting legacy query_windows_service_status for backward compatibility with older rApps
 pub use service::{
     SERVICE_STATUS, query_service_status, query_windows_service_status, has_admin_privileges, start_service, stop_service, restart_service
 };
 #[cfg(feature = "event-log")]
-#[allow(deprecated)]
+#[allow(deprecated)] // Intentional: Re-exporting legacy log_windows_event for backward compatibility with older rApps
 pub use event_log::{
     log_system_event, log_windows_event, EVENTLOG_SUCCESS, EVENTLOG_ERROR_TYPE,
     EVENTLOG_WARNING_TYPE, EVENTLOG_INFORMATION_TYPE, EVENTLOG_AUDIT_SUCCESS,
@@ -43,7 +43,7 @@ pub use file_log::{
 pub use notification::{show_toast_notification, show_toast_notification_with_id};
 #[cfg(feature = "clipboard")]
 pub use clipboard::copy_text_to_clipboard;
-#[allow(deprecated)]
+#[allow(deprecated)] // Intentional: Re-exporting legacy priority helpers (set_low_priority, set_idle_priority) for backward compatibility with older rApps
 pub use daemon::{
     get_sleep_prevention_count, ProcessPriority, set_process_priority, set_low_priority, set_idle_priority, PowerRequest, set_thread_execution_state, prevent_system_sleep, BackgroundPowerGuard, background_power_guard, DaemonConfig, DaemonPriority, DaemonService,
 };

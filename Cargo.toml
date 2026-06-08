@@ -62,6 +62,7 @@ interface-api = ["windows-sys"]
 lifecycle-foreground = ["window"]
 lifecycle-background = ["service", "event-log", "notification", "clipboard"]
 platform-native = ["sys-info", "reg"]
+platform-gpu = ["gpu"]
 role-system = ["sys-info", "reg", "service", "event-log"]
 role-application = ["rgb"]
 
@@ -77,7 +78,7 @@ notification = ["dep:windows"]
 window = ["windows-sys"]
 reg = ["dep:winreg", "windows-sys"]
 gui = ["dep:eframe", "dep:egui"]
-effects = ["widgets", "sys-info", "rgb"]
+effects = ["sys-info"]
 
 [[bin]]
 name = "rgb_diagnostic"

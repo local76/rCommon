@@ -33,6 +33,7 @@ To prevent dependency and binary size bloat in simple CLI daemons, features are 
 * `lifecycle-foreground` - Enables standalone console window styling, DPI adjustments, and single-instance guards.
 * `lifecycle-background` - Enables background daemons, system service mutations, and tray/clipboard monitoring.
 * `platform-native` - Enables Windows Registry emulation, hardware displays query, and system info parsing.
+* `platform-gpu` - Enables headless GPU compute shaders and wgpu interfaces.
 * `role-system` - Low-level hardware, bios, service, and power diagnostics.
 * `role-application` - High-level utilities, package inventory counting, and OpenRGB integrations.
 
@@ -42,7 +43,7 @@ To prevent dependency and binary size bloat in simple CLI daemons, features are 
 * `sys-info` - System info helper parsing.
 * `reg` - Config storage access / registry abstraction.
 * `rgb` - OpenRGB protocol and controller handlers.
-* `win32` - Deprecated flat shim module for backwards compatibility.
+* `gpu` - Headless GPU compute context initialization and running utilities.
 
 ---
 
@@ -85,7 +86,7 @@ effect.draw(&mut grid, 80, 25);
 > [!NOTE]
 > **Taxonomy Features (Cargo features)** control what code is compiled in your `Cargo.toml` dependencies, whereas **Taxonomy Paths (module paths)** are the new Rust import locations in your code.
 
-If you are migrating an older application to `rCommon` version 1.9.6+, update your module references as follows:
+If you are migrating an older application to `rCommon` version 3.0.0+, update your module references as follows:
 
 | Old Path | New Taxonomy Path |
 | :--- | :--- |
@@ -99,4 +100,8 @@ If you are migrating an older application to `rCommon` version 1.9.6+, update yo
 | `rcommon::rgb::*` | `rcommon::role::application::rgb::*` |
 | `rcommon::game::BhopGame` | `rcommon::role::application::game::ObstacleJumpGame` |
 
-*(Note: The flat legacy `win32` module is preserved under the `win32` feature gate as a deprecated shim for compatibility during transition).*
+---
+
+## 📄 License
+
+This project is licensed under the MIT License. See [LICENSE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/LICENSE.md) for details.

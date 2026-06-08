@@ -14,7 +14,7 @@ pub use types::{
 pub use position::{
     get_console_rect, get_window_rect, set_window_pos, center_console_window, query_cursor_pos,
 };
-#[allow(deprecated)]
+#[allow(deprecated)] // Intentional: Re-exporting legacy relaunch helpers for backward compatibility with older rApps
 pub use relaunch::{relaunch_in_conhost_if_needed, should_relaunch_in_conhost, relaunch_in_conhost};
 pub use visibility::{hide_console_at_startup, is_console_focused};
 pub use style::{BorderlessConsole, ConsoleTitleGuard};

@@ -6,17 +6,17 @@
 //! using `wgpu` and to execute simple compute shaders without requiring a window or surface.
 
 use wgpu::{Device, Queue, Instance, PowerPreference, RequestAdapterOptions};
-use std::sync::{Mutex, OnceLock};
+use std::sync::OnceLock;
 
-static HEADLESS_GPU: OnceLock<Mutex<Option<(Device, Queue)>>> = OnceLock::new();
+static HEADLESS_GPU: OnceLock<Option<(Device, Queue)>> = OnceLock::new();
 
 /// Initialize the headless GPU context (Device and Queue) synchronously.
 ///
 /// This uses `pollster` to run the async adapter and device requests on a block_on queue,
 /// caching the resulting handles globally so subsequent calls are cheap.
 pub fn init_headless_gpu() -> Option<(Device, Queue)> {
-    let mutex = HEADLESS_GPU.get_or_init(|| {
-        let initialized = pollster::block_on(async {
+    let opt = HEADLESS_GPU.get_or_init(|| {
+        pollster::block_on(async {
             let instance = Instance::default();
             let adapter = instance
                 .request_adapter(&RequestAdapterOptions {
@@ -39,12 +39,10 @@ pub fn init_headless_gpu() -> Option<(Device, Queue)> {
                 .await
                 .ok()?;
             Some((device, queue))
-        });
-        Mutex::new(initialized)
+        })
     });
 
-    let guard = mutex.lock().ok()?;
-    guard.clone()
+    opt.clone()
 }
 
 /// Helper to execute a 1D compute shader with an input float array, returning the modified array.
@@ -139,7 +137,9 @@ pub fn run_compute_shader(shader_src: &str, entry_point: &str, data: &[f32]) -> 
         });
         compute_pass.set_pipeline(&compute_pipeline);
         compute_pass.set_bind_group(0, &bind_group, &[]);
-        compute_pass.dispatch_workgroups(data.len() as u32, 1, 1);
+        let workgroup_size = 64;
+        let workgroups = (data.len() as u32 + workgroup_size - 1) / workgroup_size;
+        compute_pass.dispatch_workgroups(workgroups, 1, 1);
     }
 
     // Copy results to staging buffer
@@ -158,14 +158,22 @@ pub fn run_compute_shader(shader_src: &str, entry_point: &str, data: &[f32]) -> 
     // Poll the GPU to trigger map completion
     device.poll(wgpu::Maintain::Wait);
 
-    if let Ok(Ok(())) = receiver.recv() {
-        let data_raw = buffer_slice.get_mapped_range();
-        let result: Vec<f32> = bytemuck::cast_slice(&data_raw).to_vec();
-        drop(data_raw);
-        staging_buffer.unmap();
-        Some(result)
-    } else {
-        None
+    match receiver.recv() {
+        Ok(Ok(())) => {
+            let data_raw = buffer_slice.get_mapped_range();
+            let result: Vec<f32> = bytemuck::cast_slice(&data_raw).to_vec();
+            drop(data_raw);
+            staging_buffer.unmap();
+            Some(result)
+        }
+        Ok(Err(e)) => {
+            eprintln!("wgpu compute shader buffer mapping failed: {:?}", e);
+            None
+        }
+        Err(e) => {
+            eprintln!("wgpu compute shader map channel communication failed: {:?}", e);
+            None
+        }
     }
 }
 
@@ -180,9 +188,11 @@ mod tests {
             @group(0) @binding(0)
             var<storage, read_write> data: array<f32>;
 
-            @compute @workgroup_size(1)
+            @compute @workgroup_size(64)
             fn main(@builtin(global_invocation_id) id: vec3<u32>) {
-                data[id.x] = data[id.x] * 2.0;
+                if (id.x < arrayLength(&data)) {
+                    data[id.x] = data[id.x] * 2.0;
+                }
             }
         "#;
 

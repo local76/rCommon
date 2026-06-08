@@ -6,9 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [3.0.14] - 2026-06-08
 
+### Added
+- **Headless GPU taxonomy feature**: Added `platform-gpu` feature (aliasing `gpu`) for consistent taxonomy naming.
+- **Theme Color Tests**: Added unit tests in `theme.rs` to cover `success`, `selection_bg`, and `warning` fields.
+
 ### Fixed
 - **Clippy lints**: Fixed needless range loop warning in `textbox.rs`.
-- **Deprecation warnings**: Suppressed compiler warnings on legacy compatibility re-exports of relaunch, service, and priority helpers.
+- **Deprecation warnings**: Suppressed compiler warnings on legacy compatibility re-exports of relaunch, service, and priority helpers, with inline comments explaining the suppressions.
+- **GPU Mutex redundancy**: Removed redundant `Mutex` from `HEADLESS_GPU` static using `OnceLock<Option<...>>` instead.
+- **GPU Thread underutilization**: Upgraded shader dispatch in `gpu.rs` from `@workgroup_size(1)` to `@workgroup_size(64)`.
+- **GPU Error handling**: Replaced silently swallowed error cases in `gpu.rs` mapping routine with detailed diagnostics logged to stderr.
+- **Theme Color differentiation**: Differentiated warning color from quit button color across light/dark themes.
 
 ## [3.0.13] - 2026-06-08
 

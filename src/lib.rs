@@ -107,7 +107,7 @@ pub use lifecycle::foreground::set_tui_panic_hook;
 #[cfg(feature = "window")]
 pub use lifecycle::foreground::window::hide_console_at_startup;
 #[cfg(feature = "window")]
-#[allow(deprecated)]
+#[allow(deprecated)] // Intentional: Re-exporting legacy conhost relaunch helpers for backward compatibility with older rApps
 pub use lifecycle::foreground::window::{
     RECT, MONITORINFO, COORD, SMALL_RECT, CONSOLE_SELECTION_INFO, POINT,
     get_console_rect, get_window_rect, set_window_pos, center_console_window, query_cursor_pos,
