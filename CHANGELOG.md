@@ -5,6 +5,12 @@ All notable changes to rCommon will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.18] - 2026-06-08
+
+### Changed
+- **Dependency Optimization**: Disabled default features on the `sysinfo` dependency to eliminate the heavy `rayon` multithreading engine and its dependencies from the library build graph.
+- **Size-Optimized Release Profile**: Added a size-focused `[profile.release]` section to `Cargo.toml` with `opt-level = "z"`, `lto = true`, `codegen-units = 1`, `panic = "abort"`, and `strip = true` to maximize executable footprint reductions for all binary targets.
+
 ## [3.0.17] - 2026-06-08
 
 ### Fixed
