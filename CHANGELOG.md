@@ -4,6 +4,18 @@ All notable changes to rCommon will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [3.0.8] - 2026-06-08
+
+### Added
+- **TUI Widgets & Utilities**: Added generic `TextBox` widget to `interface::tui::widgets::textbox`.
+- **Theme Manager**: Created `interface::tui::theme` with reusable `ThemeColors` and `get_theme` factory.
+- **Markdown Viewer & Macro**: Created `interface::tui::markdown` module containing `parse_markdown_to_lines`, `draw_markdown_modal` widget delegate, and `embedded_docs!` helper macro.
+- **TUI Layout Helpers**: Added `centered_rect` and `format_help_row` to `interface::tui::layout`.
+- **Background Worker**: Added `lifecycle::background::worker` with `Worker` trait, `WorkerEvent` enum, and mock `SampleWorker` implementation.
+
+### Fixed
+- **Empty text wrapping**: Fixed `wrap_text` in `interface::tui::text` to return an empty vector early if input text is empty.
+
 ## [3.0.7] - 2026-06-08
 
 ### Changed

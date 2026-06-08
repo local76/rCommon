@@ -18,5 +18,5 @@ pub use gauge::AccentGauge;
 pub use list::AccentList;
 pub use scrollbar::AccentScrollbar;
 pub use tabs::AccentTabs;
-pub use textbox::AccentTextBox;
+pub use textbox::{AccentTextBox, TextBox};
 pub use toast::{ToastBox, ToastKind};

@@ -18,8 +18,10 @@ pub mod notification;
 #[cfg(feature = "clipboard")]
 pub mod clipboard;
 pub mod daemon;  // Power/priority for daemons.
+pub mod worker;
 
 // Re-exports
+pub use worker::{WorkerEvent, Worker, SampleWorker, spawn_background_task};
 #[cfg(feature = "service")]
 pub use service::{
     SERVICE_STATUS, query_service_status, query_windows_service_status, has_admin_privileges, start_service, stop_service, restart_service

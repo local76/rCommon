@@ -22,6 +22,12 @@
 
 #[cfg(feature = "widgets")]
 pub mod widgets;
+#[cfg(feature = "widgets")]
+pub mod theme;
+#[cfg(feature = "widgets")]
+pub mod markdown;
+#[cfg(feature = "widgets")]
+pub mod layout;
 #[cfg(feature = "effects")]
 pub mod effects;
 pub mod text;
@@ -31,7 +37,13 @@ pub mod constants;
 
 // Re-export for convenience under tui::
 #[cfg(feature = "widgets")]
-pub use widgets::{AccentColors, AccentTheme, AccentGauge, AccentList, AccentTabs, AccentTextBox, ToastBox, ToastKind, AccentScrollbar};
+pub use widgets::{AccentColors, AccentTheme, AccentGauge, AccentList, AccentTabs, AccentTextBox, TextBox, ToastBox, ToastKind, AccentScrollbar};
+#[cfg(feature = "widgets")]
+pub use theme::{ThemeColors, get_theme};
+#[cfg(feature = "widgets")]
+pub use markdown::{parse_markdown_to_lines, draw_markdown_modal};
+#[cfg(feature = "widgets")]
+pub use layout::{centered_rect, format_help_row};
 #[cfg(feature = "effects")]
 pub use effects::{TuiEffect, Particle, RainDrop, MatrixRain, SimpleParticles, GravityParticles, GravityCenter, RainEffect, FireEffect, render_logo_block};
 pub use text::{TextAlignment, wrap_text, align_line};

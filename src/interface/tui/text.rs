@@ -16,6 +16,9 @@ pub enum TextAlignment {
 /// Wraps text into lines that do not exceed `max_width` characters, wrapping at word boundaries.
 /// Maintains existing explicit newlines from the input.
 pub fn wrap_text(text: &str, max_width: usize) -> Vec<String> {
+    if text.is_empty() {
+        return Vec::new();
+    }
     if max_width == 0 {
         return vec![text.to_string()];
     }
