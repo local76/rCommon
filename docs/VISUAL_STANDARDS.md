@@ -64,11 +64,43 @@ To ensure the icons render crisp and sharp at all operating system scales (from 
 
 ### B. File Formats & Resolutions
 * **`app_icon.png`**: High-resolution `512x512` or `256x256` 32-bit RGBA PNG with alpha transparency.
-* **`app.ico`**: Multi-resolution Windows ICO container containing `256x256`, `48x48`, `32x32`, and `16x16` sizes.
+* **`app.ico`**: Multi-resolution Windows ICO container containing exactly **`256x256` (PNG-compressed)**, **`48x48`**, **`32x32`**, and **`16x16`** sizes at 32-bit RGBA depth. Having all four sizes prevents blurry scaling and ensures Windows Explorer doesn't fall back to standard console icons in list, details, or taskbar views.
 * **Padding**: Leave a **15% padding margin** around the container bounds to allow glowing neon offsets and glares to fade out naturally without edge clipping.
+
+### C. Windows Explorer Resource Metadata
+To ensure the applications look polished in Windows Explorer (e.g., when right-clicking the binary and viewing **Properties -> Details**), every utility must compile the following PE metadata into its resources using a build script (`build.rs`) and the `winres` crate:
+
+* **File Description**: A clean, descriptive name of the utility (e.g., `rFetch - System Info Utility`).
+* **Product Name**: Grouped under the suite name: `local76 Suite`.
+* **Company Name**: Set as `local76`.
+* **Legal Copyright**: Set as `Copyright © 2026 local76`.
+* **Version Information**: Automatically synchronizes the file and product versions with the crate's `Cargo.toml` version.
+
+#### Standard `build.rs` Template:
+```rust
+use std::path::Path;
+
+fn main() {
+    // Re-run the build script if the icon changes
+    println!("cargo:rerun-if-changed=assets/brand/app.ico");
+    let ico_path = Path::new("assets/brand/app.ico");
+
+    let target_os = std::env::var("CARGO_CFG_TARGET_OS").unwrap_or_default();
+    if target_os == "windows" && ico_path.exists() {
+        let mut res = winres::WindowsResource::new();
+        res.set_icon("assets/brand/app.ico");
+        res.set("FileDescription", "rAppName - Description of the utility");
+        res.set("ProductName", "local76 Suite");
+        res.set("CompanyName", "local76");
+        res.set("LegalCopyright", "Copyright © 2026 local76");
+        res.compile().expect("failed to compile winres resource");
+    }
+}
+```
 
 ---
 
 ## 4. Integration
 
 Add references to these visual guidelines in project templates and packaging configurations to maintain brand consistency.
+
