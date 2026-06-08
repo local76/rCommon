@@ -4,6 +4,18 @@ All notable changes to rCommon will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [3.0.15] - 2026-06-08
+
+### Fixed
+- **Clippy `too_many_arguments` on `draw_title_banner`**: Annotated the title banner widget with `#[allow(clippy::too_many_arguments)]` plus a justification comment, since the function intentionally composes the full title strip (title, version, user, host, OS) in a single render pass.
+- **Clippy `type_complexity` in `sys_info` caches**: Introduced `CachedAccent`, `CachedBool`, `CachedString`, `CachedTheme`, and `CachedPower` type aliases in `platform::native::sys_info` to clarify the tuple-of-`(Instant, T)` cache entries used by the TTL-bounded query helpers.
+- **Clippy `type_complexity` in `logo` block cache**: Introduced a `LogoCacheEntry` type alias in `interface::tui::effects::logo` to document the `(text, sub_text, rendered_lines)` tuple cached by `render_logo_block`.
+- **Clippy `module_inception` for `interface::gui::gui`**: Renamed the inner `gui` submodule to `egui_helpers` (file `gui.rs` → `egui_helpers.rs`) so the parent `interface::gui` module no longer contains a child module of the same name. Top-level `rcommon::gui` re-export still resolves to the same helpers via the renamed module.
+
+### Changed
+- **GPU buffer sizing**: Replaced manual `(data.len() * std::mem::size_of::<f32>()) as u64` with `std::mem::size_of_val(data) as u64` in `platform::native::gpu` to follow clippy's `manual_slice_size_calculation` lint and avoid hard-coding the element type.
+- **GPU workgroup dispatch**: Replaced manual ceiling division with the standard-library `u32::div_ceil` in `platform::native::gpu` for the compute shader dispatch count.
+
 ## [3.0.14] - 2026-06-08
 
 ### Added

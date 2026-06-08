@@ -8,6 +8,12 @@
 
 pub use crate::platform::{PowerStatus, SystemBiosInfo, DiskDriveInfo, NetworkAdapterInfo, PlatformProvider};
 
+type CachedAccent = (std::time::Instant, (u8, u8, u8));
+type CachedBool = (std::time::Instant, bool);
+type CachedString = (std::time::Instant, String);
+type CachedTheme = (std::time::Instant, SystemTheme);
+type CachedPower = (std::time::Instant, Option<PowerStatus>);
+
 #[cfg(all(target_os = "windows", feature = "sys-info"))]
 pub mod windows;
 
@@ -62,7 +68,7 @@ pub fn get_console_window_dpi() -> u32 {
 }
 
 pub fn query_accent_color() -> (u8, u8, u8) {
-    static CACHE: std::sync::Mutex<Option<(std::time::Instant, (u8, u8, u8))>> = std::sync::Mutex::new(None);
+    static CACHE: std::sync::Mutex<Option<CachedAccent>> = std::sync::Mutex::new(None);
     let mut lock = CACHE.lock().unwrap();
     if let Some((last_updated, val)) = &*lock {
         if last_updated.elapsed() < std::time::Duration::from_millis(1000) {
@@ -75,7 +81,7 @@ pub fn query_accent_color() -> (u8, u8, u8) {
 }
 
 pub fn query_high_contrast() -> bool {
-    static CACHE: std::sync::Mutex<Option<(std::time::Instant, bool)>> = std::sync::Mutex::new(None);
+    static CACHE: std::sync::Mutex<Option<CachedBool>> = std::sync::Mutex::new(None);
     let mut lock = CACHE.lock().unwrap();
     if let Some((last_updated, val)) = &*lock {
         if last_updated.elapsed() < std::time::Duration::from_millis(1000) {
@@ -96,7 +102,7 @@ pub struct SystemTheme {
 
 /// Query the combined system theme settings (dark mode, high contrast, accent color).
 pub fn query_system_theme() -> SystemTheme {
-    static CACHE: std::sync::Mutex<Option<(std::time::Instant, SystemTheme)>> = std::sync::Mutex::new(None);
+    static CACHE: std::sync::Mutex<Option<CachedTheme>> = std::sync::Mutex::new(None);
     let mut lock = CACHE.lock().unwrap();
     if let Some((last_updated, val)) = &*lock {
         if last_updated.elapsed() < std::time::Duration::from_millis(500) {
@@ -116,7 +122,7 @@ pub fn query_system_theme() -> SystemTheme {
 }
 
 pub fn query_os_version() -> String {
-    static CACHE: std::sync::Mutex<Option<(std::time::Instant, String)>> = std::sync::Mutex::new(None);
+    static CACHE: std::sync::Mutex<Option<CachedString>> = std::sync::Mutex::new(None);
     let mut lock = CACHE.lock().unwrap();
     if let Some((last_updated, val)) = &*lock {
         if last_updated.elapsed() < std::time::Duration::from_millis(10000) {
@@ -129,7 +135,7 @@ pub fn query_os_version() -> String {
 }
 
 pub fn query_dark_mode() -> bool {
-    static CACHE: std::sync::Mutex<Option<(std::time::Instant, bool)>> = std::sync::Mutex::new(None);
+    static CACHE: std::sync::Mutex<Option<CachedBool>> = std::sync::Mutex::new(None);
     let mut lock = CACHE.lock().unwrap();
     if let Some((last_updated, val)) = &*lock {
         if last_updated.elapsed() < std::time::Duration::from_millis(500) {
@@ -142,7 +148,7 @@ pub fn query_dark_mode() -> bool {
 }
 
 pub fn query_power_status() -> Option<PowerStatus> {
-    static CACHE: std::sync::Mutex<Option<(std::time::Instant, Option<PowerStatus>)>> = std::sync::Mutex::new(None);
+    static CACHE: std::sync::Mutex<Option<CachedPower>> = std::sync::Mutex::new(None);
     let mut lock = CACHE.lock().unwrap();
     if let Some((last_updated, val)) = &*lock {
         if last_updated.elapsed() < std::time::Duration::from_millis(1000) {

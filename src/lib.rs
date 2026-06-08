@@ -54,7 +54,7 @@ pub use interface::tui::text;
 #[cfg(feature = "effects")]
 pub use interface::tui::screensaver;
 #[cfg(feature = "gui")]
-pub use interface::gui::gui as gui;
+pub use interface::gui::egui_helpers as gui;
 
 // =====================================================
 // 2. Execution State (Lifecycle)

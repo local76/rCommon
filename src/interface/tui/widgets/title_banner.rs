@@ -32,6 +32,7 @@ impl ButtonRect {
 
 /// Renders a generic title banner with system metadata and interactive buttons.
 /// Returns `(help_btn_bounds, quit_btn_bounds)` as `Option<ButtonRect>`.
+#[allow(clippy::too_many_arguments)] // Title banner is intentionally a single-pass renderer; all metadata fields are needed to compose the title strip in one call.
 pub fn draw_title_banner(
     f: &mut Frame,
     area: Rect,

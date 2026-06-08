@@ -38,11 +38,13 @@ fn get_5x5_pattern(ch: char) -> Option<[&'static str; 5]> {
     }
 }
 
+type LogoCacheEntry = (String, Option<String>, Vec<String>);
+
 /// Renders the live centered logo block (logo_text as big block letters
 /// using the 5x5 font above + optional sub_text line underneath).
 /// Perfect for retro TUI effects and dashboards.
 pub fn render_logo_block(text: &str, sub_text: Option<&str>) -> Vec<String> {
-    static CACHE: std::sync::Mutex<Option<(String, Option<String>, Vec<String>)>> = std::sync::Mutex::new(None);
+    static CACHE: std::sync::Mutex<Option<LogoCacheEntry>> = std::sync::Mutex::new(None);
     let mut lock = CACHE.lock().unwrap();
     if let Some((cached_text, cached_sub, cached_val)) = &*lock {
         if cached_text == text && cached_sub.as_deref() == sub_text {

@@ -2855,7 +2855,7 @@ dependencies = [
 
 [[package]]
 name = "rcommon"
-version = "3.0.14"
+version = "3.0.15"
 dependencies = [
  "bytemuck",
  "crossterm",

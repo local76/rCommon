@@ -64,7 +64,7 @@ pub fn run_compute_shader(shader_src: &str, entry_point: &str, data: &[f32]) -> 
     });
 
     // Create GPU buffers
-    let size = (data.len() * std::mem::size_of::<f32>()) as u64;
+    let size = std::mem::size_of_val(data) as u64;
     
     // Buffer for input/output storage on GPU
     let storage_buffer = device.create_buffer(&wgpu::BufferDescriptor {
@@ -138,7 +138,7 @@ pub fn run_compute_shader(shader_src: &str, entry_point: &str, data: &[f32]) -> 
         compute_pass.set_pipeline(&compute_pipeline);
         compute_pass.set_bind_group(0, &bind_group, &[]);
         let workgroup_size = 64;
-        let workgroups = (data.len() as u32 + workgroup_size - 1) / workgroup_size;
+        let workgroups = (data.len() as u32).div_ceil(workgroup_size);
         compute_pass.dispatch_workgroups(workgroups, 1, 1);
     }
 
