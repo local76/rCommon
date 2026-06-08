@@ -5,6 +5,11 @@ All notable changes to rCommon will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.21] - 2026-06-08
+
+### Changed
+- **Incremental sysinfo Caching**: Optimized `get_dashboard_info` inside `sys_info` module to reuse a static `sysinfo::System` instance via a thread-safe `Mutex` instead of reconstructing a new one on every cache refresh. This eliminates costly directory parses and process list initializations on every update cycle.
+
 ## [3.0.20] - 2026-06-08
 
 ### Fixed

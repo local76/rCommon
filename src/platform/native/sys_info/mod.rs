@@ -294,7 +294,12 @@ fn get_dashboard_info_uncached() -> DashboardInfo {
     #[cfg(feature = "sys-info")]
     {
         use sysinfo::System;
-        let mut sys = System::new();
+        static SYSTEM: std::sync::Mutex<Option<System>> = std::sync::Mutex::new(None);
+        let mut lock = SYSTEM.lock().unwrap();
+        if lock.is_none() {
+            *lock = Some(System::new());
+        }
+        let sys = lock.as_mut().unwrap();
         sys.refresh_cpu();
         sys.refresh_memory();
         
