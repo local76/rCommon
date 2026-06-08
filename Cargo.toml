@@ -10,7 +10,7 @@ description = "Shared utility library, stubs, and TUI widgets for the rApps ecos
 
 [dependencies]
 ratatui = { version = "0.29", default-features = false, features = ["crossterm"], optional = true }
-crossterm = { version = "0.28", optional = true }
+crossterm = { version = "0.28", default-features = false, features = ["events"], optional = true }
 sysinfo = { version = "0.30", default-features = false, optional = true }
 eframe = { version = "0.29", optional = true }
 egui = { version = "0.29", optional = true }

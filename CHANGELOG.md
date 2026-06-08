@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Compatibility Aliases**: Exposed deprecated type aliases (`MatrixRain`, `SimpleParticles`, `GravityParticles`, `RainEffect`, `FireEffect`) at the crate root to keep existing consumer apps compiling.
 
 ### Changed
-- **Supply Chain Security**: Hardened dependencies by disabling `ratatui`'s default features and enabling only the `crossterm` backend, reducing binary size and dependency attack surface.
+- **Supply Chain Security**: Hardened dependencies by disabling default features for `ratatui` (enabling only the `crossterm` backend) and `crossterm` (enabling only `events`), reducing binary size and dependency attack surface.
 - **Visual Renames**: Renamed legacy TUI effects to follow the taxonomy (e.g. `MatrixRain` -> `FallingGlyphs`, `RainEffect` -> `FallingDroplets`).
 
 ### Fixed
