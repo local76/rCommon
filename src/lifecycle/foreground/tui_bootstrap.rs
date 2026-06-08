@@ -46,6 +46,33 @@ mod imp {
         }
     }
 
+    /// Automatically disables raw mode and restores screen settings on drop.
+    pub struct TerminalGuard {
+        active: bool,
+    }
+
+    impl TerminalGuard {
+        pub fn new() -> Self {
+            Self { active: true }
+        }
+        pub fn deactivate(&mut self) {
+            self.active = false;
+        }
+    }
+
+    impl Drop for TerminalGuard {
+        fn drop(&mut self) {
+            if self.active {
+                let _ = disable_raw_mode();
+                let _ = execute!(
+                    io::stdout(),
+                    LeaveAlternateScreen,
+                    DisableMouseCapture
+                );
+            }
+        }
+    }
+
     /// All Drop guards returned by `bootstrap_tui` so the caller can keep them alive.
     pub struct TuiGuards {
         /// Set if `enforce_single_instance` is true.
@@ -54,6 +81,8 @@ mod imp {
         pub _title_guard: ConsoleTitleGuard,
         /// Set if `borderless` is true.
         pub _borderless: Option<BorderlessConsole>,
+        /// Restores terminal configuration automatically on drop.
+        pub _terminal_guard: TerminalGuard,
     }
 
     /// Enable raw mode, alt screen, mouse capture, sizing, optional single-instance & borderless.
@@ -65,16 +94,21 @@ mod imp {
             set_tui_panic_hook();
         }
 
-        if config.enforce_single_instance {
-            SingleInstanceGuard::try_new_or_exit(config.title);
-        }
+        let _instance_guard = if config.enforce_single_instance {
+            Some(SingleInstanceGuard::try_new_or_exit(config.title))
+        } else {
+            None
+        };
 
         let _title_guard = ConsoleTitleGuard::new(config.title);
 
         enable_raw_mode()?;
         let mut stdout = io::stdout();
         let _ = execute!(stdout, SetSize(config.size.0, config.size.1));
-        execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
+        if let Err(e) = execute!(stdout, EnterAlternateScreen, EnableMouseCapture) {
+            let _ = disable_raw_mode();
+            return Err(e);
+        }
 
         let _borderless = if config.borderless {
             Some(BorderlessConsole::enable())
@@ -92,12 +126,15 @@ mod imp {
         let mut terminal = Terminal::new(backend)?;
         terminal.clear()?;
 
+        let _terminal_guard = TerminalGuard::new();
+
         Ok((
             terminal,
             TuiGuards {
-                _instance_guard: None,
+                _instance_guard,
                 _title_guard,
                 _borderless,
+                _terminal_guard,
             },
         ))
     }

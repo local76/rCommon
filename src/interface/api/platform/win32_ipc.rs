@@ -1,10 +1,9 @@
 use std::ffi::OsStr;
-use std::io::{Error, Read, Write};
+use std::io::Error;
 use std::os::windows::ffi::OsStrExt;
-use std::os::windows::io::{FromRawHandle, IntoRawHandle};
 use std::ptr;
 use windows_sys::Win32::Foundation::{CloseHandle, HANDLE, INVALID_HANDLE_VALUE};
-use windows_sys::Win32::Storage::FileSystem::CreateFileW;
+use windows_sys::Win32::Storage::FileSystem::{CreateFileW, ReadFile, WriteFile, FlushFileBuffers};
 use windows_sys::Win32::System::Pipes::{
     ConnectNamedPipe, CreateNamedPipeW, DisconnectNamedPipe,
 };
@@ -21,6 +20,47 @@ const GENERIC_WRITE: u32 = 0x40000000;
 struct SendHandle(HANDLE);
 unsafe impl Send for SendHandle {}
 unsafe impl Sync for SendHandle {}
+
+unsafe fn read_pipe(handle: HANDLE, buf: &mut [u8]) -> Result<usize, Error> {
+    let mut bytes_read = 0u32;
+    let ok = unsafe {
+        ReadFile(
+            handle,
+            buf.as_mut_ptr() as _,
+            buf.len() as u32,
+            &mut bytes_read,
+            ptr::null_mut(),
+        )
+    };
+    if ok == 0 {
+        let err = Error::last_os_error();
+        if err.raw_os_error() == Some(109) {
+            // ERROR_BROKEN_PIPE
+            return Ok(0);
+        }
+        Err(err)
+    } else {
+        Ok(bytes_read as usize)
+    }
+}
+
+unsafe fn write_pipe(handle: HANDLE, buf: &[u8]) -> Result<(), Error> {
+    let mut bytes_written = 0u32;
+    let ok = unsafe {
+        WriteFile(
+            handle,
+            buf.as_ptr() as _,
+            buf.len() as u32,
+            &mut bytes_written,
+            ptr::null_mut(),
+        )
+    };
+    if ok == 0 {
+        Err(Error::last_os_error())
+    } else {
+        Ok(())
+    }
+}
 
 pub struct Win32IpcServer {
     handle: SendHandle,
@@ -65,23 +105,19 @@ impl Win32IpcServer {
             }
         }
 
-        let mut file = unsafe { std::fs::File::from_raw_handle(self.handle.0 as _) };
         let mut buffer = [0u8; 1024];
-        let read_res = file.read(&mut buffer);
+        let read_res = unsafe { read_pipe(self.handle.0, &mut buffer) };
 
         if let Ok(bytes_read) = read_res {
             if bytes_read > 0 {
                 let req_str = String::from_utf8_lossy(&buffer[..bytes_read]);
                 let response = handler(req_str.trim_end_matches('\0'));
-                let _ = file.write_all(response.as_bytes());
-                let _ = file.flush();
+                let _ = unsafe { write_pipe(self.handle.0, response.as_bytes()) };
             }
         }
 
-        let _ = file.into_raw_handle(); // Disowns the handle to avoid closing it on drop
-
         unsafe {
-            windows_sys::Win32::Storage::FileSystem::FlushFileBuffers(self.handle.0);
+            let _ = FlushFileBuffers(self.handle.0);
             DisconnectNamedPipe(self.handle.0);
         }
 
@@ -127,24 +163,12 @@ impl Win32IpcClient {
     }
 
     pub fn send_request(&mut self, msg: &str) -> Result<String, Error> {
-        let mut file = unsafe { std::fs::File::from_raw_handle(self.handle.0 as _) };
-        let write_res = file.write_all(msg.as_bytes()).and_then(|_| file.flush());
-
-        if let Err(e) = write_res {
-            let _ = file.into_raw_handle();
-            return Err(e);
-        }
-
-        let mut buffer = [0u8; 1024];
-        let read_res = file.read(&mut buffer);
-        let _ = file.into_raw_handle(); // Disowns the handle
-
-        match read_res {
-            Ok(bytes_read) => {
-                let resp_str = String::from_utf8_lossy(&buffer[..bytes_read]).into_owned();
-                Ok(resp_str)
-            }
-            Err(e) => Err(e),
+        unsafe {
+            write_pipe(self.handle.0, msg.as_bytes())?;
+            let mut buffer = [0u8; 1024];
+            let bytes_read = read_pipe(self.handle.0, &mut buffer)?;
+            let resp_str = String::from_utf8_lossy(&buffer[..bytes_read]).into_owned();
+            Ok(resp_str)
         }
     }
 }

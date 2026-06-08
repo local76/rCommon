@@ -5,6 +5,13 @@ All notable changes to rCommon will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.20] - 2026-06-08
+
+### Fixed
+- **SingleInstanceGuard Discard Bug**: Fixed a severe lifecycle bug in `bootstrap_tui` where the returned `SingleInstanceGuard` was immediately discarded on creation, releasing the lock/mutex immediately and allowing concurrent instances to execute. It is now properly stored inside `TuiGuards`.
+- **TUI TerminalGuard RAII Cleanup**: Added a `TerminalGuard` RAII helper inside `TuiGuards` to guarantee automatic raw-mode disabling and alternate screen exit when `TuiGuards` goes out of scope, protecting against terminal lockups when the TUI exits via early returns or normal errors.
+- **Win32 Named Pipe Handle Double-Close Hazard**: Rewrote the Windows Named Pipe reader/writer to perform raw I/O directly on the `HANDLE` using the Win32 `ReadFile` and `WriteFile` system calls instead of wrapping in `std::fs::File`, eliminating double-close bugs during panic stack unwinding.
+
 ## [3.0.19] - 2026-06-08
 
 ### Added
