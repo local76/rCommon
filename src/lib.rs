@@ -124,6 +124,10 @@ pub use lifecycle::foreground::console::{
 pub use core::SystemInfo;
 pub use platform::native::sys_info::get_system_info;
 
+// GPU compute enhancements
+#[cfg(feature = "gpu")]
+pub use platform::native::gpu::{init_headless_gpu, run_compute_shader};
+
 // Theme enhancements
 pub use platform::native::sys_info::{SystemTheme, query_accent_color, query_system_theme};
 

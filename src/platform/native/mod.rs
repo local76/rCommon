@@ -12,5 +12,8 @@ pub mod reg;
 pub mod monitors;  // Monitor enumeration from rFetch/rMonitor patterns.
 pub mod config;
 
+#[cfg(feature = "gpu")]
+pub mod gpu;
+
 // Note: The sys_info/ subdirectory (with linux.rs/windows.rs) provides the
 // platform-specific implementations for the sys_info module.

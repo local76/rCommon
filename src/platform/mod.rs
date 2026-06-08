@@ -127,6 +127,9 @@ pub use native::sys_info::LinuxPlatform;
 ))]
 pub use native::sys_info::FallbackPlatform;
 
+#[cfg(feature = "gpu")]
+pub use native::gpu::{init_headless_gpu, run_compute_shader};
+
 pub use web::WebPlatform;
 pub use mobile::MobilePlatform;
 pub use embedded::EmbeddedPlatform;
