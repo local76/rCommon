@@ -140,9 +140,29 @@ pub fn detect_shell_and_terminal() -> (String, String) {
     crate::sys_info::query_shell_and_terminal()
 }
 
+/// Helper to convert a hex color string (e.g. "#D41020" or "D41020") to RGB (u8, u8, u8).
+pub fn hex_to_rgb(hex: &str) -> (u8, u8, u8) {
+    let hex = hex.trim_start_matches('#');
+    if hex.len() == 6 {
+        let r = u8::from_str_radix(&hex[0..2], 16).unwrap_or(0);
+        let g = u8::from_str_radix(&hex[2..4], 16).unwrap_or(245);
+        let b = u8::from_str_radix(&hex[4..6], 16).unwrap_or(255);
+        (r, g, b)
+    } else {
+        (0, 245, 255) // fallback default accent color
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_hex_to_rgb() {
+        assert_eq!(hex_to_rgb("#ff0000"), (255, 0, 0));
+        assert_eq!(hex_to_rgb("00ff00"), (0, 255, 0));
+        assert_eq!(hex_to_rgb("invalid"), (0, 245, 255));
+    }
 
     #[test]
     fn test_formatting_helpers() {
