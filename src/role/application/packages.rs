@@ -46,7 +46,7 @@ pub fn count_choco() -> usize {
     if choco_dir.exists() {
         if let Ok(entries) = fs::read_dir(choco_dir) {
             let total = entries.count();
-            return if total > 1 { total - 1 } else { 0 };
+            return total.saturating_sub(1);
         }
     }
     0

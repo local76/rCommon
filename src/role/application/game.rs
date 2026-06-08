@@ -67,12 +67,11 @@ impl ObstacleJumpGame {
                 // AI Auto Jump
                 if auto_mode {
                     let trigger_dist = self.speed * 0.15;
-                    if self.obstacle_x < trigger_dist && self.obstacle_x > 10.0 && self.player_y <= 0.0 {
-                        if self.rng.next_bool(self.auto_skill) {
+                    if self.obstacle_x < trigger_dist && self.obstacle_x > 10.0 && self.player_y <= 0.0
+                        && self.rng.next_bool(self.auto_skill) {
                             self.player_vy = 12.0 + self.auto_skill * 2.0;
                             self.auto_skill = (self.auto_skill + 0.003).min(0.98);
                         }
-                    }
                 }
 
                 // Manual Jump

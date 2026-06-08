@@ -109,7 +109,7 @@ fn strip_comments(content: &str) -> String {
             if let Some(&next) = chars.peek() {
                 if next == '/' {
                     chars.next();
-                    while let Some(lc) = chars.next() {
+                    for lc in chars.by_ref() {
                         if lc == '\n' {
                             result.push('\n');
                             break;

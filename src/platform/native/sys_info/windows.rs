@@ -302,11 +302,11 @@ pub fn query_network_adapters() -> Vec<crate::platform::NetworkAdapterInfo> {
                 };
                 is_up = true;
             } else if trimmed.starts_with("Description") {
-                if let Some(val) = trimmed.splitn(2, '.').nth(1) {
+                if let Some(val) = trimmed.split_once('.').map(|x| x.1) {
                     current_desc = val.trim().to_string();
                 }
             } else if trimmed.starts_with("IPv4 Address") || trimmed.starts_with("IPv6 Address") || trimmed.contains("Autoconfiguration IPv4 Address") || trimmed.contains("Link-local IPv6 Address") {
-                if let Some(val) = trimmed.splitn(2, ':').nth(1) {
+                if let Some(val) = trimmed.split_once(':').map(|x| x.1) {
                     let ip = val.trim().trim_end_matches("(Preferred)").trim().to_string();
                     if !ip.is_empty() && !current_ips.contains(&ip) {
                         current_ips.push(ip);

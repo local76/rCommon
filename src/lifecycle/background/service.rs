@@ -300,7 +300,7 @@ pub fn stop_service(service_name: &str) -> crate::error::Result<()> {
         };
         let ok = windows_sys::Win32::System::Services::ControlService(
             svc,
-            windows_sys::Win32::System::Services::SERVICE_CONTROL_STOP as u32,
+            windows_sys::Win32::System::Services::SERVICE_CONTROL_STOP,
             &mut status,
         );
         windows_sys::Win32::System::Services::CloseServiceHandle(svc);

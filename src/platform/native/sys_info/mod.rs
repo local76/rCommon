@@ -224,7 +224,7 @@ pub fn query_bios_info() -> Option<SystemBiosInfo> {
 pub fn query_shell_and_terminal() -> (String, String) {
     static SHELL_AND_TERM: std::sync::OnceLock<(String, String)> = std::sync::OnceLock::new();
     SHELL_AND_TERM
-        .get_or_init(|| crate::platform::CurrentPlatform::query_shell_and_terminal())
+        .get_or_init(crate::platform::CurrentPlatform::query_shell_and_terminal)
         .clone()
 }
 

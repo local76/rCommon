@@ -237,13 +237,13 @@ impl CliParser {
         match self.parse(args) {
             Ok(parsed) => {
                 // Secondary check in case they mapped to options/flags during standard parsing
-                if parsed.has_flag("version") || parsed.command.as_deref().map_or(false, is_version_arg) {
+                if parsed.has_flag("version") || parsed.command.as_deref().is_some_and(is_version_arg) {
                     return ScaffoldAction::PrintVersion;
                 }
-                if parsed.has_flag("help") || parsed.command.as_deref().map_or(false, is_help_arg) {
+                if parsed.has_flag("help") || parsed.command.as_deref().is_some_and(is_help_arg) {
                     return ScaffoldAction::PrintHelp;
                 }
-                if parsed.command.as_deref().map_or(false, is_doctor_arg) {
+                if parsed.command.as_deref().is_some_and(is_doctor_arg) {
                     return ScaffoldAction::RunDoctor;
                 }
                 ScaffoldAction::Continue(parsed)
@@ -269,8 +269,7 @@ impl CliParser {
         }
 
         while let Some(arg) = iter.next() {
-            if arg.starts_with("--") {
-                let long_name = &arg[2..];
+            if let Some(long_name) = arg.strip_prefix("--") {
                 if let Some(idx) = long_name.find('=') {
                     let key = &long_name[..idx];
                     let val = &long_name[idx + 1..];

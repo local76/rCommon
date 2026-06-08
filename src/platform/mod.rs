@@ -183,7 +183,7 @@ mod tests {
         assert_eq!(MobilePlatform::query_accent_color(), (103, 80, 164));
         assert!(MobilePlatform::query_dark_mode());
         let mobile_power = MobilePlatform::query_power_status().unwrap();
-        assert_eq!(mobile_power.ac_online, false);
+        assert!(!mobile_power.ac_online);
         assert_eq!(mobile_power.battery_percent, 85);
 
         // 4. EmbeddedPlatform
@@ -191,9 +191,9 @@ mod tests {
         assert_eq!(EmbeddedPlatform::get_console_window_dpi(), 96);
         assert_eq!(EmbeddedPlatform::query_accent_color(), (0, 255, 0));
         assert_eq!(EmbeddedPlatform::query_os_version(), "Embedded Bare-Metal / RTOS");
-        assert_eq!(EmbeddedPlatform::query_dark_mode(), false);
+        assert!(!EmbeddedPlatform::query_dark_mode());
         let embedded_power = EmbeddedPlatform::query_power_status().unwrap();
-        assert_eq!(embedded_power.ac_online, true);
+        assert!(embedded_power.ac_online);
         assert_eq!(embedded_power.battery_percent, 100);
     }
 }

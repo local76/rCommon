@@ -33,7 +33,7 @@ mod tests {
         assert_eq!(rect.right, 0);
 
         let pt1 = POINT { x: 10, y: 20 };
-        let pt2 = pt1.clone();
+        let pt2 = pt1;
         assert_eq!(pt1, pt2);
 
         let coord = COORD::default();
