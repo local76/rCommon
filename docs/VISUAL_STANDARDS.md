@@ -10,46 +10,43 @@ By defining a unified visual identity, we ensure that every utility feels like a
 
 The `local76` applications are local-first, lightweight developer utilities and system monitors. The visual language must reflect this purpose: **precise, high-tech, and minimal**, without feeling corporate or bland.
 
-We define a signature style: **Stroke Monogram Duotone** (inspired by the Hugeicons stroke-rounded duotone layout).
+We define a signature style: **High-Contrast Monogram** (inspired by minimalist, clean, highly readable brand identities).
 
 ```
 ┌─────────────────────────────────────────┐
 │               SQUIRCLE CONTAINER        │
 │  ┌───────────────────────────────────┐  │
-│  │     1.5px STROKE OUTLINE BORDER   │  │
+│  │     THIN BLACK OUTLINE BORDER     │  │
 │  │  ┌─────────────────────────────┐  │  │
-│  │  │   2-LETTER MONOGRAM (e.g. rF)│  │  │
-│  │  │   WITH 1.5px STROKE OUTLINE  │  │  │
+│  │  │   BOLD BLACK MONOGRAM       │  │  │
+│  │  │   (e.g., rF)                │  │  │
 │  │  └─────────────────────────────┘  │  │
-│  │     SOFT ACCENT COLOR FILL (15%)  │  │
+│  │     SOLID WHITE BACKGROUND        │  │
 │  └───────────────────────────────────┘  │
-│               DARK OBSIDIAN BASE        │
+│               SOLID BLACK BASE          │
 └─────────────────────────────────────────┘
 ```
 
 ### Key Design Pillars:
-* **Dark Obsidian Base**: Icons use a dark, charcoal-to-deep-blue gradient (`#0B0F19` to `#161C2C`) as the foundation. This mimics the terminal background environment.
-* **Stroke-Rounded Monogram**: The foreground utilizes a clean, modern sans-serif outline monogram (representing the utility prefix, e.g. `rF` for `rFetch`) using a strict **1.5px stroke width on a 24px grid**. Line caps and corner joins are rounded, with no solid fills for the glyph itself.
-* **Accent Border & Duotone Fill**: The outer container's border is also drawn with a matching 1.5px stroke, and the container's interior features a semi-transparent filler color (10% to 20% opacity of the accent color), creating a beautiful duotone glassmorphism look.
-* **App-Specific Accent Colors**: Each icon has a primary neon glow and duotone fill matching its terminal accent:
-  * **Cyan (`#00F5FF`)**: Core, template, and developer tools.
-  * **Amber/Gold (`#FFB900`)**: State, warnings, and hardware monitors.
-  * **Green (`#7FBA00`)**: Networks, execution state, and active monitors.
+* **Solid White Squircle Base**: Icons use a solid white rounded square container as their base, providing maximum contrast and readability at all sizes.
+* **Bold Black Monogram**: The foreground utilizes a clean, modern, bold black sans-serif monogram (representing the utility prefix, e.g. `rF` for `rFetch`) centered perfectly.
+* **Thin Black Outline**: A crisp, thin black border details the perimeter of the squircle to maintain structure.
+* **Ecosystem Uniformity**: Rather than using varied glowing accent colors, the core application icons are uniformly styled in high-contrast black-and-white. This establishes a clean, unified brand that looks professional on any wallpaper or taskbar.
 
 ---
 
 ## 2. Visual Monograms for local76 utilities
 
-To make the icon set cohesive, all icons utilize a foreground 1.5px stroke outline monogram on a dark squircle container with corresponding accent and filler colors:
+To make the icon set cohesive, all icons utilize a bold black monogram on a solid white squircle container:
 
-| Application | Accent Color | Monogram | Symbolic Meaning |
-| :--- | :--- | :--- | :--- |
-| **`rFetch`** | **Neon Cyan** | **`rF`** | System polling, hardware query, static gathering. |
-| **`rMonitor`** | **Neon Amber / Gold** | **`rM`** | Live metrics, resource utilization, telemetry. |
-| **`rWifi`** | **Neon Green** | **`rW`** | Signal telemetry, connection state, wireless data. |
-| **`rIdle`** | **Violet / Dark Blue** | **`rI`** | Standby state, screensaver, screen locking. |
-| **`rStartup`** | **Neon Orange / Red** | **`rS`** | Service launching, startup boot, initialization. |
-| **`rTemplate`** | **Neon Cyan / Gold** | **`rT`** | Scaffold creation, skeleton template, boilerplate. |
+| Application | Monogram | Suffix Meaning |
+| :--- | :--- | :--- |
+| **`rFetch`** | **`rF`** | System polling, hardware query, static gathering. |
+| **`rMonitor`** | **`rM`** | Live metrics, resource utilization, telemetry. |
+| **`rWifi`** | **`rW`** | Signal telemetry, connection state, wireless data. |
+| **`rIdle`** | **`rI`** | Standby state, screensaver, screen locking. |
+| **`rStartup`** | **`rS`** | Service launching, startup boot, initialization. |
+| **`rTemplate`** | **`rT`** | Scaffold creation, skeleton template, boilerplate. |
 
 ---
 
