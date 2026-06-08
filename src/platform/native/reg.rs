@@ -40,6 +40,7 @@ fn get_registry_file_path() -> Option<std::path::PathBuf> {
 #[cfg(not(all(feature = "reg", target_os = "windows")))]
 struct FileLock {
     lock_path: std::path::PathBuf,
+    acquired: bool,
 }
 
 #[cfg(not(all(feature = "reg", target_os = "windows")))]
@@ -53,7 +54,7 @@ impl FileLock {
                 .open(&lock_path)
                 .is_ok()
             {
-                return Self { lock_path };
+                return Self { lock_path, acquired: true };
             }
             std::thread::sleep(std::time::Duration::from_millis(50));
         }
@@ -68,20 +69,22 @@ impl FileLock {
                             .open(&lock_path)
                             .is_ok()
                         {
-                            return Self { lock_path };
+                            return Self { lock_path, acquired: true };
                         }
                     }
                 }
             }
         }
-        Self { lock_path }
+        Self { lock_path, acquired: false }
     }
 }
 
 #[cfg(not(all(feature = "reg", target_os = "windows")))]
 impl Drop for FileLock {
     fn drop(&mut self) {
-        let _ = std::fs::remove_file(&self.lock_path);
+        if self.acquired {
+            let _ = std::fs::remove_file(&self.lock_path);
+        }
     }
 }
 
