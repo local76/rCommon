@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Supply Chain Security**: Hardened dependencies by disabling `ratatui`'s default features and enabling only the `crossterm` backend, reducing binary size and dependency attack surface.
 - **Visual Renames**: Renamed legacy TUI effects to follow the taxonomy (e.g. `MatrixRain` -> `FallingGlyphs`, `RainEffect` -> `FallingDroplets`).
 
+### Fixed
+- **FFI Safety**: Fixed potential out-of-bounds slice panic in `ConsoleTitleGuard` and `get_console_title` on Windows by capping retrieved console title slicing to the stack buffer capacity.
+
 ## [3.0.22] - 2026-06-08
 
 ### Changed

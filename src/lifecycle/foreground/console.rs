@@ -77,7 +77,8 @@ pub fn get_console_title() -> std::io::Result<String> {
     if len == 0 {
         return Err(std::io::Error::last_os_error());
     }
-    Ok(String::from_utf16_lossy(&buf[..len as usize]))
+    let safe_len = (len as usize).min(buf.len());
+    Ok(String::from_utf16_lossy(&buf[..safe_len]))
 }
 
 #[cfg(windows)]

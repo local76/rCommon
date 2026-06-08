@@ -139,7 +139,8 @@ impl ConsoleTitleGuard {
                 )
             };
             let original_title = if len > 0 {
-                Some(buf[..len as usize].to_vec())
+                let safe_len = (len as usize).min(buf.len());
+                Some(buf[..safe_len].to_vec())
             } else {
                 None
             };
