@@ -18,6 +18,7 @@ pub struct ThemeColors {
     pub warning: Color,
     pub success: Color,
     pub selection_bg: Color,
+    pub selection_fg: Color,
 }
 
 /// Factory function to retrieve light or dark theme presets.
@@ -35,6 +36,7 @@ pub fn get_theme(dark: bool, accent_color: Color) -> ThemeColors {
             warning: Color::Rgb(255, 165, 0),  // Amber/Orange
             success: Color::Rgb(0, 255, 127),
             selection_bg: Color::Rgb(0, 120, 215),
+            selection_fg: Color::White,
         }
     } else {
         ThemeColors {
@@ -49,6 +51,7 @@ pub fn get_theme(dark: bool, accent_color: Color) -> ThemeColors {
             warning: Color::Rgb(220, 100, 0),  // Amber/Orange
             success: Color::Rgb(0, 180, 90),
             selection_bg: Color::Rgb(180, 215, 255),
+            selection_fg: Color::Rgb(40, 42, 54),
         }
     }
 }

@@ -4,6 +4,12 @@ All notable changes to rCommon will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [3.0.16] - 2026-06-08
+
+### Added
+- **Theme-Aware Selection Foreground**: Added `selection_fg` to `ThemeColors` to support theme-customized selection highlight colors in TUI interfaces.
+
 ## [3.0.15] - 2026-06-08
 
 ### Fixed
