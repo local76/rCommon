@@ -37,7 +37,7 @@ pub mod constants;
 
 // Re-export for convenience under tui::
 #[cfg(feature = "widgets")]
-pub use widgets::{AccentColors, AccentTheme, AccentGauge, AccentList, AccentTabs, AccentTextBox, TextBox, ToastBox, ToastKind, AccentScrollbar};
+pub use widgets::{AccentColors, AccentTheme, AccentGauge, AccentList, AccentTabs, AccentTextBox, TextBox, ToastBox, ToastKind, AccentScrollbar, draw_title_banner, draw_effect_preview};
 #[cfg(feature = "widgets")]
 pub use theme::{ThemeColors, get_theme};
 #[cfg(feature = "widgets")]
