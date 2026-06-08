@@ -2,6 +2,15 @@
 //!
 //! **Taxonomy Classification**: Execution State (Lifecycle - Background) + Platform (Native).
 
+pub const EVENTLOG_SUCCESS: u16 = 0x0000;
+pub const EVENTLOG_ERROR_TYPE: u16 = 0x0001;
+pub const EVENTLOG_WARNING_TYPE: u16 = 0x0002;
+pub const EVENTLOG_INFORMATION_TYPE: u16 = 0x0004;
+pub const EVENTLOG_AUDIT_SUCCESS: u16 = 0x0008;
+pub const EVENTLOG_AUDIT_FAILURE: u16 = 0x0010;
+
+pub const EVENT_ID_USER_ACTION: u32 = 1000;
+
 /// Write a record directly to the native Windows Event Log under Application (on Windows)
 /// or the Syslog daemon socket (on Linux).
 pub fn log_system_event(source_name: &str, event_type: u16, event_id: u32, message: &str) {

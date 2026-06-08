@@ -11,6 +11,8 @@
 pub mod service;
 #[cfg(feature = "event-log")]
 pub mod event_log;
+#[cfg(feature = "event-log")]
+pub mod file_log;
 #[cfg(feature = "notification")]
 pub mod notification;
 #[cfg(feature = "clipboard")]
@@ -23,7 +25,16 @@ pub use service::{
     SERVICE_STATUS, query_service_status, query_windows_service_status, has_admin_privileges, start_service, stop_service, restart_service
 };
 #[cfg(feature = "event-log")]
-pub use event_log::{log_system_event, log_windows_event};
+pub use event_log::{
+    log_system_event, log_windows_event, EVENTLOG_SUCCESS, EVENTLOG_ERROR_TYPE,
+    EVENTLOG_WARNING_TYPE, EVENTLOG_INFORMATION_TYPE, EVENTLOG_AUDIT_SUCCESS,
+    EVENTLOG_AUDIT_FAILURE, EVENT_ID_USER_ACTION,
+};
+#[cfg(feature = "event-log")]
+pub use file_log::{
+    log_message, get_appdata_log_path, set_event_log_enabled, is_event_log_enabled,
+    set_event_source,
+};
 #[cfg(feature = "notification")]
 pub use notification::{show_toast_notification, show_toast_notification_with_id};
 #[cfg(feature = "clipboard")]

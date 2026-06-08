@@ -27,6 +27,7 @@ pub mod effects;
 pub mod text;
 #[cfg(feature = "effects")]
 pub mod screensaver;
+pub mod constants;
 
 // Re-export for convenience under tui::
 #[cfg(feature = "widgets")]
@@ -36,3 +37,4 @@ pub use effects::{TuiEffect, Particle, RainDrop, MatrixRain, SimpleParticles, Gr
 pub use text::{TextAlignment, wrap_text, align_line};
 #[cfg(feature = "effects")]
 pub use screensaver::{Screensaver, ScreensaverState, ScreensaverEffect, ScreensaverRenderer};
+pub use constants::{MIN_TERMINAL_WIDTH, MIN_TERMINAL_HEIGHT};

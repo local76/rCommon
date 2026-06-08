@@ -4,6 +4,14 @@ All notable changes to rCommon will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [3.0.6] - 2026-06-08
+
+### Added
+- **Standard Windows Event Log Constants**: Added `EVENTLOG_*` event types and `EVENT_ID_USER_ACTION` constants to `event_log` module.
+- **Generic File Logger**: Implemented a thread-safe, cached file logger with system event logging fallback in `file_log` module.
+- **Generic Configuration Manager**: Implemented `AppConfig` and `ConfigFields` trait in `platform::native::config` to provide reusable configuration parsing/saving.
+- **TUI Layout Constants**: Added `MIN_TERMINAL_WIDTH` and `MIN_TERMINAL_HEIGHT` to `interface::tui::constants`.
+
 ## [3.0.5] - 2026-06-08
 
 ### Fixed
