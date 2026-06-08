@@ -16,6 +16,8 @@ pub const CMD_LOAD_PROFILE: u32 = 150;
 pub const CMD_SET_LAYER_COLORS: u32 = 1050;
 pub const HEADER_SIZE: usize = 16;
 pub const MAX_PAYLOAD_SIZE: u32 = 10 * 1024 * 1024;
+pub const MODE_FIXED_FIELDS_SIZE: usize = 36;
+pub const ZONE_FIXED_FIELDS_SIZE: usize = 16;
 
 /// Returns the human-readable name of an OpenRGB device type ID.
 pub fn device_type_name(t: u32) -> &'static str {
@@ -279,7 +281,7 @@ pub fn parse_device_payload(index: u32, data: &[u8]) -> crate::error::Result<Ope
 
     for _ in 0..num_modes {
         skip_string(&mut cursor)?; // _m_name
-        skip_bytes(&mut cursor, 36)?; // _m_value to _m_color_mode (9 fields * 4 bytes = 36 bytes)
+        skip_bytes(&mut cursor, MODE_FIXED_FIELDS_SIZE)?; // _m_value to _m_color_mode (9 fields * 4 bytes = 36 bytes)
         let colors_len = read_u16(&mut cursor)? as usize;
         skip_bytes(&mut cursor, colors_len * 4)?; // mode colors
     }
@@ -287,7 +289,7 @@ pub fn parse_device_payload(index: u32, data: &[u8]) -> crate::error::Result<Ope
     let num_zones = read_u16(&mut cursor)?;
     for _ in 0..num_zones {
         skip_string(&mut cursor)?; // _z_name
-        skip_bytes(&mut cursor, 16)?; // _z_type, _z_leds_min, _z_leds_max, _z_leds_count (4 fields * 4 bytes = 16 bytes)
+        skip_bytes(&mut cursor, ZONE_FIXED_FIELDS_SIZE)?; // _z_type, _z_leds_min, _z_leds_max, _z_leds_count (4 fields * 4 bytes = 16 bytes)
         let matrix_len = read_u16(&mut cursor)? as usize;
         skip_bytes(&mut cursor, matrix_len)?; // zone matrix
     }

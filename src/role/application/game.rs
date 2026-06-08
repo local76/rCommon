@@ -126,3 +126,21 @@ impl ObstacleJumpGame {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_game_tick() {
+        let mut game = ObstacleJumpGame::new(100.0);
+        assert!(game.active);
+        game.tick(0.1, false, false);
+        assert!(game.timer > 0.0);
+
+        game.active = false;
+        let prev_timer = game.timer;
+        game.tick(0.1, false, false);
+        assert_eq!(game.timer, prev_timer);
+    }
+}

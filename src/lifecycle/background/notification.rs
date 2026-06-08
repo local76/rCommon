@@ -67,3 +67,13 @@ pub fn show_toast_notification_with_id(app_id: &str, title: &str, message: &str)
         let _ = (title, message);
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_xml_escaping() {
+        show_toast_notification("<test>&", "\"message'\"");
+    }
+}

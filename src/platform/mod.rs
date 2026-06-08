@@ -145,3 +145,55 @@ pub type CurrentPlatform = EmbeddedPlatform;
     not(any(target_os = "none", target_os = "uefi"))
 ))]
 pub type CurrentPlatform = FallbackPlatform;
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_platform_provider_implementations() {
+        // 1. CurrentPlatform
+        let res = CurrentPlatform::get_system_screen_resolution();
+        assert!(res.0 > 0 && res.1 > 0);
+        let dpi = CurrentPlatform::get_console_window_dpi();
+        assert!(dpi > 0);
+        let _accent = CurrentPlatform::query_accent_color();
+        let _hc = CurrentPlatform::query_high_contrast();
+        let _os = CurrentPlatform::query_os_version();
+        let _dark = CurrentPlatform::query_dark_mode();
+        let _power = CurrentPlatform::query_power_status();
+        let _bios = CurrentPlatform::query_bios_info();
+        let _shell = CurrentPlatform::query_shell_and_terminal();
+        let _disks = CurrentPlatform::query_disk_drives();
+        let _gpus = CurrentPlatform::query_gpu_names();
+        let _network = CurrentPlatform::query_network_adapters();
+        let _monitors = CurrentPlatform::get_all_monitors();
+
+        // 2. WebPlatform
+        assert_eq!(WebPlatform::get_system_screen_resolution(), (1920, 1080));
+        assert_eq!(WebPlatform::get_console_window_dpi(), 96);
+        assert_eq!(WebPlatform::query_accent_color(), (0, 120, 215));
+        assert_eq!(WebPlatform::query_os_version(), "Web Browser (WASM)");
+        assert!(WebPlatform::query_dark_mode());
+        assert!(WebPlatform::query_power_status().is_none());
+
+        // 3. MobilePlatform
+        assert_eq!(MobilePlatform::get_system_screen_resolution(), (1080, 2400));
+        assert_eq!(MobilePlatform::get_console_window_dpi(), 320);
+        assert_eq!(MobilePlatform::query_accent_color(), (103, 80, 164));
+        assert!(MobilePlatform::query_dark_mode());
+        let mobile_power = MobilePlatform::query_power_status().unwrap();
+        assert_eq!(mobile_power.ac_online, false);
+        assert_eq!(mobile_power.battery_percent, 85);
+
+        // 4. EmbeddedPlatform
+        assert_eq!(EmbeddedPlatform::get_system_screen_resolution(), (320, 240));
+        assert_eq!(EmbeddedPlatform::get_console_window_dpi(), 96);
+        assert_eq!(EmbeddedPlatform::query_accent_color(), (0, 255, 0));
+        assert_eq!(EmbeddedPlatform::query_os_version(), "Embedded Bare-Metal / RTOS");
+        assert_eq!(EmbeddedPlatform::query_dark_mode(), false);
+        let embedded_power = EmbeddedPlatform::query_power_status().unwrap();
+        assert_eq!(embedded_power.ac_online, true);
+        assert_eq!(embedded_power.battery_percent, 100);
+    }
+}

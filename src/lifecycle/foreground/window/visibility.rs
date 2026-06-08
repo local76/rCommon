@@ -43,3 +43,13 @@ pub fn is_console_focused() -> bool {
         false
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_console_focused() {
+        let _ = is_console_focused();
+    }
+}

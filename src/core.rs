@@ -22,6 +22,8 @@
 //! All shared data types (LcgRng, TerminalCell, SystemInfo/DashboardInfo) live here
 //! as the single source of truth.
 
+pub const UNKNOWN_HOST: &str = "localhost";
+
 /// Linear Congruential Generator. The single canonical RNG implementation
 /// used by games, effects, and any deterministic logic across the entire
 /// rApps suite (CLI tools, TUI effects, background services, etc.).

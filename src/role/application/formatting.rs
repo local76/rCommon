@@ -29,7 +29,7 @@ pub fn get_host_info() -> String {
     }
     std::env::var("COMPUTERNAME")
         .or_else(|_| std::env::var("HOSTNAME"))
-        .unwrap_or_else(|_| "localhost".to_string())
+        .unwrap_or_else(|_| crate::core::UNKNOWN_HOST.to_string())
 }
 
 /// Get CPU info.

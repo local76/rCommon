@@ -5,12 +5,17 @@
 #[cfg(target_os = "windows")]
 type MutexHandle = windows_sys::Win32::Foundation::HANDLE;
 
+#[cfg(target_os = "linux")]
+extern "C" {
+    fn flock(fd: std::os::raw::c_int, operation: std::os::raw::c_int) -> std::os::raw::c_int;
+}
+
 #[derive(Debug)]
 enum SingleInstanceHandle {
     #[cfg(target_os = "windows")]
     Windows(MutexHandle),
     #[cfg(target_os = "linux")]
-    Unix(std::os::unix::net::UnixListener),
+    Unix(std::fs::File),
     #[cfg(not(any(target_os = "windows", target_os = "linux")))]
     None,
 }
@@ -56,31 +61,35 @@ impl SingleInstanceGuard {
         }
         #[cfg(target_os = "linux")]
         {
-            use std::os::unix::net::{UnixListener, UnixStream};
+            use std::fs::OpenOptions;
+            use std::os::unix::io::AsRawFd;
             let exe_name = get_exe_name();
             let socket_path = format!("/tmp/{}_single_instance.sock", exe_name);
             
-            // Try to bind first
-            let listener = match UnixListener::bind(&socket_path) {
-                Ok(l) => l,
-                Err(_) => {
-                    // Bind failed, check if another instance is listening
-                    if UnixStream::connect(&socket_path).is_ok() {
-                        return Err(crate::error::RcommonError::Guard(
-                            "Another instance of this application is already running.".to_string()
-                        ));
-                    }
-                    // Socket is stale, try to remove and bind again
-                    let _ = std::fs::remove_file(&socket_path);
-                    UnixListener::bind(&socket_path).map_err(|_| {
-                        crate::error::RcommonError::Guard(
-                            "Another instance of this application is already running.".to_string()
-                        )
-                    })?
-                }
-            };
+            let file = OpenOptions::new()
+                .read(true)
+                .write(true)
+                .create(true)
+                .open(&socket_path)
+                .map_err(|e| crate::error::RcommonError::Guard(format!("Failed to open lock file: {}", e)))?;
+                
+            // Call flock(fd, LOCK_EX | LOCK_NB)
+            // LOCK_EX = 2, LOCK_NB = 4
+            let res = unsafe { flock(file.as_raw_fd(), 6) };
+            if res < 0 {
+                return Err(crate::error::RcommonError::Guard(
+                    "Another instance of this application is already running.".to_string()
+                ));
+            }
 
-            Ok(SingleInstanceGuard { handle: SingleInstanceHandle::Unix(listener) })
+            // Write our PID to the lock file
+            use std::io::Write;
+            let mut f = file;
+            let _ = f.set_len(0);
+            let _ = writeln!(f, "{}", std::process::id());
+            let _ = f.flush();
+
+            Ok(SingleInstanceGuard { handle: SingleInstanceHandle::Unix(f) })
         }
         #[cfg(not(any(target_os = "windows", target_os = "linux")))]
         {

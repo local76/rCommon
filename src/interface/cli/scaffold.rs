@@ -148,20 +148,26 @@ impl CliParser {
 
         if !self.commands.is_empty() {
             println!("\nCommands:");
+            let max_cmd_len = self.commands.iter().map(|c| c.name.len()).max().unwrap_or(0).max(12);
             for cmd in &self.commands {
-                println!("  {:12} {}", cmd.name, cmd.description);
+                println!("  {:width$} {}", cmd.name, cmd.description, width = max_cmd_len);
             }
         }
 
         if !self.options.is_empty() {
             println!("\nOptions:");
+            let mut opt_strings = Vec::new();
             for opt in &self.options {
                 let opt_str = if opt.takes_value {
                     format!("-{}, --{} <value>", opt.short, opt.long)
                 } else {
                     format!("-{}, --{}", opt.short, opt.long)
                 };
-                println!("  {:24} {}", opt_str, opt.description);
+                opt_strings.push((opt_str, opt.description));
+            }
+            let max_opt_len = opt_strings.iter().map(|(s, _)| s.len()).max().unwrap_or(0).max(24);
+            for (opt_str, desc) in opt_strings {
+                println!("  {:width$} {}", opt_str, desc, width = max_opt_len);
             }
         }
     }

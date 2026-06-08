@@ -338,3 +338,41 @@ pub fn delete_value(hive: HKEY, path: &str, key: &str) -> io::Result<()> {
         delete_entry(hive, path, key)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_registry_persistence() {
+        #[cfg(feature = "reg")]
+        {
+            let key_name = "test_config_key";
+            let path = "Software\\rApps\\Test";
+            
+            // 1. Initial read should be None
+            let _ = delete_value(HKEY_CURRENT_USER, path, key_name);
+            let val_init = read_string(HKEY_CURRENT_USER, path, key_name);
+            assert_eq!(val_init, None);
+
+            // 2. Write key
+            let write_ok = write_string(HKEY_CURRENT_USER, path, key_name, "hello_world");
+            if let Err(ref e) = write_ok {
+                panic!("Write failed with error: {:?}", e);
+            }
+            assert!(write_ok.is_ok());
+
+            // 3. Read back
+            let val = read_string(HKEY_CURRENT_USER, path, key_name);
+            assert_eq!(val, Some("hello_world".to_string()));
+
+            // 4. Delete key
+            let delete_ok = delete_value(HKEY_CURRENT_USER, path, key_name);
+            assert!(delete_ok.is_ok());
+
+            // 5. Read back again
+            let val_post = read_string(HKEY_CURRENT_USER, path, key_name);
+            assert_eq!(val_post, None);
+        }
+    }
+}

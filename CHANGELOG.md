@@ -5,6 +5,20 @@ All notable changes to rCommon will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-06-08
+
+### Removed
+- **Legacy Win32 Shim & Feature**: Deleted the deprecated, flat `rcommon::win32` compatibility module from `src/lib.rs` and its associated `win32` meta-feature from `Cargo.toml`. This is a breaking change completing the transition to the new 4-layer taxonomy modules.
+
+### Changed
+- **Test Suite Reorganization**: Moved all inline test fixtures out of `src/lib.rs` and placed them alongside the code they test in their respective module files (e.g., `reg.rs`, `sys_info/mod.rs`, `notification.rs`, `daemon.rs`, `visibility.rs`, `game.rs`, `platform/mod.rs`), leaving `src/lib.rs` purely as the public library surface.
+- **Dynamic CLI Help Column Widths**: Updated `CliParser::print_help` in `src/interface/cli/scaffold.rs` to compute column alignment widths dynamically from the longest command and option flag name at runtime, resolving potential layout wrapping issues.
+
+### Fixed
+- **Linux SingleInstanceGuard Race Condition**: Refactored `SingleInstanceGuard` on Linux to use atomic file locking (`flock` FFI) on `/tmp/{}_single_instance.sock` instead of a `UnixListener` bind, eliminating the TOCTOU (Time-of-Check to Time-of-Use) race condition.
+- **Unified Fallback Host Name**: Introduced `core::UNKNOWN_HOST` constant for `"localhost"` and refactored formatting and sys-info modules to use it, removing redundant hardcoded fallback strings.
+- **Protocol Magic Numbers**: Replaced magic numbers in OpenRGB protocol parsing (`skip_bytes` calls) with named constants (`MODE_FIXED_FIELDS_SIZE` and `ZONE_FIXED_FIELDS_SIZE`) in `src/role/application/rgb/protocol.rs`.
+
 ## [1.9.28] - 2026-06-08
 
 ### Fixed

@@ -368,5 +368,25 @@ mod tests {
         drop(daemon);
         assert_eq!(get_sleep_prevention_count(), initial_count);
     }
+
+    #[test]
+    fn test_daemon_helpers() {
+        let _lock = TEST_MUTEX.lock().unwrap();
+        set_process_priority(ProcessPriority::BelowNormal);
+        set_process_priority(ProcessPriority::Idle);
+
+        #[allow(deprecated)]
+        {
+            set_low_priority();
+            set_idle_priority();
+        }
+
+        prevent_system_sleep(true);
+        prevent_system_sleep(false);
+
+        {
+            let _guard = BackgroundPowerGuard::acquire();
+        }
+    }
 }
 

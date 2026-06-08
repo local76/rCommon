@@ -1,6 +1,6 @@
 [package]
 name = "rcommon"
-version = "1.9.28"
+version = "2.0.0"
 authors = ["Jeryd <jerydleuck@gmail.com>"]
 edition = "2024"
 rust-version = "1.85"
@@ -73,7 +73,6 @@ window = ["windows-sys"]
 reg = ["dep:winreg", "windows-sys"]
 gui = ["dep:eframe", "dep:egui"]
 effects = ["widgets", "sys-info", "rgb"]
-win32 = ["clipboard", "service", "event-log", "notification", "window", "reg", "sys-info", "interface-tui", "lifecycle-foreground", "platform-native", "role-system", "role-application"]
 
 [[bin]]
 name = "rgb_diagnostic"
