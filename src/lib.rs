@@ -1,5 +1,5 @@
 // =====================================================
-// rCommon - Shared utility library for the local76 rApps ecosystem
+// library - Shared utility library for the local76 rApps ecosystem
 // Organized according to the 4-layer taxonomy:
 //
 // 1. Interface (Presentation Layer)
@@ -20,13 +20,13 @@
 // (e.g., a TUI effect type being changed in a way that breaks a background service).
 // =====================================================
 //
-// MIGRATION GUIDE FOR CONSUMERS (Moving off deprecated rcommon::win32):
-// - rcommon::win32::SingleInstanceGuard -> rcommon::lifecycle::foreground::guard::SingleInstanceGuard
-// - rcommon::win32::hide_console_at_startup -> rcommon::lifecycle::foreground::window::hide_console_at_startup
-// - rcommon::win32::query_dark_mode -> rcommon::platform::native::sys_info::query_dark_mode
-// - rcommon::win32::TerminalCell -> rcommon::core::TerminalCell
-// - rcommon::win32::read_string -> rcommon::platform::native::reg::read_string
-// - rcommon::win32::get_packages_breakdown -> rcommon::role::application::packages::get_packages_breakdown
+// MIGRATION GUIDE FOR CONSUMERS (Moving off deprecated library::win32):
+// - library::win32::SingleInstanceGuard -> library::lifecycle::foreground::guard::SingleInstanceGuard
+// - library::win32::hide_console_at_startup -> library::lifecycle::foreground::window::hide_console_at_startup
+// - library::win32::query_dark_mode -> library::platform::native::sys_info::query_dark_mode
+// - library::win32::TerminalCell -> library::core::TerminalCell
+// - library::win32::read_string -> library::platform::native::reg::read_string
+// - library::win32::get_packages_breakdown -> library::role::application::packages::get_packages_breakdown
 //
 // =====================================================
 
@@ -36,7 +36,7 @@
 pub mod core;
 pub mod error;
 
-pub use error::{RcommonError, Result as RcommonResult};
+pub use error::{libraryError, Result as libraryResult};
 #[cfg(feature = "effects")]
 pub use interface::tui::screensaver::{Screensaver, ScreensaverRenderer};
 
@@ -45,7 +45,7 @@ pub use interface::tui::screensaver::{Screensaver, ScreensaverRenderer};
 // =====================================================
 pub mod interface;
 
-// Backward compatibility re-exports (so existing code like `rcommon::widgets` still works)
+// Backward compatibility re-exports (so existing code like `library::widgets` still works)
 #[cfg(feature = "widgets")]
 pub use interface::tui::widgets;
 #[cfg(feature = "effects")]
@@ -106,12 +106,12 @@ pub use role::application::packages::{
 // Platform native additions (monitors)
 pub use platform::native::monitors::{get_monitors_summary, get_all_monitors};
 
-// rcommon 4.2: the screensaver_runtime module owns the window loop
+// library 4.2: the screensaver_runtime module owns the window loop
 // (Win32 GDI on Windows, raw-termios terminal on Linux/macOS), the
 // CLI arg parser (`/s`, `/c`, `/p HWND`), and the public
 // `run_main(saver, name)` entry point. The 10 r* effect binary
 // crates in rScenes/ enable the `screensaver-runtime` feature to
-// get this module; other rcommon consumers don't.
+// get this module; other library consumers don't.
 #[cfg(feature = "screensaver-runtime")]
 pub mod screensaver_runtime;
 
@@ -155,19 +155,19 @@ pub use platform::native::sys_info::{SystemTheme, query_accent_color, query_syst
 // (e.g. MatrixRain -> FallingGlyphs). The aliases below keep older r* consumers
 // compiling. New code should use the new names directly.
 #[cfg(feature = "effects")]
-#[deprecated(note = "renamed to FallingGlyphs; use rcommon::interface::tui::effects::FallingGlyphs")]
+#[deprecated(note = "renamed to FallingGlyphs; use library::interface::tui::effects::FallingGlyphs")]
 pub type MatrixRain = interface::tui::effects::FallingGlyphs;
 #[cfg(feature = "effects")]
-#[deprecated(note = "renamed to FlowingParticles; use rcommon::interface::tui::effects::FlowingParticles")]
+#[deprecated(note = "renamed to FlowingParticles; use library::interface::tui::effects::FlowingParticles")]
 pub type SimpleParticles = interface::tui::effects::FlowingParticles;
 #[cfg(feature = "effects")]
-#[deprecated(note = "renamed to PulledParticles; use rcommon::interface::tui::effects::PulledParticles")]
+#[deprecated(note = "renamed to PulledParticles; use library::interface::tui::effects::PulledParticles")]
 pub type GravityParticles = interface::tui::effects::PulledParticles;
 #[cfg(feature = "effects")]
-#[deprecated(note = "renamed to FallingDroplets; use rcommon::interface::tui::effects::FallingDroplets")]
+#[deprecated(note = "renamed to FallingDroplets; use library::interface::tui::effects::FallingDroplets")]
 pub type RainEffect = interface::tui::effects::FallingDroplets;
 #[cfg(feature = "effects")]
-#[deprecated(note = "renamed to RisingFlames; use rcommon::interface::tui::effects::RisingFlames")]
+#[deprecated(note = "renamed to RisingFlames; use library::interface::tui::effects::RisingFlames")]
 pub type FireEffect = interface::tui::effects::RisingFlames;
 
 
@@ -180,7 +180,7 @@ pub type FireEffect = interface::tui::effects::RisingFlames;
 // members = ["core", "interface/tui", "lifecycle", "platform/native", "role/*"]
 // Each section crate would re-export from its modules.
 // For now, single crate keeps git-dep + [patch] simple for r* apps.
-// Update consumers gradually to use taxonomy paths (e.g. rcommon::interface::tui).
+// Update consumers gradually to use taxonomy paths (e.g. library::interface::tui).
 
 /// Extension trait to expose background daemon services over IPC.
 #[cfg(feature = "interface-api")]
@@ -192,9 +192,9 @@ pub trait DaemonIpcExt {
     /// # Examples
     ///
     /// ```no_run
-    /// use rcommon::lifecycle::background::daemon::{DaemonService, DaemonConfig};
-    /// use rcommon::interface::api::{IpcResponse, IpcRequest};
-    /// use rcommon::DaemonIpcExt;
+    /// use library::lifecycle::background::daemon::{DaemonService, DaemonConfig};
+    /// use library::interface::api::{IpcResponse, IpcRequest};
+    /// use library::DaemonIpcExt;
     ///
     /// let config = DaemonConfig::new("my_daemon");
     /// let daemon = DaemonService::bootstrap(config).unwrap();
@@ -206,14 +206,14 @@ pub trait DaemonIpcExt {
     ///     }
     /// }).unwrap();
     /// ```
-    fn run_ipc_server<F>(&self, handler: F) -> Result<(), crate::error::RcommonError>
+    fn run_ipc_server<F>(&self, handler: F) -> Result<(), crate::error::libraryError>
     where
         F: Fn(interface::api::IpcRequest) -> interface::api::IpcResponse;
 }
 
 #[cfg(feature = "interface-api")]
 impl DaemonIpcExt for lifecycle::background::daemon::DaemonService {
-    fn run_ipc_server<F>(&self, handler: F) -> Result<(), crate::error::RcommonError>
+    fn run_ipc_server<F>(&self, handler: F) -> Result<(), crate::error::libraryError>
     where
         F: Fn(interface::api::IpcRequest) -> interface::api::IpcResponse
     {

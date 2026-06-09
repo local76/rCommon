@@ -239,7 +239,7 @@ pub fn draw_fire(effect: &FireEffect, grid: &mut [TerminalCell], cols: usize, ro
         let grid_idx = cell.y * cols + cell.x;
         let temp = cell.temp.min(1.0);
 
-        // rcommon 4.0: pull the accent per-frame from the canonical
+        // library 4.0: pull the accent per-frame from the canonical
         // ScreenPalette. Replaces the pre-4.0 `effect.theme_accent` field
         // so OS theme changes propagate without restarting the saver.
         let mut fg = query_current_palette().accent;

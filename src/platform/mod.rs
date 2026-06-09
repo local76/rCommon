@@ -23,7 +23,7 @@
 //!
 //! Windows and Linux specifics live here.
 //!
-//! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/ARCHITECTURE.md).
+//! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/ARCHITECTURE.md).
 //! Cross-platform with native features and platform-specific stubs.
 
 pub mod native;

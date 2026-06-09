@@ -7,7 +7,7 @@
 //! **Taxonomy Classification**: Interface (CLI).
 
 use std::collections::HashMap;
-use crate::error::{RcommonError, Result};
+use crate::error::{libraryError, Result};
 use super::doctor::run_doctor;
 
 pub use crate::core::{
@@ -42,7 +42,7 @@ pub struct CliCommandDef {
 /// # Examples
 ///
 /// ```
-/// use rcommon::interface::cli::CliParser;
+/// use library::interface::cli::CliParser;
 ///
 /// let parser = CliParser::new("rfetch", "A fast, modern system fetch utility in Rust.")
 ///     .logo("====================\n      rFetch\n====================")
@@ -101,7 +101,7 @@ pub enum ScaffoldAction {
     /// Continue execution with the parsed arguments.
     Continue(ParsedArgs),
     /// Print error and help, and exit with error.
-    Error(RcommonError),
+    Error(libraryError),
 }
 
 impl CliParser {
@@ -277,7 +277,7 @@ impl CliParser {
                         if opt.takes_value {
                             parsed.options.insert(key.to_string(), val.to_string());
                         } else {
-                            return Err(RcommonError::Cli(format!("Option --{} does not take a value", key)));
+                            return Err(libraryError::Cli(format!("Option --{} does not take a value", key)));
                         }
                     } else {
                         parsed.options.insert(key.to_string(), val.to_string());
@@ -289,10 +289,10 @@ impl CliParser {
                                 if !next_val.starts_with('-') {
                                     parsed.options.insert(long_name.to_string(), iter.next().unwrap().clone());
                                 } else {
-                                    return Err(RcommonError::Cli(format!("Option --{} requires a value", long_name)));
+                                    return Err(libraryError::Cli(format!("Option --{} requires a value", long_name)));
                                 }
                             } else {
-                                return Err(RcommonError::Cli(format!("Option --{} requires a value", long_name)));
+                                return Err(libraryError::Cli(format!("Option --{} requires a value", long_name)));
                             }
                         } else {
                             parsed.flags.insert(long_name.to_string(), true);
@@ -311,13 +311,13 @@ impl CliParser {
                                     if !next_val.starts_with('-') {
                                         parsed.options.insert(opt.long.to_string(), iter.next().unwrap().clone());
                                     } else {
-                                        return Err(RcommonError::Cli(format!("Option -{} requires a value", c)));
+                                        return Err(libraryError::Cli(format!("Option -{} requires a value", c)));
                                     }
                                 } else {
-                                    return Err(RcommonError::Cli(format!("Option -{} requires a value", c)));
+                                    return Err(libraryError::Cli(format!("Option -{} requires a value", c)));
                                 }
                             } else {
-                                return Err(RcommonError::Cli(format!("Option -{} must be at the end of a flag block to receive a value", c)));
+                                return Err(libraryError::Cli(format!("Option -{} must be at the end of a flag block to receive a value", c)));
                             }
                         } else {
                             parsed.flags.insert(opt.long.to_string(), true);

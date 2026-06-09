@@ -6,9 +6,9 @@
 //! Includes high contrast, thread execution state (prevent sleep), console titles,
 //! screensaver control (for apps that manage them), and rect queries.
 //!
-//! Many delegate to rcommon sys_info where possible (e.g. accent, dark mode, power).
+//! Many delegate to library sys_info where possible (e.g. accent, dark mode, power).
 //!
-//! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/ARCHITECTURE.md).
+//! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/ARCHITECTURE.md).
 //! Cross-platform with native features and platform-specific stubs.
 
 #[cfg(windows)]

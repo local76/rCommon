@@ -16,7 +16,7 @@ use super::colors::AccentColors;
 /// # Examples
 ///
 /// ```
-/// use rcommon::interface::tui::widgets::{AccentTheme, AccentList};
+/// use library::interface::tui::widgets::{AccentTheme, AccentList};
 ///
 /// let colors = AccentTheme::default_dark();
 /// let items = vec!["Option A", "Option B", "Option C"];

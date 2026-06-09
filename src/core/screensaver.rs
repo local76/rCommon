@@ -24,7 +24,7 @@
 //! # Trait composition
 //!
 //! `Screensaver` is a single trait with `init`/`update`/`draw`/`has_scanlines`.
-//! This is a direct drop-in replacement for the pre-4.0 rcommon trait AND the
+//! This is a direct drop-in replacement for the pre-4.0 library trait AND the
 //! pre-4.0 rIdle-scenes `ridle_core::Screensaver` trait, so all consumers
 //! migrate by simply changing the import path.
 //!
@@ -36,7 +36,7 @@
 //! # Migration shim
 //!
 //! The pre-4.0 ratatui-coupled trait in `interface::tui::screensaver` re-exports
-//! these types. The pre-4.0 rcommon signature used `dt: f32`; in 4.0 it is
+//! these types. The pre-4.0 library signature used `dt: f32`; in 4.0 it is
 //! `dt: Duration`. Use `ScreensaverRenderer::tick_duration` (the 4.0 API) or
 //! `ScreensaverRenderer::tick` (the deprecated `f32` shim that converts
 //! internally).
@@ -47,9 +47,9 @@ use crate::core::TerminalCell;
 
 /// A trait representing a screensaver/effect with a structured lifecycle.
 ///
-/// In rcommon 4.0 this is the single backend-agnostic entry point for
+/// In library 4.0 this is the single backend-agnostic entry point for
 /// both r* TUI apps (ratatui/buffer-managed) and r* GDI screensaver apps
-/// (rIdle-scenes). Direct drop-in for the pre-4.0 rcommon trait AND the
+/// (rIdle-scenes). Direct drop-in for the pre-4.0 library trait AND the
 /// pre-4.0 rIdle-scenes `ridle_core::Screensaver` trait.
 ///
 /// # 4.0 design: `Screensaver: ScreensaverState`
@@ -112,7 +112,7 @@ pub trait ScreensaverState {
 /// default-true active/focused and no-op setters. Effects that want
 /// real state tracking override this in their own `impl ScreensaverState`
 /// block — but that block would then conflict with the blanket.
-/// **Workaround for the rcommon 4.0 effects**: the 12 TUI effects do NOT
+/// **Workaround for the library 4.0 effects**: the 12 TUI effects do NOT
 /// override `ScreensaverState` (their private `active`/`focused` fields
 /// are now inert; the renderer treats them as always-on). Effects that
 /// need real focus/active control should expose their own state via a
@@ -129,10 +129,10 @@ impl<T: Screensaver + ?Sized> ScreensaverState for T {
 }
 
 // `ScreensaverEffect` is preserved as a deprecated type alias to the
-// `Screensaver` trait for 4.0 source-compat with rcommon 3.x consumers
+// `Screensaver` trait for 4.0 source-compat with library 3.x consumers
 // that imported `interface::tui::screensaver::ScreensaverEffect`. The
 // method set is identical.
-#[deprecated(note = "renamed to Screensaver in 4.0; use rcommon::core::screensaver::Screensaver")]
+#[deprecated(note = "renamed to Screensaver in 4.0; use library::core::screensaver::Screensaver")]
 pub trait ScreensaverEffect: Screensaver {}
 
 #[allow(deprecated)]

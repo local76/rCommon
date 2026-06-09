@@ -8,7 +8,7 @@
 //! - Foreground Applications (require active user attention and focus) - see foreground/
 //! - Background Processes (run silently, often at startup, no interface needed) - see background/
 //!
-//! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/ARCHITECTURE.md).
+//! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/ARCHITECTURE.md).
 //! Cross-platform with native features and platform-specific stubs.
 
 pub mod foreground;

@@ -135,7 +135,7 @@ impl Screensaver for Matrix {
     }
 
     fn draw(&self, grid: &mut [TerminalCell], cols: usize, rows: usize) {
-        // rcommon 4.0: pull the canonical accent color from ScreenPalette.
+        // library 4.0: pull the canonical accent color from ScreenPalette.
         let accent = query_current_palette().accent;
 
         for d in self.drops.iter() {

@@ -42,7 +42,7 @@ impl Fireflies {
         let size = self.rng.next_range(0.0, 4.0) as u8;
         let speed_mult = self.rng.next_range(0.7, 1.3);
 
-        // rcommon 4.0: pull from the canonical ScreenPalette.
+        // library 4.0: pull from the canonical ScreenPalette.
         let accent = query_current_palette().accent;
         let (acc_h, _acc_s, _acc_l) = rgb_to_hsl(accent.0, accent.1, accent.2);
         let p = self.rng.next_f32();
@@ -118,11 +118,11 @@ impl Screensaver for Fireflies {
             self.last_cols = cols;
             self.last_rows = rows;
 
-            // rcommon 4.1: fixed-size logo excitation buffer (pre-4.1
+            // library 4.1: fixed-size logo excitation buffer (pre-4.1
             // `ridle_core::logo_dimensions()` was a Windows file read).
             self.logo_excitation = vec![0.0; 80 * 12];
 
-            // rcommon 4.0: pull from the canonical ScreenPalette.
+            // library 4.0: pull from the canonical ScreenPalette.
             let accent = query_current_palette().accent;
             let (acc_h, _acc_s, _acc_l) = rgb_to_hsl(accent.0, accent.1, accent.2);
 
@@ -427,7 +427,7 @@ impl Screensaver for Fireflies {
         }
 
         // 4. Update logo excitations from nearby fireflies
-        // rcommon 4.1: fixed 80x12 logo size (pre-4.1
+        // library 4.1: fixed 80x12 logo size (pre-4.1
         // `ridle_core::logo_dimensions()` was a Windows file read).
         let logo_w: usize = 80;
         let logo_h: usize = 12;

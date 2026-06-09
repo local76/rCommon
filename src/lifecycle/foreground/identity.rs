@@ -16,7 +16,7 @@ pub fn username() -> String {
 }
 
 /// Returns the current hostname (Windows: `$COMPUTERNAME`, POSIX: `$HOSTNAME`).
-/// Falls back to the rCommon `UNKNOWN_HOST` constant on failure.
+/// Falls back to the library `UNKNOWN_HOST` constant on failure.
 pub fn hostname() -> String {
     std::env::var("COMPUTERNAME")
         .or_else(|_| std::env::var("HOSTNAME"))
@@ -28,7 +28,7 @@ pub fn user_host() -> String {
     format!("{}@{}", username(), hostname())
 }
 
-/// Returns the OS version string (delegates to rcommon's cached query).
+/// Returns the OS version string (delegates to library's cached query).
 pub fn os_str() -> String {
     query_os_version()
 }

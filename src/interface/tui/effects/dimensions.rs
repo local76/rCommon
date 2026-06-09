@@ -64,7 +64,7 @@ pub enum Style {
 /// - `Monochrome`: ignored, returns the fixed color.
 /// - `Accent`: ignored, returns the OS accent color.
 /// - `AccentDim`: ignored, returns the 35%-dimmed OS accent color (matches
-///   the `dim` channel of `rcommon::role::application::palette::ScreenPalette`).
+///   the `dim` channel of `library::role::application::palette::ScreenPalette`).
 /// - `AccentHot`: ignored, returns the +30° hue-rotated accent at lightness 0.55
 ///   (matches the `hot` channel of `ScreenPalette`).
 /// - `AccentCool`: ignored, returns the -120° hue-rotated accent at lightness 0.45

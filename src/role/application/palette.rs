@@ -7,7 +7,7 @@
 //! foreground, accent, dim, hot, cool, plus a few semantic channels used
 //! across both TUI dashboards and fullscreen GDI screensavers.
 //!
-//! In rcommon 4.0 the goals are:
+//! In library 4.0 the goals are:
 //!
 //! - A single source of truth so `rFetch`, `rMonitor`, `rIdle-scenes`, and
 //!   future r* apps all derive their visual identity from the same place.
@@ -28,19 +28,19 @@
 //!
 //! # See also
 //!
-//! - `rcommon::core::hsl_to_rgb` / `rgb_to_hsl` for the math used to
+//! - `library::core::hsl_to_rgb` / `rgb_to_hsl` for the math used to
 //!   derive `hot` and `cool` from the accent.
-//! - `rcommon::interface::tui::effects::dimensions::Palette` for the
+//! - `library::interface::tui::effects::dimensions::Palette` for the
 //!   TUI-typed `(u8, u8, u8)` palette used by the canonical 12 effects
 //!   (FallingGlyphs, RisingFlames, etc.). A `From<&ScreenPalette>` impl
 //!   bridges the two so effects can consume a `ScreenPalette` directly.
 
 use crate::core::{hsl_to_rgb, rgb_to_hsl};
 
-/// rcommon 4.0: the cross-platform, single-call helper that returns a fully
+/// library 4.0: the cross-platform, single-call helper that returns a fully
 /// populated [`ScreenPalette`] for the current system. Equivalent to
 /// `ScreenPalette::from_system(query_accent_color(), query_dark_mode())`
-/// but cached at the rcommon layer so r* apps don't each maintain their own
+/// but cached at the library layer so r* apps don't each maintain their own
 /// registry query + cache.
 ///
 /// Use this from rFetch, rMonitor, rIdle-scenes, etc. instead of locally

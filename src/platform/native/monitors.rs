@@ -5,7 +5,7 @@
 //! Ported/generalized from rFetch (worker_win.rs using EnumDisplayMonitors) and rMonitor.
 //! Provides human-readable monitor summaries for dashboards and system info.
 //!
-//! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/ARCHITECTURE.md).
+//! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/ARCHITECTURE.md).
 //! Cross-platform with native features and platform-specific stubs.
 
 #[cfg(all(windows, feature = "windows-sys"))]

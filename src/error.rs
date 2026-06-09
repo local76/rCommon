@@ -1,13 +1,13 @@
-//! Custom first-class error types for rCommon APIs.
+//! Custom first-class error types for library APIs.
 //!
 //! Provides structured error classification to prevent panics and raw String error passing.
 
 use std::fmt;
 use std::error::Error;
 
-/// The primary error type for all operations in the rCommon library.
+/// The primary error type for all operations in the library library.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum RcommonError {
+pub enum libraryError {
     /// Errors occurring during local IPC named pipe or socket operations.
     Ipc(String),
     /// Errors occurring during command-line argument parsing.
@@ -24,7 +24,7 @@ pub enum RcommonError {
     Formatting(String),
 }
 
-impl fmt::Display for RcommonError {
+impl fmt::Display for libraryError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Ipc(msg) => write!(f, "IPC error: {}", msg),
@@ -38,9 +38,9 @@ impl fmt::Display for RcommonError {
     }
 }
 
-impl Error for RcommonError {}
+impl Error for libraryError {}
 
-impl RcommonError {
+impl libraryError {
     /// Check if the error represents a transient IPC connection abort or invalid param
     /// that indicates host shutdown or client disconnection.
     pub fn is_ipc_termination(&self) -> bool {
@@ -58,14 +58,14 @@ impl RcommonError {
     }
 }
 
-/// A specialized `Result` type alias utilizing RcommonError.
-pub type Result<T> = std::result::Result<T, RcommonError>;
+/// A specialized `Result` type alias utilizing libraryError.
+pub type Result<T> = std::result::Result<T, libraryError>;
 
-/// Convenient Result type alias utilizing RcommonError.
-pub type RcommonResult<T> = Result<T>;
+/// Convenient Result type alias utilizing libraryError.
+pub type libraryResult<T> = Result<T>;
 
 // Conversion helpers from std::io::Error
-impl From<std::io::Error> for RcommonError {
+impl From<std::io::Error> for libraryError {
     fn from(err: std::io::Error) -> Self {
         Self::Ipc(err.to_string())
     }

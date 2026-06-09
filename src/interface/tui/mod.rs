@@ -16,12 +16,12 @@
 //!
 //! # 4.0 design system
 //!
-//! In rcommon 4.0 all chrome/theming types live under
-//! [`rcommon::interface::tui::design`](design). The legacy `theme` /
+//! In library 4.0 all chrome/theming types live under
+//! [`library::interface::tui::design`](design). The legacy `theme` /
 //! `widgets` / `status` / `markdown` / `markdown_viewer` / `layout` / `text`
 //! paths below are kept as deprecated re-exports for one minor release.
 //!
-//! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/ARCHITECTURE.md).
+//! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/ARCHITECTURE.md).
 //! Cross-platform with native features and platform-specific stubs.
 
 // -- 4.0 source of truth --
@@ -50,7 +50,7 @@ pub mod design_widgets_only {
 // -- 3.x back-compat re-exports (deprecated, will be removed in 4.1) --
 //
 // These mirror the 3.0 paths so existing r* consumers don't break on
-// the 4.0 upgrade. New code should use `rcommon::interface::tui::design::*`.
+// the 4.0 upgrade. New code should use `library::interface::tui::design::*`.
 #[cfg(feature = "widgets")]
 #[allow(deprecated)]
 pub mod theme {
@@ -89,9 +89,9 @@ pub mod text {
 
 // -- 3.x re-exports at the tui:: level (deprecated, will be removed in 4.1) --
 //
-// 3.0 had `use rcommon::interface::tui::ThemeColors;` etc. These are now
+// 3.0 had `use library::interface::tui::ThemeColors;` etc. These are now
 // deprecated and route through the design module. Use the design path
-// (`rcommon::interface::tui::design::ThemeColors`) in new code.
+// (`library::interface::tui::design::ThemeColors`) in new code.
 #[cfg(feature = "widgets")]
 #[allow(deprecated)]
 pub use widgets::{

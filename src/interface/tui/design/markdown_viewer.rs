@@ -14,8 +14,8 @@ use std::collections::HashMap;
 ///
 /// # Examples
 /// ```no_run
-/// use rcommon::interface::tui::markdown_viewer::MarkdownViewerState;
-/// use rcommon::interface::tui::theme::get_theme;
+/// use library::interface::tui::markdown_viewer::MarkdownViewerState;
+/// use library::interface::tui::theme::get_theme;
 /// use ratatui::style::Color;
 /// let mut v = MarkdownViewerState::new();
 /// v.docs.insert("README.md", "# hello");

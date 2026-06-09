@@ -98,7 +98,7 @@ impl IpcServiceClient {
         let mut client = IpcClient::connect(&self.name)?;
         let resp_str = client.send_request(&request.serialize())?;
         IpcResponse::deserialize(&resp_str)
-            .ok_or_else(|| crate::error::RcommonError::Ipc("Malformed IPC response".to_string()))
+            .ok_or_else(|| crate::error::libraryError::Ipc("Malformed IPC response".to_string()))
     }
 }
 
@@ -223,7 +223,7 @@ mod tests {
 
     #[test]
     fn test_local_ipc_communication() {
-        let server_name = format!("rcommon_test_ipc_socket_{}", std::process::id());
+        let server_name = format!("library_test_ipc_socket_{}", std::process::id());
 
         let server = IpcServer::bind(&server_name).unwrap();
 
@@ -283,7 +283,7 @@ mod tests {
         assert_eq!(deserialized.power_status, "AC");
 
         // Test request-response loop
-        let service_name = format!("rcommon_test_service_host_{}", std::process::id());
+        let service_name = format!("library_test_service_host_{}", std::process::id());
         let host = IpcServiceHost::new(&service_name).unwrap();
 
         let _handle = std::thread::spawn(move || {

@@ -2,7 +2,7 @@
 //!
 //! **Taxonomy Classification**: Interface (TUI / Presentation Layer).
 //!
-//! In rcommon 4.0, `Screensaver` / `ScreensaverState` / `ScreensaverEffect`
+//! In library 4.0, `Screensaver` / `ScreensaverState` / `ScreensaverEffect`
 //! moved to [`crate::core::screensaver`]. They are now backend-agnostic and
 //! can be implemented by both r* TUI apps and r* GDI screensaver apps
 //! (rIdle-scenes).
@@ -13,15 +13,15 @@
 //!
 //! # Migration from 3.x
 //!
-//! - 3.x: `use rcommon::interface::tui::screensaver::{Screensaver, ...}` — all in this module.
-//! - 4.0: traits live at `rcommon::core::screensaver::*`. They are re-exported from
+//! - 3.x: `use library::interface::tui::screensaver::{Screensaver, ...}` — all in this module.
+//! - 4.0: traits live at `library::core::screensaver::*`. They are re-exported from
 //!   this module for one minor release for back-compat:
 //!
 //! ```no_run
 //! // Both work in 4.0 (the second form is deprecated and will be removed in 4.1):
-//! use rcommon::core::screensaver::Screensaver;
+//! use library::core::screensaver::Screensaver;
 //! #[allow(deprecated)]
-//! use rcommon::interface::tui::screensaver::Screensaver as OldScreensaver;
+//! use library::interface::tui::screensaver::Screensaver as OldScreensaver;
 //! ```
 //!
 //! - The `update(&mut self, dt: f32, ...)` method is now `update(&mut self, dt: Duration, ...)`.
@@ -48,7 +48,7 @@ pub use crate::core::screensaver::{Screensaver, ScreensaverEffect, ScreensaverSt
 /// directly, so a r* consumer can call `grid()` and render however it likes
 /// (or wrap it in a `Paragraph`).
 ///
-/// In rcommon 4.0 the `tick` method takes `Duration` to match the core trait.
+/// In library 4.0 the `tick` method takes `Duration` to match the core trait.
 /// The pre-4.0 `tick(&mut self, saver, dt: f32)` signature remains available
 /// and is implemented in terms of `tick_duration`.
 pub struct ScreensaverRenderer {
@@ -169,7 +169,7 @@ mod tests {
         }
     }
 
-    // rcommon 4.0: `Screensaver: ScreensaverState` is a supertrait, so the
+    // library 4.0: `Screensaver: ScreensaverState` is a supertrait, so the
     // blanket impl applies and `MockSaver` automatically implements
     // `ScreensaverState` with default-true / no-op setters. We don't
     // need to write a separate `impl ScreensaverState for MockSaver`.
@@ -186,7 +186,7 @@ mod tests {
 
     // 4.0 note: the unfocused-dimming and inactive-skip-update behaviors
     // moved into a separate `StatefulScreensaver` wrapper (a future API
-    // addition). The 12 rcommon TUI effects all use the 4.0 default
+    // addition). The 12 library TUI effects all use the 4.0 default
     // `active=true`/`focused=true` path, which is what these regression
     // tests now assert.
     #[test]

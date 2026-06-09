@@ -10,7 +10,7 @@
 //!
 //! Lowering process priority class for silent background work:
 //! ```
-//! use rcommon::lifecycle::background::daemon::{self, ProcessPriority};
+//! use library::lifecycle::background::daemon::{self, ProcessPriority};
 //!
 //! // Yield CPU time slice to user-facing applications
 //! daemon::set_process_priority(ProcessPriority::BelowNormal);
@@ -18,7 +18,7 @@
 //!
 //! Keeping the CPU awake while executing a long background job:
 //! ```
-//! use rcommon::lifecycle::background::daemon::BackgroundPowerGuard;
+//! use library::lifecycle::background::daemon::BackgroundPowerGuard;
 //!
 //! // Acquire the guard; sleep prevention is active
 //! let guard = BackgroundPowerGuard::acquire();
@@ -79,7 +79,7 @@ pub enum ProcessPriority {
 /// # Examples
 ///
 /// ```
-/// use rcommon::lifecycle::background::daemon::{self, ProcessPriority};
+/// use library::lifecycle::background::daemon::{self, ProcessPriority};
 ///
 /// daemon::set_process_priority(ProcessPriority::BelowNormal);
 /// ```
@@ -176,7 +176,7 @@ pub fn set_thread_execution_state(request: PowerRequest) {
 /// # Examples
 ///
 /// ```
-/// use rcommon::lifecycle::background::daemon;
+/// use library::lifecycle::background::daemon;
 ///
 /// // Keep the system awake during a critical section
 /// daemon::prevent_system_sleep(true);
@@ -203,7 +203,7 @@ pub fn prevent_system_sleep(prevent: bool) {
 /// # Examples
 ///
 /// ```
-/// use rcommon::lifecycle::background::daemon::BackgroundPowerGuard;
+/// use library::lifecycle::background::daemon::BackgroundPowerGuard;
 ///
 /// {
 ///     let _guard = BackgroundPowerGuard::acquire();
@@ -288,7 +288,7 @@ impl DaemonService {
     /// # Examples
     ///
     /// ```no_run
-    /// use rcommon::lifecycle::background::daemon::{DaemonService, DaemonConfig, DaemonPriority};
+    /// use library::lifecycle::background::daemon::{DaemonService, DaemonConfig, DaemonPriority};
     ///
     /// let config = DaemonConfig {
     ///     name: "my_daemon".to_string(),

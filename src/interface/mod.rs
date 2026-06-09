@@ -4,7 +4,7 @@
 //!
 //! How the software communicates visually (or non-visually) with the user or other software.
 //!
-//! This module groups everything under category 1 of the rCommon taxonomy:
+//! This module groups everything under category 1 of the library taxonomy:
 //! - CLI (Command Line Interface)
 //! - TUI (Text User Interface)
 //! - GUI: Native/OS (Standard WIMP interfaces)
@@ -23,5 +23,5 @@ pub mod tui;   // TUI widgets and effects (dir with mod.rs)
 pub mod gui;   // GUI (native and custom/game engine)
 pub mod cli;   // CLI (Command Line Interface)
 
-// For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/ARCHITECTURE.md).
+// For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/ARCHITECTURE.md).
 // Cross-platform with native features and platform-specific stubs.

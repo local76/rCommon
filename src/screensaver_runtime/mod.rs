@@ -6,25 +6,25 @@
 //! Screensaver::draw cycle, and handles the screensaver CLI args
 //! (`/s` run, `/c` configure, `/p HWND` preview).
 //!
-//! In rcommon 4.1 this runtime lived in `rScenes/src/ridle-core/` as a
-//! separate crate that re-exported `rcommon`. In rcommon 4.2 the
+//! In library 4.1 this runtime lived in `rScenes/src/ridle-core/` as a
+//! separate crate that re-exported `library`. In library 4.2 the
 //! runtime is consolidated here so the 10 r* effect crates in
 //! rScenes/ can become 20-line shim binaries:
 //!
 //! ```ignore
 //! fn main() {
-//!     rcommon::screensaver_runtime::run_main(
-//!         rcommon::role::application::scenes::matrix::Matrix::new(),
+//!     library::screensaver_runtime::run_main(
+//!         library::role::application::scenes::matrix::Matrix::new(),
 //!         "rMatrix",
 //!     );
 //! }
 //! ```
 //!
-//! The `screensaver-runtime` feature is **default-off** in rcommon
+//! The `screensaver-runtime` feature is **default-off** in library
 //! (it pulls in `libc` on non-Windows for the raw-termios terminal
 //! guard, and on Windows the full Win32 GDI windowing stack). The
 //! 10 r* binary crates enable this feature; the 7 r* TUI apps and
-//! other rcommon consumers that don't need a screensaver host loop
+//! other library consumers that don't need a screensaver host loop
 //! do not.
 //!
 //! The Windows path here is currently a **scaffold-only stub**. It
@@ -32,7 +32,7 @@
 //! implement the full Win32 GDI window loop (HWND creation, WndProc,
 //! timeBeginPeriod(1), GDI BitBlt to HDC, per-monitor DPI awareness,
 //! preview-mode static control subclassing). The full Windows port
-//! is tracked as a follow-up to 4.2; the rcommon surface here is
+//! is tracked as a follow-up to 4.2; the library surface here is
 //! stable so the Linux path can be wired into the 10 shim binaries
 //! immediately and the Windows path lands incrementally.
 
@@ -88,7 +88,7 @@ pub fn parse_args() -> Mode {
 
 /// Print the standard screensaver usage banner for the given name.
 pub fn print_usage(name: &str) {
-    eprintln!("{name} — retro screensaver (rcommon 4.2 screensaver_runtime)");
+    eprintln!("{name} — retro screensaver (library 4.2 screensaver_runtime)");
     eprintln!();
     eprintln!("Usage (Windows):");
     eprintln!("  {name}.scr /s           — run fullscreen");
@@ -111,9 +111,9 @@ pub fn run_main<S: Screensaver + 'static>(saver: S, name: &str) {
             std::process::exit(code as i32);
         }
         Mode::Configure => {
-            // Configuration dialogs live in rcommon 4.3; for 4.2 the
+            // Configuration dialogs live in library 4.3; for 4.2 the
             // configure mode just prints a notice and exits 0.
-            eprintln!("({name}) configuration dialog: not yet implemented in rcommon 4.2.");
+            eprintln!("({name}) configuration dialog: not yet implemented in library 4.2.");
             eprintln!("Edit `HKEY_CURRENT_USER\\Software\\Windows-Screensavers\\{name}`");
             eprintln!("directly to change options. (4.3 will add a CLI/TUI configurator.)");
             std::process::exit(0);
@@ -145,13 +145,13 @@ pub fn run_main<S: Screensaver + 'static>(saver: S, name: &str) {
 
 #[cfg(target_os = "windows")]
 fn run_fullscreen<S: Screensaver + 'static>(_saver: S) -> isize {
-    // rcommon 4.2 scaffold: the full Win32 GDI screensaver window loop
+    // library 4.2 scaffold: the full Win32 GDI screensaver window loop
     // (HWND + WndProc + timeBeginPeriod(1) + BitBlt + per-monitor DPI
     // awareness + preview-mode static control subclassing) is the
     // follow-up work tracked in the 4.3 milestone. The 4.2 runtime
     // ships the CLI parser + arg routing + the public run_main API
     // surface so the 10 r* effect shim binaries can be wired up.
-    eprintln!("(rcommon 4.2 screensaver_runtime) Windows GDI loop is a 4.3 TODO.");
+    eprintln!("(library 4.2 screensaver_runtime) Windows GDI loop is a 4.3 TODO.");
     eprintln!("Falling back to no-op for the 4.2 release. Use the rScenes");
     eprintln!("0.1.x / 1.x r* effect crate binaries on Windows until 4.3 lands.");
     0
@@ -159,7 +159,7 @@ fn run_fullscreen<S: Screensaver + 'static>(_saver: S) -> isize {
 
 #[cfg(target_os = "windows")]
 fn run_preview_stub<S: Screensaver + 'static>(_saver: S) -> isize {
-    eprintln!("(rcommon 4.2 screensaver_runtime) Windows preview mode is a 4.3 TODO.");
+    eprintln!("(library 4.2 screensaver_runtime) Windows preview mode is a 4.3 TODO.");
     0
 }
 

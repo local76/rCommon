@@ -14,7 +14,7 @@ use super::colors::AccentColors;
 /// # Examples
 ///
 /// ```
-/// use rcommon::interface::tui::widgets::{AccentTheme, AccentGauge};
+/// use library::interface::tui::widgets::{AccentTheme, AccentGauge};
 ///
 /// let colors = AccentTheme::default_dark();
 /// let is_focused = true;

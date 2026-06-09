@@ -2,7 +2,7 @@
 //!
 //! **Taxonomy Classification**: Core (neutral foundation).
 //!
-//! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/ARCHITECTURE.md).
+//! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/ARCHITECTURE.md).
 //! Cross-platform with native features and platform-specific stubs.
 //!
 //! These are the fundamental building blocks that can be safely used
@@ -126,7 +126,7 @@ pub struct DashboardInfo {
 /// and patterns in rFetch/rMonitor. Provides live OS/kernel/logo_text + stats for dynamic UIs/effects.
 /// Call periodically for fresh values (uptime, mem, etc.).
 ///
-/// For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/ARCHITECTURE.md).
+/// For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/ARCHITECTURE.md).
 #[derive(Clone, Debug, Default)]
 pub struct SystemInfo {
     pub os: String,
@@ -248,7 +248,7 @@ pub fn rgb_to_hsl(r: u8, g: u8, b: u8) -> (f32, f32, f32) {
 
 /// Backend-agnostic screensaver trait (no ratatui). See [`screensaver`] module.
 ///
-/// In rcommon 4.0 this is the single source of truth for the screensavers used
+/// In library 4.0 this is the single source of truth for the screensavers used
 /// across r* TUI apps and r* GDI screensaver apps (rIdle-scenes). The ratatui
 /// renderer wrapper lives in `interface::tui::screensaver::ScreensaverRenderer`.
 ///
@@ -258,7 +258,7 @@ pub mod screensaver;
 #[allow(deprecated)]
 pub use screensaver::{Screensaver, ScreensaverEffect, ScreensaverState};
 
-/// rcommon 4.1: 5x5 block-letter logo renderer. Moved from
+/// library 4.1: 5x5 block-letter logo renderer. Moved from
 /// `interface::tui::effects::logo` to `core` so both the r* TUI effects
 /// (interface layer) and the r* screensaver effects (role layer) can
 /// import it without violating the 4-layer taxonomy (role is not

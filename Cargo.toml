@@ -1,12 +1,12 @@
 [package]
-name = "rcommon"
+name = "library"
 version = "4.2.0"
 authors = ["Jeryd <jerydleuck@gmail.com>"]
 edition = "2024"
 rust-version = "1.85"
 license = "MIT"
 publish = false
-description = "Shared utility library, stubs, and TUI widgets for the rApps ecosystem"
+description = "Shared utility library, stubs, and TUI widgets for the local76 ecosystem"
 
 [dependencies]
 ratatui = { version = "0.29", default-features = false, features = ["crossterm"], optional = true }
@@ -103,15 +103,6 @@ window = ["windows-sys"]
 reg = ["dep:winreg", "windows-sys"]
 gui = ["dep:eframe", "dep:egui"]
 effects = ["sys-info"]
-
-[[bin]]
-name = "rgb_diagnostic"
-path = "src/bin/rgb_diagnostic.rs"
-required-features = ["rgb"]
-
-[[bin]]
-name = "rpack"
-path = "src/bin/rpack.rs"
 
 [profile.release]
 opt-level = "z"          # Optimize for size

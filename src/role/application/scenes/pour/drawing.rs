@@ -5,9 +5,9 @@ use super::types::{BirdState, AnimalType};
 
 impl Pour {
     pub fn draw_impl(&self, grid: &mut [TerminalCell], cols: usize, rows: usize) {
-        // rcommon 4.0: pull the accent per-frame from the canonical
+        // library 4.0: pull the accent per-frame from the canonical
         // ScreenPalette (the pre-4.0 `get_theme_accent()` is a Windows
-        // registry read; the rcommon helper is cross-platform + cached).
+        // registry read; the library helper is cross-platform + cached).
         let accent = query_current_palette().accent;
         
         let in_flash = self.lightning_flash > 0.0;

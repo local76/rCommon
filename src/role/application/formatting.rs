@@ -7,7 +7,7 @@
 //! # Examples
 //!
 //! ```
-//! use rcommon::role::application::formatting;
+//! use library::role::application::formatting;
 //!
 //! let host = formatting::get_host_info();
 //! println!("Host name: {}", host);
@@ -50,7 +50,7 @@ pub fn get_cpu_info(sys: &System) -> String {
 /// # Examples
 ///
 /// ```
-/// use rcommon::role::application::formatting;
+/// use library::role::application::formatting;
 ///
 /// let uptime = formatting::get_formatted_uptime();
 /// assert!(uptime.contains('h') || uptime.contains('d'));
@@ -72,7 +72,7 @@ pub fn get_formatted_uptime() -> String {
 /// # Examples
 ///
 /// ```
-/// use rcommon::role::application::formatting;
+/// use library::role::application::formatting;
 ///
 /// let battery = formatting::get_battery_info();
 /// println!("Battery status: {}", battery);
@@ -105,7 +105,7 @@ pub fn get_memory_info(sys: &System) -> String {
 /// # Examples
 ///
 /// ```
-/// use rcommon::role::application::formatting;
+/// use library::role::application::formatting;
 ///
 /// let disks = formatting::get_disks_info();
 /// println!("Drives: {}", disks);

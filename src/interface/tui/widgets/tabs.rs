@@ -15,7 +15,7 @@ use super::colors::AccentColors;
 /// # Examples
 ///
 /// ```
-/// use rcommon::interface::tui::widgets::{AccentTheme, AccentTabs};
+/// use library::interface::tui::widgets::{AccentTheme, AccentTabs};
 ///
 /// let colors = AccentTheme::default_dark();
 /// let tabs = vec!["Dashboard", "System Logs", "Settings"];

@@ -7,7 +7,7 @@ use super::types::{get_console_hwnd, SW_HIDE};
 
 /// Hides the console window early at startup (common pattern used by rTemplate,
 /// rWifi, rMonitor, rStartup, etc.). Returns the raw hwnd on Windows if successful.
-/// Centralized here so apps can call `rcommon::window::hide_console_at_startup();`
+/// Centralized here so apps can call `library::window::hide_console_at_startup();`
 pub fn hide_console_at_startup() -> Option<*mut std::ffi::c_void> {
     #[cfg(target_os = "windows")]
     {

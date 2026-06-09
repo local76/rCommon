@@ -145,10 +145,10 @@ mod tests {
         Duration::from_secs_f32(secs)
     }
 
-    // 4.0 note: the rcommon 12 TUI effects all use the default
+    // 4.0 note: the library 12 TUI effects all use the default
     // `ScreensaverState` blanket impl, so `set_active(false)` is a no-op
     // and the physics always runs. To pause an effect in 4.0, wrap it in
-    // a `StatefulScreensaver` (future API). For the 12 rcommon effects,
+    // a `StatefulScreensaver` (future API). For the 12 library effects,
     // we test that update is idempotent on no-op `set_active` calls.
     #[test]
     fn test_effects_set_active_noop_in_4_0() {
@@ -162,11 +162,11 @@ mod tests {
         assert!(!rain.drops.is_empty());
     }
 
-    // 4.0 note: the rcommon 12 TUI effects all use the default
+    // 4.0 note: the library 12 TUI effects all use the default
     // `ScreensaverState` blanket impl. `TuiEffect::draw` always writes
     // cells. The pre-4.0 "inactive == empty grid" behavior moved to the
-    // rcommon 4.0 `ScreensaverRenderer` (which skips the draw + dim path
-    // when `active`/`focused` are false). The 12 rcommon effects' `draw`
+    // library 4.0 `ScreensaverRenderer` (which skips the draw + dim path
+    // when `active`/`focused` are false). The 12 library effects' `draw`
     // methods always render. This test just confirms no panic.
     #[test]
     fn test_draw_effects_no_panic() {
@@ -199,7 +199,7 @@ mod tests {
         assert!(FallingComets::new(5, 3).active());
     }
 
-    // 4.0 note: this test is obsolete. The 12 rcommon TUI effects all
+    // 4.0 note: this test is obsolete. The 12 library TUI effects all
     // use the default `ScreensaverState` blanket impl, so
     // `set_active(false)` is a no-op and the effects always render. The
     // "inactive = empty grid" behavior moved to `ScreensaverRenderer`

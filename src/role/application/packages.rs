@@ -6,7 +6,7 @@
 //! Provides counts for common package managers and a breakdown string for dashboards/TUIs.
 //! Full detailed scanning lives in app-specific code (e.g. rFetch for async), but these are reusable helpers.
 //!
-//! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/ARCHITECTURE.md).
+//! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/ARCHITECTURE.md).
 //! Cross-platform with native features and platform-specific stubs.
 
 use std::fs;
@@ -329,7 +329,7 @@ pub fn count_emerge() -> usize {
     0
 }
 
-/// Information about a package manager supported by rCommon.
+/// Information about a package manager supported by library.
 #[derive(Debug, Clone, Copy)]
 pub struct PackageManager {
     /// The name of the package manager (e.g. "scoop", "npm", "dpkg").

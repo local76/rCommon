@@ -9,7 +9,7 @@ pub fn draw_life(effect: &LifeEffect, grid: &mut [TerminalCell], cols: usize, ro
         return;
     }
 
-    // rcommon 4.0: pull the canonical ScreenPalette. We use `palette.accent`
+    // library 4.0: pull the canonical ScreenPalette. We use `palette.accent`
     // for the per-particle color math (the `Particle.color` field uses the
     // accent-derived ramp that `update_*` populates).
     let palette = query_current_palette();

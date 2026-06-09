@@ -228,14 +228,14 @@ pub fn parse_device_payload(index: u32, data: &[u8]) -> crate::error::Result<Ope
     let mut cursor = 0;
 
     let read_u16 = |cur: &mut usize| -> crate::error::Result<u16> {
-        if *cur + 2 > data.len() { return Err(crate::error::RcommonError::Rgb("EOF u16".to_string())); }
+        if *cur + 2 > data.len() { return Err(crate::error::libraryError::Rgb("EOF u16".to_string())); }
         let val = u16::from_le_bytes(data[*cur..*cur+2].try_into().unwrap());
         *cur += 2;
         Ok(val)
     };
 
     let read_u32 = |cur: &mut usize| -> crate::error::Result<u32> {
-        if *cur + 4 > data.len() { return Err(crate::error::RcommonError::Rgb("EOF u32".to_string())); }
+        if *cur + 4 > data.len() { return Err(crate::error::libraryError::Rgb("EOF u32".to_string())); }
         let val = u32::from_le_bytes(data[*cur..*cur+4].try_into().unwrap());
         *cur += 4;
         Ok(val)
@@ -244,7 +244,7 @@ pub fn parse_device_payload(index: u32, data: &[u8]) -> crate::error::Result<Ope
     let read_string = |cur: &mut usize| -> crate::error::Result<String> {
         let len = read_u16(cur)? as usize;
         if len == 0 { return Ok(String::new()); }
-        if *cur + len > data.len() { return Err(crate::error::RcommonError::Rgb("EOF String".to_string())); }
+        if *cur + len > data.len() { return Err(crate::error::libraryError::Rgb("EOF String".to_string())); }
         let s_bytes = &data[*cur..*cur + len];
         *cur += len;
         let clean_len = if len > 0 && s_bytes[len - 1] == 0 { len - 1 } else { len };
@@ -253,14 +253,14 @@ pub fn parse_device_payload(index: u32, data: &[u8]) -> crate::error::Result<Ope
     };
 
     let skip_bytes = |cur: &mut usize, n: usize| -> crate::error::Result<()> {
-        if *cur + n > data.len() { return Err(crate::error::RcommonError::Rgb("EOF skip_bytes".to_string())); }
+        if *cur + n > data.len() { return Err(crate::error::libraryError::Rgb("EOF skip_bytes".to_string())); }
         *cur += n;
         Ok(())
     };
 
     let skip_string = |cur: &mut usize| -> crate::error::Result<()> {
         let len = read_u16(cur)? as usize;
-        if *cur + len > data.len() { return Err(crate::error::RcommonError::Rgb("EOF skip_string".to_string())); }
+        if *cur + len > data.len() { return Err(crate::error::libraryError::Rgb("EOF skip_string".to_string())); }
         *cur += len;
         Ok(())
     };
@@ -303,7 +303,7 @@ pub fn parse_device_payload(index: u32, data: &[u8]) -> crate::error::Result<Ope
     let num_colors = read_u16(&mut cursor)?;
     let mut initial_colors = Vec::new();
     for _ in 0..num_colors {
-        if cursor + 4 > data.len() { return Err(crate::error::RcommonError::Rgb("EOF Colors".to_string())); }
+        if cursor + 4 > data.len() { return Err(crate::error::libraryError::Rgb("EOF Colors".to_string())); }
         let r = data[cursor];
         let g = data[cursor + 1];
         let b = data[cursor + 2];

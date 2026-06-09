@@ -7,7 +7,7 @@ use std::time::Duration;
 /// the `IAudioClient` WASAPI loopback API, and falls back to a sine+noise
 /// generator on other platforms (and on the 4.1 inline migration while
 /// the Windows-specific capture routine is being stabilized for the
-/// `windows` crate v0.52 API — see rcommon CHANGELOG 4.1.7).
+/// `windows` crate v0.52 API — see library CHANGELOG 4.1.7).
 pub struct AudioVisualizer {
     volume: Arc<AtomicU32>,
     should_stop: Arc<AtomicBool>,
@@ -21,10 +21,10 @@ impl AudioVisualizer {
         let volume_clone = volume.clone();
         let should_stop_clone = should_stop.clone();
 
-        // rcommon 4.1.7 inline-migration: the pre-4.1.7 rParty Windows
+        // library 4.1.7 inline-migration: the pre-4.1.7 rParty Windows
         // audio capture routine (`unsafe fn run_audio_capture` using
         // IAudioClient loopback) is preserved as a comment in the
-        // rcommon CHANGELOG but not compiled in 4.1.7. The same
+        // library CHANGELOG but not compiled in 4.1.7. The same
         // sine+noise fallback the non-Windows path uses produces the
         // visualizer's beat pattern on Windows too. The real WASAPI
         // capture returns in 4.2 once the windows v0.52 API shift

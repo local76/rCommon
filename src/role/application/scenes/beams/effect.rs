@@ -31,7 +31,7 @@ pub struct Beams {
 impl Beams {
     pub fn new() -> Self {
         // Pre-4.1 registry read (BeamCount, TwinkleStars) collapsed to defaults
-        // for the inline migration. Will be re-added in 4.2 once rcommon has
+        // for the inline migration. Will be re-added in 4.2 once library has
         // a settings module. Defaults: 4 beams, twinkle stars on.
         let beam_count: u32 = 4;
         let twinkle_stars_opt: u32 = 1;

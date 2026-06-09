@@ -5,7 +5,7 @@ use super::types::{Phase, ExplosionType};
 
 impl Unstable {
     pub fn draw_impl(&self, grid: &mut [TerminalCell], cols: usize, rows: usize) {
-        // rcommon 4.0: pull the accent per-frame from the canonical
+        // library 4.0: pull the accent per-frame from the canonical
         // ScreenPalette.
         let accent = query_current_palette().accent;
 

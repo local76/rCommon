@@ -1,12 +1,12 @@
-//! rCommon 4.0 unified design system for r* TUI apps.
+//! library 4.0 unified design system for r* TUI apps.
 //!
 //! **Taxonomy Classification**: Interface (TUI / Presentation Layer).
 //!
-//! In rcommon 4.0 every UI-facing r* app (rFetch, rMonitor, rIdle, rTemplate,
+//! In library 4.0 every UI-facing r* app (rFetch, rMonitor, rIdle, rTemplate,
 //! rWifi, etc.) imports its chrome from this single module. The 3.0-era
-//! scattered paths (`rcommon::interface::tui::theme::*`,
-//! `rcommon::interface::tui::StatusBar`, `rcommon::widgets::*`, ...) are
-//! preserved as deprecated re-exports at `rcommon::lib.rs` for one minor.
+//! scattered paths (`library::interface::tui::theme::*`,
+//! `library::interface::tui::StatusBar`, `library::widgets::*`, ...) are
+//! preserved as deprecated re-exports at `library::lib.rs` for one minor.
 //!
 //! # What lives here (4.0)
 //!
@@ -34,7 +34,7 @@
 //! # Single-import path
 //!
 //! ```no_run
-//! use rcommon::interface::tui::design::prelude::*;
+//! use library::interface::tui::design::prelude::*;
 //! use ratatui::style::Color;
 //!
 //! let theme = get_theme(true, Color::Cyan);
@@ -88,7 +88,7 @@ pub use crate::interface::tui::effects::{
     PulsingParticles, PulsingWaves, RainDrop, RisingFlames, RisingGlyphs, TuiEffect,
 };
 
-/// Convenience glob-import for r* app `use rcommon::interface::tui::design::prelude::*;`.
+/// Convenience glob-import for r* app `use library::interface::tui::design::prelude::*;`.
 pub mod prelude {
     pub use super::{
         accent_color_from_hex, align_line, char_width, centered_rect, draw_effect_preview,

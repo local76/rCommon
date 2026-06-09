@@ -7,7 +7,7 @@ pub mod helpers {
     /// Returns standard native window options for a transparent/resizable desktop window.
     /// The window is centered on the primary display when possible (requires the
     /// "sys-info"/"platform-native" feature to be enabled alongside "gui" on the
-    /// rcommon dependency for screen resolution query).
+    /// library dependency for screen resolution query).
     pub fn get_default_options(width: f32, height: f32, transparent: bool) -> eframe::NativeOptions {
         let mut viewport = egui::ViewportBuilder::default()
             .with_transparent(transparent)
@@ -15,7 +15,7 @@ pub mod helpers {
             .with_inner_size(egui::vec2(width, height))
             .with_min_inner_size(egui::vec2(350.0, 250.0));
 
-        // Best-effort center using rCommon's cross-platform screen resolution.
+        // Best-effort center using library's cross-platform screen resolution.
         #[cfg(feature = "sys-info")]
         {
             let (sw, sh) = crate::platform::native::sys_info::get_system_screen_resolution();

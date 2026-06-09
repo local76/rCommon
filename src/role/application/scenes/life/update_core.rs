@@ -15,9 +15,9 @@ pub fn enter_state(eff: &mut LifeEffect, cols: usize, rows: usize) {
     let cx = cols_f / 2.0;
     let cy = rows_f / 2.0;
 
-    // rcommon 4.0: pull the accent hue from the canonical ScreenPalette.
+    // library 4.0: pull the accent hue from the canonical ScreenPalette.
     // The pre-4.0 code called `get_theme_accent()` + `rgb_to_hsl` here; now
-    // we read `palette.accent` from the rcommon-routed palette.
+    // we read `palette.accent` from the library-routed palette.
     let palette = query_current_palette();
     let (acc_h, _, _) = rgb_to_hsl(palette.accent.0, palette.accent.1, palette.accent.2);
 
@@ -360,7 +360,7 @@ pub fn update_life(eff: &mut LifeEffect, dt: Duration, cols: usize, rows: usize)
         eff.universe_cy = rows as f32 / 2.0;
         eff.zoom = 0.75;
 
-        // rcommon 4.1: render the centered system logo from the live OS info
+        // library 4.1: render the centered system logo from the live OS info
         // (replaces pre-4.1 `ridle_core::logo_lines()` + `logo_dimensions()`).
         let logo_text = get_system_info().logo_text;
         let lines = render_logo_block(&logo_text, None);

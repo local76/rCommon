@@ -76,7 +76,7 @@ impl Screensaver for Unstable {
             self.rgb_timer = 0.0;
             if let Some(ref r) = self.rgb {
                 use crate::role::application::rgb::protocol::RgbColor;
-                // rcommon 4.0: pull from the canonical ScreenPalette.
+                // library 4.0: pull from the canonical ScreenPalette.
                 let accent = crate::role::application::palette::query_current_palette().accent;
                 
                 if Some(self.phase) != self.last_phase {
@@ -135,7 +135,7 @@ impl Screensaver for Unstable {
         if cols != self.last_cols || rows != self.last_rows {
             self.particles.clear();
             self.stars.clear();
-            // rcommon 4.1: render the centered system logo from the live OS info
+            // library 4.1: render the centered system logo from the live OS info
             // (replaces pre-4.1 `ridle_core::logo_lines()`).
             let logo_text = get_system_info().logo_text;
             let lines = render_logo_block(&logo_text, None);

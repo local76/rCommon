@@ -285,7 +285,7 @@ impl Screensaver for Pour {
             self.sys_refresh_timer = 0.0;
 
             if let Some(ref r) = self.rgb {
-                // rcommon 4.0: pull from the cached ScreenPalette.
+                // library 4.0: pull from the cached ScreenPalette.
                 let accent = query_current_palette().accent;
                 r.set_color(RgbColor::new(accent.0 / 4, accent.1 / 4, accent.2 / 4));
             }

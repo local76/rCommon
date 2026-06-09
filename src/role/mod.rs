@@ -8,7 +8,7 @@
 //! - System Software (infrastructure: manages hardware, provides platform — drivers, OS services, etc.) - see system/
 //! - Application Software (task-oriented for end users or higher-level tools) - see application/
 //!
-//! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/ARCHITECTURE.md).
+//! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/ARCHITECTURE.md).
 //! Cross-platform with native features and platform-specific stubs.
 
 // System Software components are low-level platform and lifecycle abstractions 

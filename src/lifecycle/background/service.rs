@@ -188,7 +188,7 @@ pub fn has_admin_privileges() -> bool {
 /// Start a system service natively on Windows or via detected systemd/OpenRC on Linux.
 pub fn start_service(service_name: &str) -> crate::error::Result<()> {
     if !has_admin_privileges() {
-        return Err(crate::error::RcommonError::Service("Privilege check failed: Administrator / root privileges are required to modify system services.".to_string()));
+        return Err(crate::error::libraryError::Service("Privilege check failed: Administrator / root privileges are required to modify system services.".to_string()));
     }
 
     #[cfg(all(target_os = "windows", feature = "service"))]
@@ -199,7 +199,7 @@ pub fn start_service(service_name: &str) -> crate::error::Result<()> {
             windows_sys::Win32::System::Services::SC_MANAGER_CONNECT,
         );
         if scm.is_null() {
-            return Err(crate::error::RcommonError::Service(format!("Failed to open SC Manager: OS error {}", std::io::Error::last_os_error())));
+            return Err(crate::error::libraryError::Service(format!("Failed to open SC Manager: OS error {}", std::io::Error::last_os_error())));
         }
         let service_name_w: Vec<u16> = service_name.encode_utf16().chain(std::iter::once(0)).collect();
         let svc = windows_sys::Win32::System::Services::OpenServiceW(
@@ -210,7 +210,7 @@ pub fn start_service(service_name: &str) -> crate::error::Result<()> {
         if svc.is_null() {
             let err = std::io::Error::last_os_error();
             windows_sys::Win32::System::Services::CloseServiceHandle(scm);
-            return Err(crate::error::RcommonError::Service(format!("Failed to open service: {}", err)));
+            return Err(crate::error::libraryError::Service(format!("Failed to open service: {}", err)));
         }
         let ok = windows_sys::Win32::System::Services::StartServiceW(svc, 0, std::ptr::null());
         windows_sys::Win32::System::Services::CloseServiceHandle(svc);
@@ -218,14 +218,14 @@ pub fn start_service(service_name: &str) -> crate::error::Result<()> {
         if ok != 0 {
             Ok(())
         } else {
-            Err(crate::error::RcommonError::Service(format!("Failed to start service: {}", std::io::Error::last_os_error())))
+            Err(crate::error::libraryError::Service(format!("Failed to start service: {}", std::io::Error::last_os_error())))
         }
     }
 
     #[cfg(all(target_os = "windows", not(feature = "service")))]
     {
         let _ = service_name;
-        Err(crate::error::RcommonError::Service("Service support is disabled (compiled without 'service' feature)".to_string()))
+        Err(crate::error::libraryError::Service("Service support is disabled (compiled without 'service' feature)".to_string()))
     }
 
     #[cfg(target_os = "linux")]
@@ -237,8 +237,8 @@ pub fn start_service(service_name: &str) -> crate::error::Result<()> {
                     .status();
                 match status {
                     Ok(s) if s.success() => Ok(()),
-                    Ok(s) => Err(crate::error::RcommonError::Service(format!("systemctl start failed with status: {}", s))),
-                    Err(e) => Err(crate::error::RcommonError::Service(format!("Failed to execute systemctl: {}", e))),
+                    Ok(s) => Err(crate::error::libraryError::Service(format!("systemctl start failed with status: {}", s))),
+                    Err(e) => Err(crate::error::libraryError::Service(format!("Failed to execute systemctl: {}", e))),
                 }
             }
             InitSystem::OpenRc => {
@@ -247,11 +247,11 @@ pub fn start_service(service_name: &str) -> crate::error::Result<()> {
                     .status();
                 match status {
                     Ok(s) if s.success() => Ok(()),
-                    Ok(s) => Err(crate::error::RcommonError::Service(format!("rc-service start failed with status: {}", s))),
-                    Err(e) => Err(crate::error::RcommonError::Service(format!("Failed to execute rc-service: {}", e))),
+                    Ok(s) => Err(crate::error::libraryError::Service(format!("rc-service start failed with status: {}", s))),
+                    Err(e) => Err(crate::error::libraryError::Service(format!("Failed to execute rc-service: {}", e))),
                 }
             }
-            InitSystem::None => Err(crate::error::RcommonError::Service("No supported init system detected (systemd or openrc required)".to_string())),
+            InitSystem::None => Err(crate::error::libraryError::Service("No supported init system detected (systemd or openrc required)".to_string())),
         }
     }
 
@@ -265,7 +265,7 @@ pub fn start_service(service_name: &str) -> crate::error::Result<()> {
 /// Stop a system service natively on Windows or via detected systemd/OpenRC on Linux.
 pub fn stop_service(service_name: &str) -> crate::error::Result<()> {
     if !has_admin_privileges() {
-        return Err(crate::error::RcommonError::Service("Privilege check failed: Administrator / root privileges are required to modify system services.".to_string()));
+        return Err(crate::error::libraryError::Service("Privilege check failed: Administrator / root privileges are required to modify system services.".to_string()));
     }
 
     #[cfg(all(target_os = "windows", feature = "service"))]
@@ -276,7 +276,7 @@ pub fn stop_service(service_name: &str) -> crate::error::Result<()> {
             windows_sys::Win32::System::Services::SC_MANAGER_CONNECT,
         );
         if scm.is_null() {
-            return Err(crate::error::RcommonError::Service(format!("Failed to open SC Manager: OS error {}", std::io::Error::last_os_error())));
+            return Err(crate::error::libraryError::Service(format!("Failed to open SC Manager: OS error {}", std::io::Error::last_os_error())));
         }
         let service_name_w: Vec<u16> = service_name.encode_utf16().chain(std::iter::once(0)).collect();
         let svc = windows_sys::Win32::System::Services::OpenServiceW(
@@ -287,7 +287,7 @@ pub fn stop_service(service_name: &str) -> crate::error::Result<()> {
         if svc.is_null() {
             let err = std::io::Error::last_os_error();
             windows_sys::Win32::System::Services::CloseServiceHandle(scm);
-            return Err(crate::error::RcommonError::Service(format!("Failed to open service: {}", err)));
+            return Err(crate::error::libraryError::Service(format!("Failed to open service: {}", err)));
         }
         let mut status = windows_sys::Win32::System::Services::SERVICE_STATUS {
             dwServiceType: 0,
@@ -308,14 +308,14 @@ pub fn stop_service(service_name: &str) -> crate::error::Result<()> {
         if ok != 0 {
             Ok(())
         } else {
-            Err(crate::error::RcommonError::Service(format!("Failed to stop service: {}", std::io::Error::last_os_error())))
+            Err(crate::error::libraryError::Service(format!("Failed to stop service: {}", std::io::Error::last_os_error())))
         }
     }
 
     #[cfg(all(target_os = "windows", not(feature = "service")))]
     {
         let _ = service_name;
-        Err(crate::error::RcommonError::Service("Service support is disabled (compiled without 'service' feature)".to_string()))
+        Err(crate::error::libraryError::Service("Service support is disabled (compiled without 'service' feature)".to_string()))
     }
 
     #[cfg(target_os = "linux")]
@@ -327,8 +327,8 @@ pub fn stop_service(service_name: &str) -> crate::error::Result<()> {
                     .status();
                 match status {
                     Ok(s) if s.success() => Ok(()),
-                    Ok(s) => Err(crate::error::RcommonError::Service(format!("systemctl stop failed with status: {}", s))),
-                    Err(e) => Err(crate::error::RcommonError::Service(format!("Failed to execute systemctl: {}", e))),
+                    Ok(s) => Err(crate::error::libraryError::Service(format!("systemctl stop failed with status: {}", s))),
+                    Err(e) => Err(crate::error::libraryError::Service(format!("Failed to execute systemctl: {}", e))),
                 }
             }
             InitSystem::OpenRc => {
@@ -337,11 +337,11 @@ pub fn stop_service(service_name: &str) -> crate::error::Result<()> {
                     .status();
                 match status {
                     Ok(s) if s.success() => Ok(()),
-                    Ok(s) => Err(crate::error::RcommonError::Service(format!("rc-service stop failed with status: {}", s))),
-                    Err(e) => Err(crate::error::RcommonError::Service(format!("Failed to execute rc-service: {}", e))),
+                    Ok(s) => Err(crate::error::libraryError::Service(format!("rc-service stop failed with status: {}", s))),
+                    Err(e) => Err(crate::error::libraryError::Service(format!("Failed to execute rc-service: {}", e))),
                 }
             }
-            InitSystem::None => Err(crate::error::RcommonError::Service("No supported init system detected (systemd or openrc required)".to_string())),
+            InitSystem::None => Err(crate::error::libraryError::Service("No supported init system detected (systemd or openrc required)".to_string())),
         }
     }
 
@@ -355,7 +355,7 @@ pub fn stop_service(service_name: &str) -> crate::error::Result<()> {
 /// Restart a system service natively on Windows or via detected systemd/OpenRC on Linux.
 pub fn restart_service(service_name: &str) -> crate::error::Result<()> {
     if !has_admin_privileges() {
-        return Err(crate::error::RcommonError::Service("Privilege check failed: Administrator / root privileges are required to modify system services.".to_string()));
+        return Err(crate::error::libraryError::Service("Privilege check failed: Administrator / root privileges are required to modify system services.".to_string()));
     }
 
     #[cfg(all(target_os = "windows", feature = "service"))]
@@ -373,7 +373,7 @@ pub fn restart_service(service_name: &str) -> crate::error::Result<()> {
         }
         
         if !stopped {
-            return Err(crate::error::RcommonError::Service("Failed to restart service: service did not stop in time.".to_string()));
+            return Err(crate::error::libraryError::Service("Failed to restart service: service did not stop in time.".to_string()));
         }
         
         start_service(service_name)?;
@@ -383,7 +383,7 @@ pub fn restart_service(service_name: &str) -> crate::error::Result<()> {
     #[cfg(all(target_os = "windows", not(feature = "service")))]
     {
         let _ = service_name;
-        Err(crate::error::RcommonError::Service("Service support is disabled (compiled without 'service' feature)".to_string()))
+        Err(crate::error::libraryError::Service("Service support is disabled (compiled without 'service' feature)".to_string()))
     }
 
     #[cfg(target_os = "linux")]
@@ -395,8 +395,8 @@ pub fn restart_service(service_name: &str) -> crate::error::Result<()> {
                     .status();
                 match status {
                     Ok(s) if s.success() => Ok(()),
-                    Ok(s) => Err(crate::error::RcommonError::Service(format!("systemctl restart failed with status: {}", s))),
-                    Err(e) => Err(crate::error::RcommonError::Service(format!("Failed to execute systemctl: {}", e))),
+                    Ok(s) => Err(crate::error::libraryError::Service(format!("systemctl restart failed with status: {}", s))),
+                    Err(e) => Err(crate::error::libraryError::Service(format!("Failed to execute systemctl: {}", e))),
                 }
             }
             InitSystem::OpenRc => {
@@ -405,11 +405,11 @@ pub fn restart_service(service_name: &str) -> crate::error::Result<()> {
                     .status();
                 match status {
                     Ok(s) if s.success() => Ok(()),
-                    Ok(s) => Err(crate::error::RcommonError::Service(format!("rc-service restart failed with status: {}", s))),
-                    Err(e) => Err(crate::error::RcommonError::Service(format!("Failed to execute rc-service: {}", e))),
+                    Ok(s) => Err(crate::error::libraryError::Service(format!("rc-service restart failed with status: {}", s))),
+                    Err(e) => Err(crate::error::libraryError::Service(format!("Failed to execute rc-service: {}", e))),
                 }
             }
-            InitSystem::None => Err(crate::error::RcommonError::Service("No supported init system detected (systemd or openrc required)".to_string())),
+            InitSystem::None => Err(crate::error::libraryError::Service("No supported init system detected (systemd or openrc required)".to_string())),
         }
     }
 

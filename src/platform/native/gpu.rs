@@ -29,7 +29,7 @@ pub fn init_headless_gpu() -> Option<(Device, Queue)> {
             let (device, queue) = adapter
                 .request_device(
                     &wgpu::DeviceDescriptor {
-                        label: Some("rCommon Headless GPU Device"),
+                        label: Some("library Headless GPU Device"),
                         required_features: wgpu::Features::empty(),
                         required_limits: wgpu::Limits::downlevel_defaults(),
                         memory_hints: wgpu::MemoryHints::default(),
@@ -59,7 +59,7 @@ pub fn run_compute_shader(shader_src: &str, entry_point: &str, data: &[f32]) -> 
     
     // Create shader module
     let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
-        label: Some("rCommon Compute Shader"),
+        label: Some("library Compute Shader"),
         source: wgpu::ShaderSource::Wgsl(shader_src.into()),
     });
 

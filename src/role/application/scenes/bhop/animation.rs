@@ -81,7 +81,7 @@ impl BhopDashboard {
         let shell_name = identity::shell_name();
         let refresh_rate = identity::refresh_rate_hz();
 
-        // rcommon 4.0: pull the accent from the canonical ScreenPalette.
+        // library 4.0: pull the accent from the canonical ScreenPalette.
         let theme_accent = query_current_palette().accent;
         let theme_mode = if get_system_info_theme_is_dark() { "Dark Mode" } else { "Light Mode" }.to_string();
 

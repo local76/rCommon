@@ -40,10 +40,10 @@ impl FireEffect {
         let flame_height_opt: u32 = 1;
         let spark_count_opt: u32 = 1;
 
-        // rcommon 4.0: pull the accent + the fire heat ramp from the canonical
+        // library 4.0: pull the accent + the fire heat ramp from the canonical
         // ScreenPalette. The local `get_palette(accent)` helper is a
         // fire-specific heat ramp (not accent-derived) so we still call
-        // it directly, but we pass the rcommon-routed accent through so
+        // it directly, but we pass the library-routed accent through so
         // a future palette change propagates.
         let accent = query_current_palette().accent;
         let palette = get_palette(accent);
@@ -167,7 +167,7 @@ impl Screensaver for FireEffect {
             self.sparks.clear();
             self.logo_cells.clear();
             self.volcanic_globs.clear();
-            // rcommon 4.1: render the centered system-logo overlay from
+            // library 4.1: render the centered system-logo overlay from
             // the live system info (replaces the pre-4.1
             // `ridle_core::logo_lines()` + `logo_dimensions()` Windows-only
             // file read).
@@ -209,7 +209,7 @@ impl Screensaver for FireEffect {
             }
             self.stars = stars;
 
-            // rcommon 4.0: refresh the fire heat ramp from the canonical
+            // library 4.0: refresh the fire heat ramp from the canonical
             // ScreenPalette. The pre-4.0 cached `self.theme_accent` field
             // is gone; the per-frame accent is now pulled from
             // `query_current_palette()` in `drawing.rs` directly.

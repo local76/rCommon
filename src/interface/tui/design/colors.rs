@@ -9,7 +9,7 @@ use ratatui::style::Color;
 /// # Examples
 ///
 /// ```
-/// use rcommon::interface::tui::widgets::AccentColors;
+/// use library::interface::tui::widgets::AccentColors;
 /// use ratatui::style::Color;
 ///
 /// // Create from custom colors
@@ -120,7 +120,7 @@ impl AccentColors {
 /// # Examples
 ///
 /// ```
-/// use rcommon::interface::tui::widgets::AccentTheme;
+/// use library::interface::tui::widgets::AccentTheme;
 ///
 /// // Get the active system theme (expensive query)
 /// let colors = AccentTheme::current();
