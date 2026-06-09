@@ -1,248 +1,147 @@
-# library Architecture
+# library — Architecture
 
-library is the shared foundation library for the local76 "r*" ecosystem of local-first terminal and system utilities (trance, helm, pulse, template, scout, ignite, trance-scenes, etc.).
+> The 4-layer taxonomy, the design system, the Screensaver trait, and the 10 screensaver scenes that form the foundation of every tool in the local76 ecosystem.
 
-## Design Principles
+`library` is the shared Cargo crate that every other local76 tool depends on. This document explains how the code is organized, why it is organized that way, and how to add new code without breaking the contract.
 
-- **Avoid duplication**: Common utilities, platform abstractions, TUI widgets, effects, and system info live here so individual apps stay small and focused.
-- **Classification by Taxonomy**: Code is organized according to the 4-layer taxonomy to prevent accidental coupling between concerns (e.g., a TUI-only effect type being changed in a way that breaks a background service or CLI tool).
-- **Absolute Isolation & Non-Interference**: All `apps` must work independently on their own and not interfere with one another. To guarantee this:
-  - **No Global Port Binding**: Do not bind to shared network ports (like HTTP servers on `127.0.0.1:8080`) for communication or single-instance locks. This prevents firewall prompts and port collisions. Use application-scoped Local IPC (Unix domain sockets on Linux and Named Pipes on Windows) instead.
-  - **Isolated Configuration Storage**: Ensure configuration schemas and storage access (like Registry paths or configuration files) are strictly namespaced under the application name (`Software\apps\<AppName>`) so they never overwrite each other.
-  - **Executable-Scoped Guards**: Single-instance guards and Mutex locks must be scoped using the executable's name to avoid multi-instance conflicts without locking out other `apps`.
+---
 
+## 1. Design principles
 
-### 1. Interface (Presentation Layer)
-How the software communicates visually (or non-visually) with the user or other software.
-- **CLI** (Command Line Interface)
-- **TUI** (Text User Interface) — ratatui-based, TerminalCell grids, effects, widgets, logo rendering.
-- **GUI: Native/OS** — Standard WIMP using OS toolkit.
-- **GUI: Custom/Game Engine** — Continuous-loop canvas (e.g., egui, custom renderers).
-- **Headless / API** — No UI; communicates with other software (REST, IPC, libraries, daemons exposing APIs).
+- **One crate, one foundation.** No other local76 repo re-implements sysinfo reads, registry helpers, Screensaver trait implementations, or the design-system widgets. If a piece of code will be needed by more than one consumer, it lives in `library`.
+- **Classification by taxonomy.** Code is organized by the 4-layer model in §2. A change in one layer must not silently break a concern in another layer. The `tests/taxonomy_compliance.rs` test enforces this with an AST walker.
+- **Absolute isolation between apps.** Each local76 app must run independently and must not interfere with the others. Three concrete rules:
+  - **No global port binding.** No HTTP server on `127.0.0.1:8080`, no shared TCP port, no shared UDP port. Use local IPC: Unix domain sockets on Linux, Named Pipes on Windows.
+  - **Per-app config storage.** Each app's config file lives at `%APPDATA%\<app>\config.yaml` (Windows) or `~/.config/<app>/config.yaml` (Linux). Registry access uses `Software\local76\<app>\*` paths. The app name is the namespace.
+  - **Executable-scoped guards.** Single-instance guards and mutex locks are scoped to the executable's name, not the library's. `SingleInstanceGuard` for `helm` does not lock out `pulse`.
 
-#### Key Distinctions
-- **CLI**: Line-oriented stdio, sequential output, often stateless per invocation.
-- **TUI**: Grid-based, in-place updates, stateful widgets/navigation, keyboard-driven.
-- **GUI**: Pixel canvas, continuous 2D space, rich mouse input, higher visual fidelity.
+---
 
-### 2. Execution State (Lifecycle)
-How the OS manages the application's runtime.
-- **Foreground Applications** — Require active user attention, window/terminal focus (console guards, hiding, single-instance, title management).
-- **Background Processes** — Run silently, often at startup, no interface (services, event logging, power management for daemons).
+## 2. The 4-layer taxonomy
 
-### 3. Platform & Architecture (Deployment)
-How the software is packaged and where it runs.
-- **Native Applications** — Compiled for host OS/hardware (primary focus: Windows + Linux via cfg(target_os)).
-- **Web Applications** — Browser (stubs/future).
-- **Mobile Applications** — iOS/Android (future).
-- **Embedded Software** — Dedicated hardware (routers, etc., future).
-
-Windows and Linux specifics (FFI, services, registry emulation, console behavior, power, monitors, etc.) live primarily here, with platform splits (e.g., `platform/native/windows.rs`).
-
-GitHub fits as the **distribution and collaboration mechanism** for the Native + git-dependency model used across the suite (e.g., `library = { git = "https://github.com/local76/library.git" }` + `[patch]` for local dev). It is not a runtime concern but enables the ecosystem.
-
-### 4. System Role (Purpose)
-The software's ultimate objective.
-- **System Software** — Infrastructure: manages hardware, provides platform (low-level power, registry, services, event logs, disk enumeration, BIOS, shell detection).
-- **Application Software** — Task-oriented for end-users or tools (RGB control, games/effects, package inventory, TUI dashboards, higher-level formatting).
-
-## Current Module Structure (Aligned to Taxonomy)
-
-- **core/** (or core.rs): Neutral, cross-cutting primitives usable by *any* combination of the above. Must remain free of heavy UI, OS, or lifecycle assumptions.
-  - LcgRng (deterministic RNG for effects/games)
-  - TerminalCell (universal for grid renderers: TUI effects, headless logging, custom GUIs)
-  - DashboardInfo / SystemInfo (rich live system context with logo_text, uptime, mem, power, etc.)
-  - get_dashboard_info, get_packages_breakdown, get_monitors_summary, render_logo_block, etc.
-  - Classification: Core foundation for all layers.
-
-- **interface/**
-  - **tui/**: TUI-specific presentation (widgets like AccentGauge, effects like MatrixRain/ParticleSystem, text wrapping/alignment helpers, ObstacleJump game rendering, logo block).
-    - Classification: Interface (TUI) + Role (Application) + some Platform.
-  - **gui/**: GUI helpers (eframe/egui for custom/game-engine UIs).
-    - Classification: Interface (GUI Custom).
-  - **api/**: Headless/API surfaces (IPC, service exposure, library interfaces).
-    - Classification: Interface (Headless/API).
-  - Future: cli/, gui_native/.
-
-- **lifecycle/**
-  - **foreground/**: Console/window management for apps that need focus (BorderlessConsole, SingleInstanceGuard, ConsoleTitleGuard, hide_console_at_startup, relaunch_in_conhost).
-    - Classification: Lifecycle (Foreground) + Platform (Native).
-  - **background/**: Silent running (services, event logging, notifications, clipboard for daemons, thread execution state).
-    - Classification: Lifecycle (Background) + Role (System).
-
-- **platform/**
-  - **native/**: OS-specific deployment (sys_info with Windows/Linux splits, reg, monitor enumeration, power, dark mode, accent via DWM/registry, console DPI, etc.).
-    - Classification: Platform (Native) + Role (System).
-  - Future: web/, mobile/, embedded/.
-
-- **role/**
-  - **system/**: Infrastructure (low-level registry, power, services, event logs, disk/BIOS queries).
-    - Classification: Role (System Software).
-  - **application/**: Higher-level/task-oriented (RGB controller, games/effects integration, package inventory, formatting helpers like get_battery_info).
-    - Classification: Role (Application Software).
-
-- **Other**:
-  - `rgb/`: RGB lighting control (OpenRGB protocol + controller). Classification: Role (Application) + Interface (for effects).
-  - `bin/rpack.rs`: Packaging tool (builds, deb/rpm, etc.). Classification: Tooling / Role (Application).
-  - Legacy `win32` shim (deprecated, for old consumers).
-
-## Windows OS, Linux OS, and GitHub
-
-- **Windows/Linux**: Primarily **Platform (Native)** with strong influence on **Lifecycle** (services vs daemons, conhost behavior) and **Role (System)** (registry vs config files, DWM, power APIs). Code uses `#[cfg(target_os = "...")]` and splits (e.g., `platform/native/windows.rs`, `sys_info/windows.rs`).
-- **GitHub**: External to runtime taxonomy. Supports **Platform (Native)** distribution via git dependencies and releases. Also hosts org profile, workflows, and packaging metadata. The monorepo-like local setup (git_push_all, patches) relies on it.
-
-## Effect Naming Taxonomy (Verb × Noun × Style × Palette)
-
-All TUI effects in `interface::tui::effects` follow a 4-dimension naming system. The type name is always **`Verb` + `Noun`** (PascalCase), the file name is the snake_case of the same, and the display name is `"Verb Noun"`.
-
-### Dimensions
-
-| Dimension | Values | Purpose |
-|---|---|---|
-| **Verb** | `Falling`, `Rising`, `Flowing`, `Pulled`, `Pulsing` | Motion model |
-| **Noun** | `Glyphs`, `Particles`, `Droplets`, `Comets`, `Blocks`, `Waves` | Visual unit |
-| **Style** | `Solid`, `Trailing`, `Flared` | Render treatment |
-| **Palette** | `Monochrome(r,g,b)`, `Accent`, `Heat` | Color source |
-
-- **Style** lives in `interface::tui::effects::dimensions::Style` and is exposed as a field on every effect.
-- **Palette** lives in `interface::tui::effects::dimensions::Palette` and is exposed as a field on every effect.
-- All effects expose `with_style(Style)` and `with_palette(Palette)` builder methods.
-- The 4 dimensions are mutually orthogonal and any combination is valid (270 total, ~100 meaningful).
-
-### House Rules
-
-- **Adding a new Verb** requires a CHANGELOG entry justifying that it cannot be expressed as a variant of an existing verb.
-- **Adding a new Noun** requires a CHANGELOG entry justifying that it cannot be expressed as a variant of an existing noun.
-- **Adding a new Style** must be visually distinct (not a color or timing tweak).
-- **Adding a new Palette** must be non-trivial (not just `Monochrome` with math).
-- **Hard caps**: 5 verbs, 6 nouns, 3 styles, 3 palettes. Adding past a cap requires a documented justification.
-
-### Current Catalog (5 effects)
-
-| Type | File | Default Style | Default Palette |
-|---|---|---|---|
-| `FallingGlyphs` | `falling_glyphs.rs` | `Trailing` | `Monochrome(Green)` |
-| `FlowingParticles` | `flowing_particles.rs` | `Solid` | `Monochrome(White)` |
-| `PulledParticles` | `pulled_particles.rs` | `Solid` | `Monochrome(Blue)` |
-| `FallingDroplets` | `falling_droplets.rs` | `Solid` | `Monochrome(Blue)` |
-| `RisingFlames` | `rising_flames.rs` | `Solid` | `Heat` |
-
-### Example Usage
-
-```rust
-use library::interface::tui::effects::{
-    FallingGlyphs, Style, Palette,
-};
-
-// Default: matrix-green with trails
-let mut rain = FallingGlyphs::new(80, 24, 0.35);
-
-// Theme-matched with lens-flare heads
-let mut flare = FallingGlyphs::new(80, 24, 0.35)
-    .with_style(Style::Flared)
-    .with_palette(Palette::Accent);
+```
+                ┌─────────────────────────────────────────────────────┐
+                │  core  (the only mandatory layer;  no deps)        │
+                │                                                     │
+                │  • Screensaver trait, TerminalCell,                 │
+                │    ScreenPalette, hsl_to_rgb, render_logo           │
+                └─────────────────────┬───────────────────────────────┘
+                                      │
+       ┌──────────────────────────────┼──────────────────────────────┐
+       │                              │                              │
+       ▼                              ▼                              ▼
+   interface                       lifecycle                     platform
+   (Presentation)                (Execution State)            (Deployment)
+   ─────────────────────         ─────────────────────         ─────────────────────
+   • interface::tui              • lifecycle::foreground       • platform::native
+     (ratatui backend,            (CLI entry, panic, TUI,         (sysinfo, winreg,
+      widgets, effects)            window, drag-to-move,         OpenRGB, WiFi,
+   • interface::cli                single-instance guard)        X11, DWM)
+     (clap, doctor, scaffold)  • lifecycle::background       • platform::embedded
+   • interface::api                (daemon, file_log,             (no-std)
+     (IPC: messages,                service, event_log,         • platform::mobile
+      win32_ipc, unix_ipc)          clipboard, notification)    • platform::web
+   • interface::gui                                                (wasm)
+     (egui helpers)
+                                  role ─┐
+                                         │  (which app is this?)
+                                         ▼
+                                       role
+                                       (Purpose)
+                                       ───────────
+                                       • role::system
+                                         (sys_info, reg, service)
+                                       • role::application
+                                         (palette, rgb, packages,
+                                          10 screensaver scenes)
 ```
 
-## Adding New Code
+**`core` is the only layer that must remain neutral and usable by any combination of the other four.** It cannot depend on `interface`, `lifecycle`, `platform`, or `role`. Everything else can depend on `core` and on each other in any direction.
 
-1. Classify using the taxonomy.
-2. Place in the matching module (use `core` only for truly neutral data).
-3. Add documentation with classification comment.
-4. Gate behind appropriate feature (e.g., `effects` for TUI visuals, `sys-info` for platform queries).
-5. Update this ARCHITECTURE.md and relevant mod.rs docs.
-6. Provide cross-platform stubs where possible.
-7. Avoid putting presentation/lifecycle code into `core`.
+### Layer responsibilities
 
-## Current State & Audit Notes
+#### 2.1 `core` — neutral foundation
+- `Screensaver` trait (backend-agnostic, depended on by every scene)
+- `TerminalCell` (a single grid cell, ratatui-free)
+- `ScreenPalette` (the cross-renderer color story, 7 RGB tuples)
+- `LcgRng` (deterministic RNG for reproducible effects)
+- `DashboardInfo`, `SystemInfo` (rich live system context)
+- `render_logo_block`, `render_logo_5x5`
+- `hsl_to_rgb`, `hsv_to_rgb`
 
-The structure has been cleaned up and aligned (see list of 10 tasks executed in the refactor session). Old flat files were moved into taxonomy categories. Re-exports preserve compat for r* consumers using git + [patch].
+#### 2.2 `interface` — presentation
+- `interface::tui` — Ratatui backend, widgets (AccentGauge, AccentList, AccentTabs), the 10 canonical TUI effects (FallingGlyphs, RisingFlames, etc.), the `design::*` façade.
+- `interface::cli` — clap, `run_doctor`, scaffold helpers.
+- `interface::api` — IPC: messages, win32_ipc, unix_ipc.
+- `interface::gui` — egui helpers (for the `platform::embedded` future).
 
-**Audit of Ports from Other Projects** (valuable reusable pieces extracted and classified):
-- From trance-scenes/trance-core: SystemInfo/get_system_info (core + platform), render_logo_block + 5x5 (interface/tui), LcgRng enhancements (core), registry/theme helpers (already via core/platform).
-- From trance-scenes effects (rObstacleJump, cosmos, glyphs, etc.): Particle systems, MatrixRain, ObstacleJump logic (interface/tui + role/application), console typing/dashboard patterns.
-- From helm: Package counting (role/application/packages.rs), monitor enumeration (platform/native/monitors.rs), accent/dark mode/power formatters (platform + lifecycle).
-- From trance (saver_win32): Advanced console (high contrast, thread exec state, titles, screensaver control) (lifecycle/foreground/console.rs), power/accent delegation.
-- From pulse/ignite/template/scout: Common win32 shims, console hiding, system queries (now centralized in lifecycle/platform/role).
-- rpack bin and rgb/game already in library (role/application).
+#### 2.3 `lifecycle` — execution state
+- `lifecycle::foreground` — `BorderlessConsole`, `SingleInstanceGuard`, `ConsoleTitleGuard`, `hide_console_at_startup`, `relaunch_in_conhost`, drag-to-move.
+- `lifecycle::background` — daemon, service, file_log, event_log, clipboard, notification.
 
-## Migration Guide for Consumers
+#### 2.4 `platform` — deployment
+- `platform::native` — Windows + Linux FFI via `#[cfg(target_os = "...")]`. `sys_info`, `reg`, `monitors`, `power`, `dark_mode`, `dwm_accent`, `console_dpi`.
+- `platform::embedded` (future) — no-std, routers, microcontrollers.
+- `platform::mobile` (future) — iOS / Android.
+- `platform::web` (future) — wasm.
 
-To ensure long-term architecture sustainability, consumers should move away from the deprecated `library::win32` module (legacy flat shim) and transition to the new 4-layer taxonomy modules.
+#### 2.5 `role` — purpose
+- `role::system` — Infrastructure: low-level registry, power, services, event logs, disk/BIOS queries.
+- `role::application` — Task-oriented: `palette`, `rgb` (OpenRGB protocol), `packages` (winget), the 10 screensaver scenes, `game` (ObstacleJump).
 
-> [!NOTE]
-> **Taxonomy Features (Cargo features)** control what code is compiled in your `Cargo.toml` dependencies, whereas **Taxonomy Paths (module paths)** are the new Rust import locations in your code.
+---
 
-Here is a concrete "Before & After" mapping for imports and usage:
+## 3. The 4.0 design system
 
-### 1. Presentation Layer (Interface)
-* **TUI Effects / Primitives**:
-  * *Before*: `use library::win32::{TerminalCell, MatrixRain, SimpleParticles};`
-  * *After*: `use library::interface::tui::effects::{TerminalCell, MatrixRain, SimpleParticles};` (or `library::core::TerminalCell` / `library::interface::tui::MatrixRain`)
-* **TUI Focus Widgets**:
-  * *Before*: `use library::widgets::{AccentList, AccentTabs};`
-  * *After*: `use library::interface::tui::widgets::{AccentList, AccentTabs};`
-* **Headless IPC**:
-  * *Before*: `use library::api::{IpcServer, IpcClient};`
-  * *After*: `use library::interface::api::{IpcServer, IpcClient};`
+`library` 4.0 introduced a single import path for every chrome concern: `library::interface::tui::design::prelude::*`. Before 4.0, the same chrome types (`StatusBar`, `MarkdownViewerState`, `ThemeColors`, `AccentColors`, ...) were scattered across `library::interface::tui::*`, `library::widgets::*`, and the consumer apps' own `win32.rs` shims. Each r* app re-implemented its own `is_dark_mode()` registry read and its own HSL accent-rotation math. The result was visual drift between `helm`, `pulse`, and `trance`, and a lot of code duplication.
 
-### 2. Execution State Layer (Lifecycle)
-* **Console & Window Controls**:
-  * *Before*: `use library::win32::{hide_console_at_startup, BorderlessConsole, ConsoleTitleGuard};`
-  * *After*: `use library::lifecycle::foreground::window::{hide_console_at_startup, BorderlessConsole, ConsoleTitleGuard};`
-* **Single Instance Lock**:
-  * *Before*: `use library::win32::SingleInstanceGuard;`
-  * *After*: `use library::lifecycle::foreground::guard::SingleInstanceGuard;`
-* **Services & Notifications**:
-  * *Before*: `use library::win32::{query_windows_service_status, show_toast_notification};`
-  * *After*: `use library::lifecycle::background::service::query_service_status;` and `use library::lifecycle::background::notification::show_toast_notification;`
+The 4.0 design system fixes this in three moves:
 
-### 3. Platform & Architecture Layer (Deployment)
-* **System Theme & Uptime Helpers**:
-  * *Before*: `use library::win32::{query_dark_mode, get_system_screen_resolution, get_dwm_accent_color};`
-  * *After*: `use library::platform::native::sys_info::{query_dark_mode, get_system_screen_resolution, get_dwm_accent_color};`
-* **Monitor / Screen Enumeration**:
-  * *Before*: `use library::win32::{get_monitors_summary, get_all_monitors};`
-  * *After*: `use library::platform::native::monitors::{get_monitors_summary, get_all_monitors};`
-
-### 4. System Role Layer (Purpose)
-* **Application Roles (RGB/Packages)**:
-  * *Before*: `use library::win32::{get_packages_breakdown, RgbController};`
-  * *After*: `use library::role::application::packages::get_packages_breakdown;` and `use library::role::application::rgb::controller::RgbController;`
-* **Registry Access (Infrastructure)**:
-  * *Before*: `use library::win32::{read_string, write_string, HKEY_CURRENT_USER};`
-  * *After*: `use library::platform::native::reg::{read_string, write_string, HKEY_CURRENT_USER};`
-
-This structure allows multiple crates per section in the future (e.g., library-interface-tui as a separate crate) while keeping the single-crate experience simple for git-based consumption in the r* apps.
-
-## library 4.0 Design System
-
-In library 4.0 every r* TUI app (helm, pulse, trance, template, scout, hub) and every r* GDI screensaver app (trance-scenes: cosmos, gnats, glyphs, flame, ...) consumes a **unified design system** from a single import path. The 4.0 release is the official v4.0.0 across library + all apps + the rScreensavers.
-
-### Single import path
+### 3.1 One façade
 
 ```rust
 use library::interface::tui::design::prelude::*;
 ```
 
-This brings in the entire visual identity: theme, accent bundles, status bar, toast, markdown viewer, layout guard, title banner, effect preview, mouse selection, layout helpers, text utilities, terminal-size constants, all 12 canonical TUI effects, and the unified `Screensaver` trait. See `docs/DESIGN_SYSTEM.md` for the full onboarding guide.
+This brings in the entire visual identity: theme, accent bundles, status bar, toast, markdown viewer, layout guard, title banner, effect preview, mouse selection, layout helpers, text utilities, terminal-size constants, all 10 canonical TUI effects, and the unified `Screensaver` trait. See [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md) for the full onboarding guide.
 
-### Why a design system now?
+### 3.2 One palette
 
-Before 4.0, the same chrome types (`StatusBar`, `MarkdownViewerState`, `ThemeColors`, `AccentColors`, ...) were scattered across `library::interface::tui::*`, `library::widgets::*`, and the consumer apps' own `win32.rs` shims. Each r* app re-implemented its own `is_dark_mode()` registry read and its own HSL accent-rotation math. The result was visual drift between helm, pulse, and trance-scenes — and a lot of code duplication.
+`library::role::application::palette::ScreenPalette` is the canonical color story:
 
-The 4.0 design system fixes this in three moves:
+```rust
+pub struct ScreenPalette {
+    pub bg:     (u8, u8, u8),
+    pub fg:     (u8, u8, u8),
+    pub accent: (u8, u8, u8),
+    pub dim:    (u8, u8, u8),  // 35% of accent
+    pub hot:    (u8, u8, u8),  // accent hue +30°
+    pub cool:   (u8, u8, u8),  // accent hue -120°
+    pub mid:    (u8, u8, u8),  // neutral chrome
+    pub peak:   (u8, u8, u8),  // white-hot peaks
+}
+```
 
-1. **One façade**: `library::interface::tui::design` is the single import surface. Everything an r* TUI needs lives there.
-2. **One palette**: `library::role::application::palette::ScreenPalette` is the canonical color story. The same RGB tuples drive both ratatui TUI chrome and GDI pixel renderers. `query_current_palette()` is the cross-platform helper that returns one.
-3. **One Screensaver trait**: `library::core::screensaver::Screensaver` (backend-agnostic, in `core` so it can be implemented by both TUI effects and GDI screensavers). The pre-4.0 ratatui-coupled trait is a thin wrapper at `library::interface::tui::screensaver::ScreensaverRenderer` for the buffer-management concerns only.
+The same RGB tuples drive both Ratatui TUI chrome and GDI pixel renderers. `query_current_palette()` is the cross-platform helper that returns one. The TUI-side `dimensions::Palette` enum exposes `Accent`, `AccentDim`, `AccentHot`, `AccentCool` variants that map 1:1 onto `ScreenPalette`'s fields.
 
-### 4.0 source-of-truth files (the `design/` subfolder)
+### 3.3 One `Screensaver` trait
 
-In library 4.0 every chrome file lives under `src/interface/tui/design/`:
+```rust
+pub trait Screensaver {
+    fn init(&mut self, _cols: usize, _rows: usize) {}
+    fn update(&mut self, dt: Duration, cols: usize, rows: usize);
+    fn draw(&self, grid: &mut [TerminalCell], cols: usize, rows: usize);
+    fn has_scanlines(&self) -> bool { false }
+}
+```
+
+The trait lives in `core` because it depends only on `TerminalCell` (also in `core`) and `std::time::Duration`. Both TUI effects and GDI screensavers can implement it. The pre-4.0 Ratatui-coupled trait is a thin wrapper at `library::interface::tui::screensaver::ScreensaverRenderer` for the buffer-management concerns only.
+
+### 3.4 The `design/` subfolder
 
 ```
 src/interface/tui/design/
-├── mod.rs                Façade + prelude + re-exports
+├── mod.rs                façade + prelude + re-exports
 ├── theme.rs              ThemeColors, get_theme, accent_color_from_hex
 ├── colors.rs             AccentColors, AccentTheme (3-color bundles)
 ├── status.rs             StatusBar (4-second decay pattern)
@@ -257,85 +156,138 @@ src/interface/tui/design/
 └── text.rs               wrap_text, align_line, char_width, visible_len, ...
 ```
 
-The 3.x module paths (`library::interface::tui::theme`, `library::interface::tui::markdown`, `library::interface::tui::status`, `library::interface::tui::layout`, `library::interface::tui::text`, `library::widgets::colors`, ...) are kept as **deprecated** re-exports for one minor release (4.0 → 4.1). They will be removed in 4.1.
+The pre-4.0 module paths (`library::interface::tui::theme`, `library::interface::tui::markdown`, `library::interface::tui::status`, `library::interface::tui::layout`, `library::interface::tui::text`, `library::widgets::colors`, ...) are kept as deprecated re-exports for one minor release (4.0 → 4.1). They will be removed in 4.1.
 
-### `Screensaver` trait moved to `core`
+---
 
-The 4.0 split: the trait is backend-agnostic, the renderer is TUI-only.
+## 4. The 10 screensaver scenes
 
-```
-src/core/screensaver.rs
-  pub trait Screensaver {
-      fn init(&mut self, _cols: usize, _rows: usize) {}
-      fn update(&mut self, dt: Duration, cols: usize, rows: usize);
-      fn draw(&self, grid: &mut [TerminalCell], cols: usize, rows: usize);
-      fn has_scanlines(&self) -> bool { false }
-  }
-  pub trait ScreensaverState { ... }   // active/focused sub-trait
-  pub trait ScreensaverEffect { ... }   // deprecated alias for back-compat
+All 10 scene implementations live at `library::role::application::scenes::<name>`. The binary shims in the [`screensavers`](https://github.com/local76/screensavers) workspace are 20-line wrappers around them.
 
-src/interface/tui/screensaver.rs
-  pub struct ScreensaverRenderer { ... }  // buffer management, TUI-only
-```
+| Module | Type | What it is |
+|---|---|---|
+| `scenes::beams` | `Beams` | 4 colored spotlight cones sweeping over a starfield with rising dust + lens flares. Centered system logo. |
+| `scenes::bounce` | `BhopDashboard` | 3-panel cyberpunk TUI dashboard: live system info, fake command console, bunny-hop mini-game. |
+| `scenes::flame` | `FireEffect` | Bottom-up cellular-automaton fire, Doom-style. Centered system logo warms with the fire. |
+| `scenes::gnats` | `Fireflies` | 30–60 fireflies in a triadic palette. Boid-style predator/prey. Wireframe network. Starfield. |
+| `scenes::bursts` | `Fireworks` | City skyline at bottom. Rockets launch and explode into colored particle bursts. Windows light up. |
+| `scenes::cosmos` | `LifeEffect` | Full universe lifecycle: Darkness → BigBang → Expansion → Accretion → Singularity → Collapse. |
+| `scenes::glyphs` | `Glyphs` | Falling katakana+digit rain. Head of each stream draws from the host's hostname+OS+kernel. |
+| `scenes::disco` | `Party` | Disco ball + 8 sweeping rays + neon confetti + VU-meter equalizer + audio beat. |
+| `scenes::storm` | `Pour` | Cold rain over mountains + pine forest. Periodic lightning. Bird on a tree. Deer/bear/bigfoot walk by. |
+| `scenes::chaos` | `Unstable` | System logo disassembles. 7 chaos types: Supernova, BlackHole, Vortex, GlitchWave, Shockwave, Entropy, Resonance. RGB chromatic-aberration glitch + spring snap-back. |
 
-**4.0 signature changes**:
-- `update` now takes `Duration` (was `f32` seconds in 3.x). Use
-  `Duration::from_secs_f32(dt)` to bridge.
-- `ScreensaverRenderer::tick_duration` is the new Duration-based entry point. The pre-4.0 `tick(&mut s, f32)` is a deprecated shim.
+Each scene exposes a `new()` constructor (no args) and a `name()` method returning the lowercase scene name. Each implements the `Screensaver` trait (init, update, draw, has_scanlines). `ScreensaverRenderer` is the TUI-side buffer manager; the GDI / raw-termios loop in `library::screensaver_runtime` is what the `screensavers` workspace's shim binaries call.
 
-### `ScreenPalette` for cross-renderer color story
+---
 
-```rust
-pub struct ScreenPalette {
-    pub bg: (u8, u8, u8),
-    pub fg: (u8, u8, u8),
-    pub accent: (u8, u8, u8),
-    pub dim: (u8, u8, u8),       // 35% of accent
-    pub hot: (u8, u8, u8),      // accent hue +30°
-    pub cool: (u8, u8, u8),     // accent hue -120°
-    pub mid: (u8, u8, u8),      // neutral chrome
-    pub peak: (u8, u8, u8),     // white hot peaks
-}
-```
+## 5. TUI effect naming — Verb × Noun × Style × Palette
 
-`ScreenPalette` is in `library::role::application::palette` (Application role, backend-agnostic — no ratatui types). Every r* app constructs one via `query_current_palette()` and reads the same fields.
+The 10 effects in `library::interface::tui::effects` follow a 4-dimension naming system. The type name is always `Verb` + `Noun` (PascalCase); the file name is the snake_case of the same; the display name is `"Verb Noun"`.
 
-The TUI-side `dimensions::Palette` enum exposes `ACCENT`, `ACCENT_DIM`, `ACCENT_HOT`, `ACCENT_COOL` variants that map 1:1 onto `ScreenPalette`'s accent/dim/hot/cool fields. This means r* TUI effects, r* GDI screensavers, and r* dashboards all derive the same color story from the same system accent.
+| Dimension | Values | Purpose |
+|---|---|---|
+| **Verb** | `Falling`, `Rising`, `Flowing`, `Pulled`, `Pulsing` | Motion model |
+| **Noun** | `Glyphs`, `Particles`, `Droplets`, `Comets`, `Blocks`, `Waves` | Visual unit |
+| **Style** | `Solid`, `Trailing`, `Flared` | Render treatment |
+| **Palette** | `Monochrome(r,g,b)`, `Accent`, `Heat`, `AccentDim`, `AccentHot`, `AccentCool` | Color source |
 
-### Taxonomy compliance
+- **Style** lives in `interface::tui::effects::dimensions::Style` and is exposed as a field on every effect.
+- **Palette** lives in `interface::tui::effects::dimensions::Palette` and is exposed as a field on every effect.
+- All effects expose `with_style(Style)` and `with_palette(Palette)` builder methods.
+- The 4 dimensions are mutually orthogonal. 5 verbs × 6 nouns = 30 base combinations × 6 palettes = 180; with 3 styles = 540 total. Most are nonsense, but the matrix is the catalog.
 
-The 4-layer taxonomy (Core / Interface / Lifecycle / Platform / Role) is unchanged in 4.0. The design system files are strictly under **Interface (TUI / Presentation Layer)** — `design/*` does not import from `lifecycle/`, `platform/`, or `role/`. `ScreenPalette` is in **Role (Application Software)** because it is a task-level reusable. The unified `Screensaver` trait is in **Core** because it depends only on `TerminalCell` (also Core) and `std::time::Duration`.
+### House rules
 
-The `tests/taxonomy_compliance.rs` AST-walker catches any future violation: a new `design/*` file that imports from `lifecycle/`, `platform/`, or `role/` will fail the test.
+- **Adding a new Verb** requires a CHANGELOG entry justifying that it cannot be expressed as a variant of an existing verb.
+- **Adding a new Noun** requires a CHANGELOG entry justifying that it cannot be expressed as a variant of an existing noun.
+- **Adding a new Style** must be visually distinct (not a color or timing tweak).
+- **Adding a new Palette** must be non-trivial (not just `Monochrome` with math).
+- **Hard caps**: 5 verbs, 6 nouns, 3 styles, 6 palettes. Adding past a cap requires a documented justification.
 
-### 4.0 breaking changes summary
+### Current catalog (10 effects)
+
+| Type | File | Default Style | Default Palette |
+|---|---|---|---|
+| `FallingGlyphs` | `falling_glyphs.rs` | `Trailing` | `Monochrome(Green)` |
+| `FlowingParticles` | `flowing_particles.rs` | `Solid` | `Monochrome(White)` |
+| `PulledParticles` | `pulled_particles.rs` | `Solid` | `Monochrome(Blue)` |
+| `FallingDroplets` | `falling_droplets.rs` | `Solid` | `Monochrome(Blue)` |
+| `RisingFlames` | `rising_flames.rs` | `Solid` | `Heat` |
+| `FallingComets` | `falling_comets.rs` | `Trailing` | `Monochrome(White)` |
+| `PulsingGlyphs` | `pulsing_glyphs.rs` | `Solid` | `Accent` |
+| `PulsingWaves` | `pulsing_waves.rs` | `Solid` | `Heat` |
+| `FlowingBlocks` | `flowing_blocks.rs` | `Solid` | `Accent` |
+| `PulledBlocks` | `pulled_blocks.rs` | `Solid` | `Monochrome(Blue)` |
+
+---
+
+## 6. Adding new code
+
+1. **Classify using the taxonomy.** Which of the 4 layers does this code belong to? Which `role`? If it is neutral and reusable, it goes in `core`. If it depends on a TUI, an OS, a service, or a task, it goes in the matching submodule.
+2. **Place in the matching module.** Use `core` only for truly neutral data.
+3. **Add documentation with a classification comment.** A 1-line `// Classification: <layer>` at the top of the file.
+4. **Gate behind the appropriate Cargo feature.** `interface-tui` for TUI, `platform-native` for OS-specific FFI, `role-application` for app-level task code, etc.
+5. **Update this `ARCHITECTURE.md` and the relevant `mod.rs` docs.** New code that fits an existing pattern doesn't need a new section here; a new pattern does.
+6. **Provide cross-platform stubs where possible.** A `platform::native::monitors::get_monitors_summary` on Linux should return the Xinerama / XRandR result, not a Windows-only stub.
+7. **Avoid putting presentation / lifecycle / platform code into `core`.** The `tests/taxonomy_compliance.rs` AST walker will fail the test if you do.
+
+---
+
+## 7. Taxonomy compliance (the test)
+
+`tests/taxonomy_compliance.rs` walks the AST and fails the build if:
+
+- A `core/*` file imports from `interface/`, `lifecycle/`, `platform/`, or `role/`.
+- A `design/*` file imports from `lifecycle/`, `platform/`, or `role/`.
+- A `platform::embedded/*` file imports from `interface::gui`, `interface::tui`, or any `platform::native/*`.
+
+This catches the most common mistake: a `core` type that depends on a TUI backend, which then traps a `lifecycle::background` service that tries to use it without enabling the TUI feature.
+
+---
+
+## 8. Windows / Linux / GitHub
+
+- **Windows / Linux**: Primarily `platform::native` with strong influence on `lifecycle` (services vs daemons, conhost behavior) and `role::system` (registry vs config files, DWM, power APIs). Code uses `#[cfg(target_os = "...")]` and per-platform splits (e.g., `platform/native/sys_info/windows.rs`).
+- **GitHub**: External to the runtime taxonomy. Supports `platform::native` distribution via git dependencies and tagged releases. Hosts the org profile and packaging metadata. The monorepo-like local setup (`toolkit/scripts/build.ps1` and the `[patch]` redirect in every consumer's `Cargo.toml`) relies on it.
+
+---
+
+## 9. 4.0 breaking changes summary
 
 | Change | Migration |
 |---|---|
 | `Screensaver` trait moved from `interface::tui::screensaver` to `core::screensaver` | Update import path; trait shape identical |
 | `Screensaver::update` takes `Duration` (was `f32`) | `Duration::from_secs_f32(dt)` to bridge |
-| `ScreensaverRenderer::tick` (3.x, `f32`) → `tick_duration` (4.0, `Duration`) | Rename call sites; old method is deprecated shim |
-| `Screensaver` methods `init/update/draw/has_scanlines` declared directly on the trait (no separate `ScreensaverState`/`Effect` supertraits) | library effects: split `impl ScreensaverState` + `impl ScreensaverEffect` into `impl Screensaver` directly |
-| New `Screensaver::has_scanlines` (default `false`) | trance-scenes effects that want scanlines opt in |
-| TerminalCell `pub fn draw(&self, ...)` (was `&mut self`) | library effects that mutated state in draw use `RefCell` (library has 2; trance-scenes has 0) |
+| `ScreensaverRenderer::tick` (3.x, `f32`) → `tick_duration` (4.0, `Duration`) | Rename call sites; old method is a deprecated shim |
+| `Screensaver` methods declared directly on the trait (no separate `ScreensaverState` / `Effect` supertraits) | Library effects: split `impl ScreensaverState` + `impl ScreensaverEffect` into `impl Screensaver` directly |
+| New `Screensaver::has_scanlines` (default `false`) | Effects that want scanlines opt in |
+| `TerminalCell::draw` takes `&self` (was `&mut self`) | Effects that mutated state in `draw` use `RefCell` (library has 2; `screensavers` has 0) |
 | `ScreensaverEffect` trait re-exported as deprecated trait alias | One minor of warnings; will be removed in 4.1 |
 | Module split into `design/` subfolder | 3.x paths re-exported as deprecated module aliases |
-| New `ScreenPalette` and `query_current_palette()` | r* apps replace hand-rolled HSL math + registry reads |
-| `dimensions::Palette` gains `AccentDim`, `AccentHot`, `AccentCool` variants | TUI effects opt in; old `Monochrome/Accent/Heat` unchanged |
-| Version bump 3.4.4 → 4.0.0 | Update r* `Cargo.toml` to require `library = "4.0"` (or `library = { git = "...", tag = "v4.0.0" }`) |
+| New `ScreenPalette` and `query_current_palette()` | Apps replace hand-rolled HSL math + registry reads |
+| `dimensions::Palette` gains `AccentDim`, `AccentHot`, `AccentCool` variants | TUI effects opt in; old `Monochrome / Accent / Heat` unchanged |
+| Version bump 3.4.4 → 4.0.0 | Update consumer `Cargo.toml` to require `library = "4.0"` (or `library = { git = "...", tag = "v4.0.0" }`) |
 
-## Related Projects (for context)
+---
 
-- trance / trance-scenes: Heavy use of TUI effects, lifecycle (screensavers as background/foreground), platform (console/windowing).
-- helm / pulse / ignite: System info, package inventory, monitors, power, dark mode (Role + Platform + Interface TUI).
-- template (incl. window subcrate): GUI custom + TUI, diagnostics.
-- scout: Platform (WLAN), TUI, lifecycle.
-- All use library via git + local [patch] for development.
+## 10. Consumers
 
-## Future
+- [`screensavers`](https://github.com/local76/screensavers) — the 10 binary shims, each a 20-line wrapper around a `scenes::*` type.
+- [`trance`](https://github.com/local76/trance) — Windows screensaver host + TUI picker. Uses `interface::tui::design::prelude::*` for the picker chrome.
+- [`helm`](https://github.com/local76/helm) — system info dashboard. Uses `interface::tui` for the dashboard, `platform::native::sys_info` for the data.
+- [`pulse`](https://github.com/local76/pulse) — live resource monitor. Uses `interface::tui` and `platform::native::sys_info`.
+- [`scout`](https://github.com/local76/scout) — WiFi scanner. Uses `interface::tui` and `platform::native::wifi`.
+- [`ignite`](https://github.com/local76/ignite) — startup-time dashboard. Uses `interface::tui`, `lifecycle::foreground::config`, `platform::native::reg`.
 
-- Full port of reusable effects from trance-scenes.
-- Stronger API/Headless support.
-- Better CLI vs TUI separation.
-- CI enforcement of taxonomy (no cross-layer imports).
-- Potential workspace split per major section.
+All 6 consumers depend on `library` via the `[patch."https://github.com/local76/library.git"]` redirect. See [`README.md`](README.md#add-as-a-dependency) for the full dependency story.
+
+---
+
+## 11. Future
+
+- Full port of reusable effects from the old `trance-scenes` and `r*` days is now complete (all 10 scenes live in `scenes::*`).
+- Stronger API / headless support (the `interface::api` and `lifecycle::background::service` modules).
+- Better CLI vs TUI separation (the `interface::cli` façade).
+- CI enforcement of taxonomy beyond the local `tests/taxonomy_compliance.rs` test.
+- Potential workspace split per major section (`library-interface-tui` as a separate crate).
