@@ -1,56 +1,78 @@
 # library
 
-`library` is the shared foundation library for the local76 `apps` ecosystem of local-first terminal and system utilities (including `trance`, `helm`, `pulse`, `template`, `scout`, and `ignite`).
+> The shared foundation library for the local76 ecosystem.
+
+`library` provides the design system, TUI widgets, Screensaver trait, 10 screensaver scene implementations, the screensaver_runtime (Win32 GDI + Linux raw-termios), RGB controller, system-info helpers, registry abstraction, daemon IPC, and file-logging — all behind a 4-layer taxonomy of Cargo features. Every other local76 crate depends on this one.
+
+`library` is the only Cargo crate in the local76 ecosystem that ships a meaningful public API. The 5 TUI apps and the 10 screensaver shims are consumers; `library` is the producer.
 
 ---
 
-## 🛠️ Installation
+## Add as a dependency
 
-Add `library` as a git dependency in your `Cargo.toml`:
+For local development (recommended — every consumer in this monorepo uses this form):
+
+```toml
+[patch."https://github.com/local76/library.git"]
+library = { path = "../library" }
+
+[dependencies]
+library = { git = "https://github.com/local76/library.git", branch = "main", features = [...] }
+```
+
+The `[patch]` redirects the git URL to the local sibling directory. Edits to library source take effect on the next `cargo build` of the consumer.
+
+For external consumers (CI, release):
 
 ```toml
 [dependencies]
-library = { git = "https://github.com/local76/library.git", branch = "main" }
+library = { git = "https://github.com/local76/library.git", tag = "v4.2.1" }
 ```
 
-Or for local development, patch it:
-
-```toml
-[patch.crates-io]
-library = { path = "../library" }
-```
+The git tag pins to a specific published version. Cargo will not pull a `main` branch that hasn't been tagged.
 
 ---
 
-## 📦 Cargo Features
+## Cargo features
 
-To prevent dependency and binary size bloat in simple CLI daemons, features are split into taxonomy-aligned gates:
+Features follow the 4-layer taxonomy: `interface-*`, `lifecycle-*`, `platform-*`, `role-*`. Granular features (`widgets`, `effects`, `sys-info`, `reg`, `rgb`, `gpu`) remain for backward compatibility.
 
-### Taxonomy Features (Preferred)
-* `interface-tui` - Enables TUI rendering, widgets, and matrix/particle effects.
-* `interface-gui` - Enables graphical UI windowing and styles (egui/eframe).
-* `interface-api` - Enables local sockets/IPC services helpers.
-* `lifecycle-foreground` - Enables standalone console window styling, DPI adjustments, and single-instance guards.
-* `lifecycle-background` - Enables background daemons, system service mutations, and tray/clipboard monitoring.
-* `platform-native` - Enables Windows Registry emulation, hardware displays query, and system info parsing.
-* `platform-gpu` - Enables headless GPU compute shaders and wgpu interfaces.
-* `role-system` - Low-level hardware, bios, service, and power diagnostics.
-* `role-application` - High-level utilities, package inventory counting, and OpenRGB integrations.
+### Taxonomy features (preferred)
 
-### Granular & Compatibility Features
-* `widgets` - Ratatui widgets (`AccentGauge`, `AccentList`, `AccentTabs`, etc.).
-* `effects` - ASCII particle systems (`MatrixRain`, `SimpleParticles`, `TuiEffect` trait).
-* `sys-info` - System info helper parsing.
-* `reg` - Config storage access / registry abstraction.
-* `rgb` - OpenRGB protocol and controller handlers.
-* `gpu` - Headless GPU compute context initialization and running utilities.
+| Feature | What it enables |
+|---|---|
+| `interface-tui` | Ratatui rendering, widgets, screensaver scenes |
+| `interface-gui` | egui/eframe windowing and styles |
+| `interface-api` | Local sockets / IPC helpers |
+| `interface-cli` | `clap`, `run_doctor`, scaffold helpers |
+| `lifecycle-foreground` | Console window styling, DPI, single-instance guard |
+| `lifecycle-background` | Daemon, service, tray, clipboard, event log |
+| `platform-native` | sysinfo, winreg, OpenRGB, WiFi, X11, DWM |
+| `platform-gpu` | Headless GPU compute, wgpu |
+| `role-system` | Hardware / BIOS / service / power diagnostics |
+| `role-application` | Palette, RGB, packages, screensaver scenes |
+| `screensaver-runtime` | Win32 GDI + raw-termios main loop (host a screensaver process) |
+| `scenes` | The 10 scene implementations |
+| `winget` | Local winget SQLite scanner |
+
+Default features: `interface-tui`, `interface-api`, `lifecycle-foreground`, `lifecycle-background`, `platform-native`, `role-system`, `role-application`, `scenes`, `winget`.
+
+### Granular features (legacy)
+
+| Feature | What it enables |
+|---|---|
+| `widgets` | Ratatui widgets (AccentGauge, AccentList, AccentTabs) |
+| `effects` | ASCII particle systems (FallingGlyphs, RisingFlames, etc.) |
+| `sys-info` | System info helper parsing |
+| `reg` | Config storage / registry abstraction |
+| `rgb` | OpenRGB protocol + controller handlers |
+| `gpu` | Headless GPU compute context |
 
 ---
 
-## 🚀 Usage
+## Usage
 
-### 🩺 Diagnostic Doctor
-All consumer applications can easily implement diagnostic modes by executing the doctor helper:
+### Diagnostic doctor
 
 ```rust
 use library::interface::cli::run_doctor;
@@ -64,83 +86,93 @@ fn main() {
 }
 ```
 
-### 🎨 Rendering TUI Effects
+### Embed a screensaver scene
 
-All effects follow a **Verb × Noun × Style × Palette** naming system. Pick an effect, then customize its style and palette:
+Every scene implements the `Screensaver` trait. The 10 scene implementations live at `library::role::application::scenes::<name>`.
+
+```rust
+use library::core::screensaver::Screensaver;
+use library::core::TerminalCell;
+use library::role::application::scenes::glyphs::Glyphs;
+
+let mut effect = Glyphs::new();
+let mut grid = vec![TerminalCell::default(); cols * rows];
+effect.update(std::time::Duration::from_millis(16), cols, rows);
+effect.draw(&mut grid, cols, rows);
+```
+
+Available scenes (all in `library::role::application::scenes::*`):
+
+| Module | Type | Default look |
+|---|---|---|
+| `beams` | `Beams` | 4 colored spotlight cones over a starfield |
+| `bounce` | `BhopDashboard` | 3-panel cyberpunk TUI dashboard |
+| `flame` | `FireEffect` | Bottom-up cellular-automaton fire |
+| `gnats` | `Fireflies` | Boid-style firefly swarm |
+| `bursts` | `Fireworks` | City skyline + rockets + bursts |
+| `cosmos` | `LifeEffect` | Universe lifecycle simulation |
+| `glyphs` | `Glyphs` | Falling katakana+digit rain |
+| `disco` | `Party` | Disco ball + rays + VU-meter |
+| `storm` | `Pour` | Rain + mountains + lightning |
+| `chaos` | `Unstable` | System-logo deconstruction + chaos types |
+
+### Host a screensaver process
+
+```rust
+fn main() {
+    library::screensaver_runtime::run_main(
+        library::role::application::scenes::glyphs::Glyphs::new(),
+        "glyphs",
+    );
+}
+```
+
+The `screensaver_runtime` module is gated on the `screensaver-runtime` feature (default-off). Enable it in your `Cargo.toml` if your app needs to host a screensaver process directly. The 10 crates in the [`screensavers`](https://github.com/local76/screensavers) workspace do exactly this.
+
+### Render a TUI effect
+
+All 10 TUI effects follow a **Verb × Noun × Style × Palette** taxonomy:
 
 ```rust
 use library::interface::tui::effects::{
-    FallingGlyphs, FallingDroplets, RisingFlames, FlowingParticles, PulledParticles,
-    FallingComets, PulsingGlyphs, PulsingWaves,
-    Style, Palette, TuiEffect,
+    FallingGlyphs, Style, Palette, TuiEffect,
 };
 
 // Default look (matrix-green with trails)
 let mut rain = FallingGlyphs::new(80, 24, 0.35);
 
-// Customize the render treatment and color
+// Customized: lens-flare heads, theme-matched color
 let mut flare_rain = FallingGlyphs::new(80, 24, 0.35)
-    .with_style(Style::Flared)       // lens-flare heads
-    .with_palette(Palette::Accent); // theme-matched color
+    .with_style(Style::Flared)
+    .with_palette(Palette::Accent);
 
-// Game/render loop:
 flare_rain.update(0.016, 80, 24);
 flare_rain.draw(&mut grid, 80, 24);
 ```
 
-### Dimensions
-
-| Dimension | Values | What it controls |
+| Dimension | Values | Controls |
 |---|---|---|
-| **Verb** | `Falling`, `Rising`, `Flowing`, `Pulled`, `Pulsing` | Motion model |
-| **Noun** | `Glyphs`, `Particles`, `Droplets`, `Comets`, `Blocks`, `Waves` | Visual unit |
-| **Style** | `Solid`, `Trailing`, `Flared` | Render treatment |
-| **Palette** | `Monochrome(r,g,b)`, `Accent`, `Heat` | Color source |
-| **Speed** | `Slow`, `Normal`, `Fast`, `Custom(u8)` | Velocity multiplier (0.25x-5.0x) |
+| Verb | `Falling`, `Rising`, `Flowing`, `Pulled`, `Pulsing` | Motion model |
+| Noun | `Glyphs`, `Particles`, `Droplets`, `Comets`, `Blocks`, `Waves` | Visual unit |
+| Style | `Solid`, `Trailing`, `Flared` | Render treatment |
+| Palette | `Monochrome(r,g,b)`, `Accent`, `Heat` | Color source |
+| Speed | `Slow`, `Normal`, `Fast`, `Custom(u8)` | Velocity multiplier (0.25x – 5.0x) |
 
-### Built-in Effects (10)
+5 verbs × 6 nouns = 30 base combinations × 9 look variants = 270 total. The matrix is the catalog; most combinations are nonsense, but the catalog is the source of truth.
 
-| Type | Default style | Default palette | Best for |
-|---|---|---|---|
-| `FallingGlyphs` | `Trailing` | `Monochrome(Green)` | Matrix rain, code streams |
-| `FlowingParticles` | `Solid` | `Monochrome(White)` | Ambient dust, snowfall |
-| `PulledParticles` | `Solid` | `Monochrome(Blue)` | Gravity to center, magnets |
-| `FallingDroplets` | `Solid` | `Monochrome(Blue)` | Rain, leaks, tears |
-| `RisingFlames` | `Solid` | `Heat` | Fire, heat plumes |
-| `FallingComets` | `Trailing` | `Monochrome(White)` | Shooting stars, magic trails |
-| `PulsingGlyphs` | `Solid` | `Accent` | Heartbeat, focus indicator |
-| `PulsingWaves` | `Solid` | `Heat` | Audio visualizer, ambient backdrop |
-| `FlowingBlocks` | `Solid` | `Accent` | Tetris pieces drifting, retro gameplay |
-| `PulledBlocks` | `Solid` | `Monochrome(Blue)` | Block particles to gravity center |
+### Use the design façade
 
 ```rust
-use library::interface::tui::effects::{
-    FallingDroplets, Speed,
-};
-
-let mut rain = FallingDroplets::new(80, 24)
-    .with_speed(Speed::Fast); // 2x velocity
+use library::interface::tui::design::prelude::*;
 ```
 
-### How to Pick an Effect
-
-1. **What's it doing?** Falling rain, rising smoke, pulsing heartbeat? → **Verb**
-2. **What's it made of?** Characters, dots, streaks, shapes? → **Noun**
-3. **How does it look?** Flat, with trail, with flare? → **Style**
-4. **What color?** Fixed, theme-matched, temperature? → **Palette**
-
-Combine any of the 5 verbs × 6 nouns = 30 base combinations. Each accepts any of the 3 styles × 3 palettes = 9 look variants, so 270 total — most are nonsense, but the matrix is the catalog.
+This re-exports the status bar, toast, markdown viewer, theme + accent colors, layout guard, and all 10 canonical TUI effects.
 
 ---
 
-## 🔄 Migration Guide (Legacy to Taxonomy)
+## Module path migration (3.x → 4.x)
 
-> [!NOTE]
-> **Taxonomy Features (Cargo features)** control what code is compiled in your `Cargo.toml` dependencies, whereas **Taxonomy Paths (module paths)** are the new Rust import locations in your code.
-
-If you are migrating an older application to `library` version 3.0.0+, update your module references as follows:
-
-| Old Path | New Taxonomy Path |
+| Old (3.x) | New (4.x) |
 | :--- | :--- |
 | `library::widgets::*` | `library::interface::tui::widgets::*` |
 | `library::effects::*` | `library::interface::tui::effects::*` |
@@ -152,28 +184,30 @@ If you are migrating an older application to `library` version 3.0.0+, update yo
 | `library::rgb::*` | `library::role::application::rgb::*` |
 | `library::game::BhopGame` | `library::role::application::game::ObstacleJumpGame` |
 
-> **Note (3.1.0+):** The 5 TUI effects were renamed in 3.1.0 to follow the Verb+Noun taxonomy. Old type names (`MatrixRain`, `SimpleParticles`, `GravityParticles`, `RainEffect`, `FireEffect`) remain available as deprecated type aliases at the crate root. They will be removed in 4.0.0.
->
-> ```rust
-> // Old (still works, deprecated):
-> use library::MatrixRain;
->
-> // New (preferred):
-> use library::interface::tui::effects::FallingGlyphs;
-> ```
+---
+
+## Visual standards
+
+All applications in the ecosystem share a cohesive UI style. See [docs/VISUAL_STANDARDS.md](docs/VISUAL_STANDARDS.md) for the icon container layout, neon wireframe elements, and branding asset packaging.
+
+## Embedded markdown docs (F1–F7 in-TUI help)
+
+The `library::embedded_docs!` macro bakes markdown files (README, LICENSE, CONTRIBUTING, etc.) directly into your binary at compile time. The TUI can show help text without reading the filesystem at runtime — which would break in a single-file `.scr` Windows screensaver install. See [docs/EMBEDDED_DOCS.md](docs/EMBEDDED_DOCS.md) for the canonical example and the F1–F7 wiring pattern.
 
 ---
 
-## 🎨 Visual Standards
+## Build
 
-All applications in the ecosystem share a cohesive user interface style and visual asset layout (e.g. icon containers, neon wireframe elements). See [docs/VISUAL_STANDARDS.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/docs/VISUAL_STANDARDS.md) for details on visual guidelines and branding asset packaging.
+```pwsh
+git clone https://github.com/local76/library.git
+cd library
+cargo build --release
+```
 
-## 📚 Embedding markdown docs (F1–F7 in-TUI help)
-
-The `library::embedded_docs!` macro bakes a set of markdown files (README, LICENSE, CONTRIBUTING, etc.) directly into your binary at compile time, so your TUI can show help text without reading the filesystem at runtime (which would break in a single-file `.scr` Windows screensaver install). See [docs/EMBEDDED_DOCS.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/docs/EMBEDDED_DOCS.md) for the canonical example and the F1–F7 wiring pattern. (This pattern originated in template; the doc is now in library so the 5 other r* TUI apps have a single source of truth.)
+For the full local76 build orchestrator, see [`toolkit`](https://github.com/local76/toolkit).
 
 ---
 
-## 📄 License
+## License
 
-This project is licensed under the MIT License. See [LICENSE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/LICENSE.md) for details.
+MIT. See [LICENSE.md](LICENSE.md).
