@@ -74,17 +74,17 @@ platform-gpu = ["gpu"]
 role-system = ["sys-info", "reg", "service", "event-log"]
 role-application = ["rgb"]
 
-# rcommon 4.1: the 10 r* screensaver effects (rLife, rMatrix, rFire, rBhop,
-# rBeams, rPour, rUnstable, rParty, rFireworks, rFireflies) live under
-# `rcommon::role::application::scenes`. The default features include
+# library 4.1: the 10 r* screensaver effects (cosmos, glyphs, flame, bounce,
+# beams, storm, chaos, disco, bursts, gnats) live under
+# `library::role::application::scenes`. The default features include
 # `scenes`; r* apps that don't need the effects can opt out with
 # `default-features = false`.
 scenes = []
 
-# rcommon 4.2: the screensaver runtime (window loop + CLI args + raw
-# terminal on non-Windows). The 10 r* effect binaries in rScenes/
-# enable this feature to get `rcommon::screensaver_runtime::run_main`.
-# The 7 r* TUI apps and other rcommon consumers that don't need to
+# library 4.2: the screensaver runtime (window loop + CLI args + raw
+# terminal on non-Windows). The 10 r* effect binaries in screensavers/
+# enable this feature to get `library::screensaver_runtime::run_main`.
+# The 7 r* TUI apps and other library consumers that don't need to
 # host a screensaver process do not enable it. Default-off because it
 # pulls in `libc` on non-Windows and the Win32 GDI stack on Windows.
 screensaver-runtime = ["scenes", "platform-native", "role-application", "lifecycle-foreground"]

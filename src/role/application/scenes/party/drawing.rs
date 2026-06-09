@@ -276,7 +276,7 @@ impl Party {
         }
 
         // library 4.1: render the centered system logo from the live OS info
-        // (replaces pre-4.1 `ridle_core::logo_lines()` + `logo_dimensions()`).
+        // (replaces pre-4.1 `trance_core::logo_lines()` + `logo_dimensions()`).
         let logo_text = get_system_info().logo_text;
         let lines = render_logo_block(&logo_text, None);
         let logo_h = lines.len();

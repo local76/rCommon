@@ -1,5 +1,5 @@
 // =====================================================
-// library - Shared utility library for the local76 rApps ecosystem
+// library - Shared utility library for the local76 apps ecosystem
 // Organized according to the 4-layer taxonomy:
 //
 // 1. Interface (Presentation Layer)
@@ -110,7 +110,7 @@ pub use platform::native::monitors::{get_monitors_summary, get_all_monitors};
 // (Win32 GDI on Windows, raw-termios terminal on Linux/macOS), the
 // CLI arg parser (`/s`, `/c`, `/p HWND`), and the public
 // `run_main(saver, name)` entry point. The 10 r* effect binary
-// crates in rScenes/ enable the `screensaver-runtime` feature to
+// crates in screensavers/ enable the `screensaver-runtime` feature to
 // get this module; other library consumers don't.
 #[cfg(feature = "screensaver-runtime")]
 pub mod screensaver_runtime;
@@ -121,7 +121,7 @@ pub use lifecycle::foreground::set_tui_panic_hook;
 #[cfg(feature = "window")]
 pub use lifecycle::foreground::window::hide_console_at_startup;
 #[cfg(feature = "window")]
-#[allow(deprecated)] // Intentional: Re-exporting legacy conhost relaunch helpers for backward compatibility with older rApps
+#[allow(deprecated)] // Intentional: Re-exporting legacy conhost relaunch helpers for backward compatibility with older apps
 pub use lifecycle::foreground::window::{
     RECT, MONITORINFO, COORD, SMALL_RECT, CONSOLE_SELECTION_INFO, POINT,
     get_console_rect, get_window_rect, set_window_pos, center_console_window, query_cursor_pos,

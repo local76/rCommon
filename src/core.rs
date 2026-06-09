@@ -26,7 +26,7 @@ pub const UNKNOWN_HOST: &str = "localhost";
 
 /// Linear Congruential Generator. The single canonical RNG implementation
 /// used by games, effects, and any deterministic logic across the entire
-/// rApps suite (CLI tools, TUI effects, background services, etc.).
+/// apps suite (CLI tools, TUI effects, background services, etc.).
 pub struct LcgRng(u64);
 
 impl LcgRng {
@@ -80,7 +80,7 @@ mod tests {
 ///
 /// This is the universal currency for retro/TUI effects, dashboards,
 /// and any text-based visual output. It is deliberately backend-agnostic
-/// (works with ratatui, custom GDI renderers in rIdle-scenes, headless
+/// (works with ratatui, custom GDI renderers in trance-scenes, headless
 /// logging, etc.).
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
 pub struct TerminalCell {
@@ -122,8 +122,8 @@ pub struct DashboardInfo {
 /// Classification: Core (neutral data usable by Interface/TUI effects, Role/Application dashboards,
 /// Platform/Native queries, Lifecycle/Background monitors, etc.).
 /// 
-/// Enhanced SystemInfo / Dashboard context ported and generalized from rIdle-scenes/ridle-core
-/// and patterns in rFetch/rMonitor. Provides live OS/kernel/logo_text + stats for dynamic UIs/effects.
+/// Enhanced SystemInfo / Dashboard context ported and generalized from trance-scenes/trance-core
+/// and patterns in helm/pulse. Provides live OS/kernel/logo_text + stats for dynamic UIs/effects.
 /// Call periodically for fresh values (uptime, mem, etc.).
 ///
 /// For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/ARCHITECTURE.md).
@@ -249,7 +249,7 @@ pub fn rgb_to_hsl(r: u8, g: u8, b: u8) -> (f32, f32, f32) {
 /// Backend-agnostic screensaver trait (no ratatui). See [`screensaver`] module.
 ///
 /// In library 4.0 this is the single source of truth for the screensavers used
-/// across r* TUI apps and r* GDI screensaver apps (rIdle-scenes). The ratatui
+/// across r* TUI apps and r* GDI screensaver apps (trance-scenes). The ratatui
 /// renderer wrapper lives in `interface::tui::screensaver::ScreensaverRenderer`.
 ///
 /// `ScreensaverEffect` is re-exported as a deprecated trait alias for 4.0

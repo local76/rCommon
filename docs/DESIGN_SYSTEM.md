@@ -1,11 +1,11 @@
-# rCommon Design System (4.0)
+# library Design System (4.0)
 
-The rCommon 4.0 design system is the single source of truth for the visual
-identity of every `r*` app in the local76 rApps suite:
+The library 4.0 design system is the single source of truth for the visual
+identity of every `r*` app in the local76 apps suite:
 
-- **TUI apps** (rFetch, rMonitor, rIdle, rTemplate, rWifi, rStartup, hub) —
+- **TUI apps** (helm, pulse, trance, template, scout, ignite, hub) —
   ratatui/buffer-managed, drive effects through `ScreensaverRenderer`.
-- **Screensaver apps** (rIdle-scenes: rLife, rFireflies, rMatrix, rFire, ...) —
+- **Screensaver apps** (trance-scenes: cosmos, gnats, glyphs, flame, ...) —
   GDI/fullscreen pixel loop, share the same `Screensaver` trait.
 - **Future r* apps** (CLI tools, native UIs) — same building blocks, layered
   per the 4-layer taxonomy.
@@ -21,7 +21,7 @@ view. For the underlying architectural rationale, see
 Every r* app should import its UI from this one path:
 
 ```rust
-use rcommon::interface::tui::design::prelude::*;
+use library::interface::tui::design::prelude::*;
 ```
 
 This brings in:
@@ -40,7 +40,7 @@ This brings in:
   `TuiEffect`, `render_logo_block`
 
 If you only need widgets (no effects), use
-`rcommon::interface::tui::design_widgets_only::*` (no `effects` feature
+`library::interface::tui::design_widgets_only::*` (no `effects` feature
 required). For most apps, the full `design::prelude` is the right choice.
 
 ---
@@ -52,9 +52,9 @@ The 4.0 color story is centered on the **system accent** + a derived
 visually consistent identity out of the box.
 
 ```rust
-use rcommon::role::application::palette::{query_current_palette, ScreenPalette};
+use library::role::application::palette::{query_current_palette, ScreenPalette};
 
-// Cached, cross-platform, falls back to rApps cyan on non-Windows.
+// Cached, cross-platform, falls back to apps cyan on non-Windows.
 let palette: ScreenPalette = query_current_palette();
 
 let bg      = palette.bg;      // (0,0,0) in dark mode
@@ -69,8 +69,8 @@ let peak    = palette.peak;    // (255,255,255) hot peaks
 
 `ScreenPalette` is `role::application`-scoped (backend-agnostic) and uses
 plain RGB tuples, so it works in both ratatui `Color::Rgb` and GDI pixel
-renderers. The same palette is used by `rFetch`'s TUI border, `rLife`'s
-GDI particles, and `rFireflies`'s color story — they're all the same color.
+renderers. The same palette is used by `helm`'s TUI border, `cosmos`'s
+GDI particles, and `gnats`'s color story — they're all the same color.
 
 ### TUI-typed palette
 
@@ -78,7 +78,7 @@ For TUI effects, `dimensions::Palette` exposes the same color story in a
 ratatui-friendly enum:
 
 ```rust
-use rcommon::interface::tui::effects::dimensions::Palette;
+use library::interface::tui::effects::dimensions::Palette;
 
 let p = Palette::ACCENT;       // system accent
 let p = Palette::ACCENT_DIM;   // 35%-dimmed accent (matches ScreenPalette::dim)
@@ -89,19 +89,19 @@ let p = Palette::HEAT;         // cold-to-hot ramp
 
 ---
 
-## Onboarding: rFetch
+## Onboarding: helm
 
-`rFetch` is the reference consumer. Its `main.rs` and `ui/mod.rs` show the
+`helm` is the reference consumer. Its `main.rs` and `ui/mod.rs` show the
 canonical pattern:
 
 ```rust
-// crates/rfetch/src/main.rs
-use rcommon::interface::tui::design::prelude::*;
-use rcommon::lifecycle::background::file_log;
-use rcommon::lifecycle::foreground::panic::set_tui_panic_hook;
+// crates/helm/src/main.rs
+use library::interface::tui::design::prelude::*;
+use library::lifecycle::background::file_log;
+use library::lifecycle::foreground::panic::set_tui_panic_hook;
 
 fn run_tui(args: CliArgs) -> io::Result<()> {
-    file_log::set_log_app_name("rFetch");
+    file_log::set_log_app_name("helm");
     set_tui_panic_hook();
     // ...
     enable_raw_mode()?;
@@ -138,27 +138,27 @@ triple** anywhere — `MarkdownViewerState` encapsulates it.
 
 ---
 
-## Onboarding: rIdle-scenes
+## Onboarding: trance-scenes
 
-`rIdle-scenes` screensaver apps share the same `Screensaver` trait as the
+`trance-scenes` screensaver apps share the same `Screensaver` trait as the
 TUI effects. The GDI/fullscreen pixel loop is:
 
 ```rust
-// src/ridle-core/src/lib.rs (rcommon 4.0)
-pub use rcommon::core::screensaver::Screensaver;
-pub use rcommon::core::TerminalCell;
-pub use rcommon::role::application::palette::ScreenPalette;
+// src/trance-core/src/lib.rs (library 4.0)
+pub use library::core::screensaver::Screensaver;
+pub use library::core::TerminalCell;
+pub use library::role::application::palette::ScreenPalette;
 
 pub fn current_palette() -> ScreenPalette {
-    rcommon::role::application::palette::query_current_palette()
+    library::role::application::palette::query_current_palette()
 }
 ```
 
-A rLife-style effect then does:
+A cosmos-style effect then does:
 
 ```rust
 use std::time::Duration;
-use ridle_core::{Screensaver, TerminalCell, current_palette};
+use trance_core::{Screensaver, TerminalCell, current_palette};
 
 pub struct LifeEffect { /* ... */ }
 
@@ -180,21 +180,21 @@ Note the 4.0 signature change: `update` takes `Duration` (was `f32`
 seconds in 3.x). The `dt.as_secs_f32()` cast in the body keeps the
 floating-point math unchanged.
 
-The bridle-core also exposes `current_palette()` so effects can pull
-the same `ScreenPalette` that rFetch uses. **Future work**: the 10
+The btrance-core also exposes `current_palette()` so effects can pull
+the same `ScreenPalette` that helm uses. **Future work**: the 10
 r* screensaver apps can migrate their hand-rolled HSL color math to
 `ScreenPalette::hot` / `ScreenPalette::cool` incrementally.
 
 ---
 
-## Onboarding: rMonitor (template)
+## Onboarding: pulse (template)
 
-`rMonitor` does not exist yet but the design system supports it out of
+`pulse` does not exist yet but the design system supports it out of
 the box. A typical TUI dashboard:
 
 ```rust
 // src/main.rs
-use rcommon::interface::tui::design::prelude::*;
+use library::interface::tui::design::prelude::*;
 
 fn main() -> io::Result<()> {
     set_tui_panic_hook();
@@ -209,7 +209,7 @@ fn main() -> io::Result<()> {
         terminal.draw(|f| {
             if is_too_small(f.area(), (MIN_TERMINAL_WIDTH, MIN_TERMINAL_HEIGHT)) {
                 render_too_small_warning(f, f.area(), (f.area().width, f.area().height),
-                    (MIN_TERMINAL_WIDTH, MIN_TERMINAL_HEIGHT), "rMonitor", theme.accent);
+                    (MIN_TERMINAL_WIDTH, MIN_TERMINAL_HEIGHT), "pulse", theme.accent);
                 return;
             }
             draw_dashboard(f, &mut app, &theme, &mut saver, &mut renderer);
@@ -229,7 +229,7 @@ screensaver, the same color story — all from one `use` statement.
 ## 4.0 module map
 
 ```
-rcommon::interface::tui::design
+library::interface::tui::design
 ├── theme           ThemeColors, get_theme, accent_color_from_hex
 ├── colors          AccentColors, AccentTheme (3-color bundles)
 ├── status          StatusBar (4-second decay pattern)
@@ -243,10 +243,10 @@ rcommon::interface::tui::design
 ├── layout          centered_rect, format_help_row
 └── text            wrap_text, align_line, char_width, visible_len, ...
 
-rcommon::interface::tui::design::prelude
+library::interface::tui::design::prelude
 └── everything above + all 12 effects + Screensaver + ScreensaverRenderer
 
-rcommon::core
+library::core
 ├── TerminalCell          (renderer-agnostic character cell)
 ├── LcgRng                (canonical RNG for effects)
 ├── SystemInfo / DashboardInfo
@@ -256,7 +256,7 @@ rcommon::core
     ├── ScreensaverState  (active/focused sub-trait)
     └── ScreensaverEffect (deprecated trait alias, back-compat)
 
-rcommon::role::application::palette
+library::role::application::palette
 └── ScreenPalette         (backend-agnostic RGB-tuple color story)
     ├── from_system(accent, is_dark)  // canonical 4.0
     ├── high_contrast(...)
@@ -270,35 +270,35 @@ rcommon::role::application::palette
 
 | 3.x path | 4.0 path |
 |---|---|
-| `rcommon::interface::tui::theme` | `rcommon::interface::tui::design::theme` |
-| `rcommon::interface::tui::markdown` | `rcommon::interface::tui::design::markdown` |
-| `rcommon::interface::tui::markdown_viewer` | `rcommon::interface::tui::design::markdown_viewer` |
-| `rcommon::interface::tui::layout` | `rcommon::interface::tui::design::layout` |
-| `rcommon::interface::tui::status` | `rcommon::interface::tui::design::status` |
-| `rcommon::interface::tui::text` | `rcommon::interface::tui::design::text` |
-| `rcommon::interface::tui::widgets` | `rcommon::interface::tui::widgets` (kept for the Accent* widget family) |
-| `rcommon::interface::tui::screensaver` | `rcommon::core::screensaver` |
+| `library::interface::tui::theme` | `library::interface::tui::design::theme` |
+| `library::interface::tui::markdown` | `library::interface::tui::design::markdown` |
+| `library::interface::tui::markdown_viewer` | `library::interface::tui::design::markdown_viewer` |
+| `library::interface::tui::layout` | `library::interface::tui::design::layout` |
+| `library::interface::tui::status` | `library::interface::tui::design::status` |
+| `library::interface::tui::text` | `library::interface::tui::design::text` |
+| `library::interface::tui::widgets` | `library::interface::tui::widgets` (kept for the Accent* widget family) |
+| `library::interface::tui::screensaver` | `library::core::screensaver` |
 | `fx.update(0.016, 80, 24)` (f32 seconds) | `fx.update(Duration::from_secs_f32(0.016), 80, 24)` |
 | `ScreensaverRenderer::tick(&mut s, 0.1)` (deprecated) | `ScreensaverRenderer::tick_duration(&mut s, Duration::from_secs_f32(0.1))` |
 | hand-rolled `(show_markdown, markdown_lines, markdown_scroll)` triple | `MarkdownViewerState` |
-| hand-rolled `is_dark_mode()` registry read | `rcommon::platform::native::sys_info::query_dark_mode()` (cross-platform) |
+| hand-rolled `is_dark_mode()` registry read | `library::platform::native::sys_info::query_dark_mode()` (cross-platform) |
 | hand-rolled HSL accent rotation | `ScreenPalette::hot` / `ScreenPalette::cool` |
 
 The 3.x paths are still available as **deprecated** re-exports in
-`rcommon::interface::tui::*` and `rcommon::widgets::*` for one minor
+`library::interface::tui::*` and `library::widgets::*` for one minor
 release. They will be removed in 4.1.
 
 ---
 
 ## Testing
 
-The design system ships with `tests/design_facade.rs` in rcommon — 11
+The design system ships with `tests/design_facade.rs` in library — 11
 tests that exercise the public façade end-to-end (theme, accent, status
 bar, toast, layout guard, markdown viewer, text wrap, render logo
 block, all 12 effects, etc.). Add similar tests in each r* app to lock
 in the contract.
 
-`tests/taxonomy_compliance.rs` (also in rcommon) AST-walks `src/` to
+`tests/taxonomy_compliance.rs` (also in library) AST-walks `src/` to
 enforce the 4-layer taxonomy — `design/` files cannot import from
 `lifecycle/`, `platform/`, or `role/`, so a new design-system addition
 that violates the layering will fail the test.

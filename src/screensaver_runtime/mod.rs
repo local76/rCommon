@@ -6,16 +6,16 @@
 //! Screensaver::draw cycle, and handles the screensaver CLI args
 //! (`/s` run, `/c` configure, `/p HWND` preview).
 //!
-//! In library 4.1 this runtime lived in `rScenes/src/ridle-core/` as a
+//! In library 4.1 this runtime lived in `screensavers/src/trance-core/` as a
 //! separate crate that re-exported `library`. In library 4.2 the
 //! runtime is consolidated here so the 10 r* effect crates in
-//! rScenes/ can become 20-line shim binaries:
+//! screensavers/ can become 20-line shim binaries:
 //!
 //! ```ignore
 //! fn main() {
 //!     library::screensaver_runtime::run_main(
 //!         library::role::application::scenes::matrix::Matrix::new(),
-//!         "rMatrix",
+//!         "glyphs",
 //!     );
 //! }
 //! ```
@@ -102,7 +102,7 @@ pub fn print_usage(name: &str) {
 
 /// Run the screensaver with the given effect. Picks the platform
 /// implementation based on `cfg(target_os)`. The 10 r* effect
-/// binaries in rScenes/ all call this.
+/// binaries in screensavers/ all call this.
 pub fn run_main<S: Screensaver + 'static>(saver: S, name: &str) {
     let mode = parse_args();
     match mode {
@@ -152,7 +152,7 @@ fn run_fullscreen<S: Screensaver + 'static>(_saver: S) -> isize {
     // ships the CLI parser + arg routing + the public run_main API
     // surface so the 10 r* effect shim binaries can be wired up.
     eprintln!("(library 4.2 screensaver_runtime) Windows GDI loop is a 4.3 TODO.");
-    eprintln!("Falling back to no-op for the 4.2 release. Use the rScenes");
+    eprintln!("Falling back to no-op for the 4.2 release. Use the screensavers");
     eprintln!("0.1.x / 1.x r* effect crate binaries on Windows until 4.3 lands.");
     0
 }

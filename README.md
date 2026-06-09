@@ -1,23 +1,23 @@
-# rCommon
+# library
 
-`rCommon` is the shared foundation library for the local76 `rApps` ecosystem of local-first terminal and system utilities (including `rIdle`, `rFetch`, `rMonitor`, `rTemplate`, `rWifi`, and `rStartup`).
+`library` is the shared foundation library for the local76 `apps` ecosystem of local-first terminal and system utilities (including `trance`, `helm`, `pulse`, `template`, `scout`, and `ignite`).
 
 ---
 
 ## 🛠️ Installation
 
-Add `rCommon` as a git dependency in your `Cargo.toml`:
+Add `library` as a git dependency in your `Cargo.toml`:
 
 ```toml
 [dependencies]
-rcommon = { git = "https://github.com/local76/rCommon.git", branch = "main" }
+library = { git = "https://github.com/local76/library.git", branch = "main" }
 ```
 
 Or for local development, patch it:
 
 ```toml
 [patch.crates-io]
-rcommon = { path = "../rCommon" }
+library = { path = "../library" }
 ```
 
 ---
@@ -53,7 +53,7 @@ To prevent dependency and binary size bloat in simple CLI daemons, features are 
 All consumer applications can easily implement diagnostic modes by executing the doctor helper:
 
 ```rust
-use rcommon::interface::cli::run_doctor;
+use library::interface::cli::run_doctor;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -69,7 +69,7 @@ fn main() {
 All effects follow a **Verb × Noun × Style × Palette** naming system. Pick an effect, then customize its style and palette:
 
 ```rust
-use rcommon::interface::tui::effects::{
+use library::interface::tui::effects::{
     FallingGlyphs, FallingDroplets, RisingFlames, FlowingParticles, PulledParticles,
     FallingComets, PulsingGlyphs, PulsingWaves,
     Style, Palette, TuiEffect,
@@ -114,7 +114,7 @@ flare_rain.draw(&mut grid, 80, 24);
 | `PulledBlocks` | `Solid` | `Monochrome(Blue)` | Block particles to gravity center |
 
 ```rust
-use rcommon::interface::tui::effects::{
+use library::interface::tui::effects::{
     FallingDroplets, Speed,
 };
 
@@ -138,42 +138,42 @@ Combine any of the 5 verbs × 6 nouns = 30 base combinations. Each accepts any o
 > [!NOTE]
 > **Taxonomy Features (Cargo features)** control what code is compiled in your `Cargo.toml` dependencies, whereas **Taxonomy Paths (module paths)** are the new Rust import locations in your code.
 
-If you are migrating an older application to `rCommon` version 3.0.0+, update your module references as follows:
+If you are migrating an older application to `library` version 3.0.0+, update your module references as follows:
 
 | Old Path | New Taxonomy Path |
 | :--- | :--- |
-| `rcommon::widgets::*` | `rcommon::interface::tui::widgets::*` |
-| `rcommon::effects::*` | `rcommon::interface::tui::effects::*` |
-| `rcommon::window::*` | `rcommon::lifecycle::foreground::window::*` |
-| `rcommon::guard::*` | `rcommon::lifecycle::foreground::guard::*` |
-| `rcommon::service::*` | `rcommon::lifecycle::background::service::*` |
-| `rcommon::sys_info::*` | `rcommon::platform::native::sys_info::*` |
-| `rcommon::reg::*` | `rcommon::platform::native::reg::*` |
-| `rcommon::rgb::*` | `rcommon::role::application::rgb::*` |
-| `rcommon::game::BhopGame` | `rcommon::role::application::game::ObstacleJumpGame` |
+| `library::widgets::*` | `library::interface::tui::widgets::*` |
+| `library::effects::*` | `library::interface::tui::effects::*` |
+| `library::window::*` | `library::lifecycle::foreground::window::*` |
+| `library::guard::*` | `library::lifecycle::foreground::guard::*` |
+| `library::service::*` | `library::lifecycle::background::service::*` |
+| `library::sys_info::*` | `library::platform::native::sys_info::*` |
+| `library::reg::*` | `library::platform::native::reg::*` |
+| `library::rgb::*` | `library::role::application::rgb::*` |
+| `library::game::BhopGame` | `library::role::application::game::ObstacleJumpGame` |
 
 > **Note (3.1.0+):** The 5 TUI effects were renamed in 3.1.0 to follow the Verb+Noun taxonomy. Old type names (`MatrixRain`, `SimpleParticles`, `GravityParticles`, `RainEffect`, `FireEffect`) remain available as deprecated type aliases at the crate root. They will be removed in 4.0.0.
 >
 > ```rust
 > // Old (still works, deprecated):
-> use rcommon::MatrixRain;
+> use library::MatrixRain;
 >
 > // New (preferred):
-> use rcommon::interface::tui::effects::FallingGlyphs;
+> use library::interface::tui::effects::FallingGlyphs;
 > ```
 
 ---
 
 ## 🎨 Visual Standards
 
-All applications in the ecosystem share a cohesive user interface style and visual asset layout (e.g. icon containers, neon wireframe elements). See [docs/VISUAL_STANDARDS.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/docs/VISUAL_STANDARDS.md) for details on visual guidelines and branding asset packaging.
+All applications in the ecosystem share a cohesive user interface style and visual asset layout (e.g. icon containers, neon wireframe elements). See [docs/VISUAL_STANDARDS.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/docs/VISUAL_STANDARDS.md) for details on visual guidelines and branding asset packaging.
 
 ## 📚 Embedding markdown docs (F1–F7 in-TUI help)
 
-The `rcommon::embedded_docs!` macro bakes a set of markdown files (README, LICENSE, CONTRIBUTING, etc.) directly into your binary at compile time, so your TUI can show help text without reading the filesystem at runtime (which would break in a single-file `.scr` Windows screensaver install). See [docs/EMBEDDED_DOCS.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/docs/EMBEDDED_DOCS.md) for the canonical example and the F1–F7 wiring pattern. (This pattern originated in rTemplate; the doc is now in rcommon so the 5 other r* TUI apps have a single source of truth.)
+The `library::embedded_docs!` macro bakes a set of markdown files (README, LICENSE, CONTRIBUTING, etc.) directly into your binary at compile time, so your TUI can show help text without reading the filesystem at runtime (which would break in a single-file `.scr` Windows screensaver install). See [docs/EMBEDDED_DOCS.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/docs/EMBEDDED_DOCS.md) for the canonical example and the F1–F7 wiring pattern. (This pattern originated in template; the doc is now in library so the 5 other r* TUI apps have a single source of truth.)
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License. See [LICENSE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/LICENSE.md) for details.
+This project is licensed under the MIT License. See [LICENSE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/LICENSE.md) for details.

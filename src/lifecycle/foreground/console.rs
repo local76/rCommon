@@ -2,7 +2,7 @@
 //!
 //! **Taxonomy Classification**: Execution State (Lifecycle - Foreground) + Platform (Native).
 //! 
-//! Ported from rIdle (saver_win32.rs) and common patterns across apps.
+//! Ported from trance (saver_win32.rs) and common patterns across apps.
 //! Includes high contrast, thread execution state (prevent sleep), console titles,
 //! screensaver control (for apps that manage them), and rect queries.
 //!

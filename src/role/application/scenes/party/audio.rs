@@ -21,7 +21,7 @@ impl AudioVisualizer {
         let volume_clone = volume.clone();
         let should_stop_clone = should_stop.clone();
 
-        // library 4.1.7 inline-migration: the pre-4.1.7 rParty Windows
+        // library 4.1.7 inline-migration: the pre-4.1.7 disco Windows
         // audio capture routine (`unsafe fn run_audio_capture` using
         // IAudioClient loopback) is preserved as a comment in the
         // library CHANGELOG but not compiled in 4.1.7. The same
@@ -29,7 +29,7 @@ impl AudioVisualizer {
         // visualizer's beat pattern on Windows too. The real WASAPI
         // capture returns in 4.2 once the windows v0.52 API shift
         // (single-arg `Activate`, three-arg `CoCreateInstance`) is
-        // fully verified against the live rParty screensaver preview.
+        // fully verified against the live disco screensaver preview.
         thread::spawn(move || {
             let mut angle = 0.0f32;
             let mut seed = 12345u32;

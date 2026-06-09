@@ -22,7 +22,7 @@ pub mod panic;
 pub use panic::set_tui_panic_hook;
 
 #[cfg(feature = "window")]
-#[allow(deprecated)] // Intentional: Re-exporting legacy relaunch helpers for backward compatibility with older rApps
+#[allow(deprecated)] // Intentional: Re-exporting legacy relaunch helpers for backward compatibility with older apps
 pub use window::{
     RECT, MONITORINFO, COORD, SMALL_RECT, CONSOLE_SELECTION_INFO, POINT,
     get_console_rect, get_window_rect, set_window_pos, center_console_window, query_cursor_pos,

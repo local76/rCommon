@@ -1,6 +1,6 @@
 # Embedding markdown docs into your r* TUI app (F1–F7 in-TUI help)
 
-`rcommon::embedded_docs!` is a compile-time macro that bakes a
+`library::embedded_docs!` is a compile-time macro that bakes a
 set of markdown files (your README, LICENSE, CONTRIBUTING, etc.)
 directly into your binary, so your TUI can show the help text without
 reading the filesystem at runtime (which would break in a single-file
@@ -8,14 +8,14 @@ reading the filesystem at runtime (which would break in a single-file
 
 ## The macro
 
-`rcommon::interface::tui::design::markdown::embedded_docs!(folder, [file1, file2, ...])` — declared as `#[macro_export]`, available from any consumer as `rcommon::embedded_docs!(...)`.
+`library::interface::tui::design::markdown::embedded_docs!(folder, [file1, file2, ...])` — declared as `#[macro_export]`, available from any consumer as `library::embedded_docs!(...)`.
 
 Internally it's a thin wrapper over `include_str!` that returns a
 `HashMap<&'static str, &'static str>` mapping file names to contents.
 The compiler reads the files at build time; nothing reads the
 filesystem at runtime.
 
-## Canonical example (from rTemplate, the reference implementation)
+## Canonical example (from template, the reference implementation)
 
 ```rust
 use std::collections::HashMap;
@@ -24,7 +24,7 @@ use std::sync::LazyLock;
 /// Standardized embedded documents map.
 pub static EMBEDDED_DOCS: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
-        rcommon::embedded_docs!("..", [
+        library::embedded_docs!("..", [
             "README.md",
             "SUPPORT.md",
             "LICENSE.md",
@@ -37,18 +37,18 @@ pub static EMBEDDED_DOCS: LazyLock<HashMap<&'static str, &'static str>> =
 ```
 
 (`".."` is relative to the manifest dir of the consuming crate; e.g.
-for an r* TUI app at `local76/rFetch/crates/rfetch/`, `".."` would
-be `local76/rFetch/crates/`. Adjust to your layout.)
+for an r* TUI app at `local76/helm/crates/helm/`, `".."` would
+be `local76/helm/crates/`. Adjust to your layout.)
 
 ## Wiring it into a TUI panel
 
-The standard pattern in rcommon's TUI apps is to bind F1–F7 to the
+The standard pattern in library's TUI apps is to bind F1–F7 to the
 embedded docs and render the selected doc with
-`rcommon::interface::tui::design::markdown::MarkdownViewer`:
+`library::interface::tui::design::markdown::MarkdownViewer`:
 
 ```rust
 use crossterm::event::{KeyCode, KeyEvent};
-use rcommon::interface::tui::design::markdown::MarkdownViewer;
+use library::interface::tui::design::markdown::MarkdownViewer;
 
 fn handle_key(app: &mut App, key: KeyEvent) {
     match key.code {
@@ -67,8 +67,8 @@ fn handle_key(app: &mut App, key: KeyEvent) {
 }
 ```
 
-(See `rCommon/interface/tui/design/markdown_viewer.rs` for the
-viewer API. The 6 r* TUI apps in rApps/ each wire a subset of F1–F7
+(See `library/interface/tui/design/markdown_viewer.rs` for the
+viewer API. The 6 r* TUI apps in apps/ each wire a subset of F1–F7
 to their embedded docs.)
 
 ## Notes
@@ -80,15 +80,15 @@ to their embedded docs.)
 - The macro is intentionally simple — no glob, no directory walk.
   Explicit file lists are preferred so the compiler knows exactly
   what's in the binary.
-- The macro is in `rcommon::interface::tui::design::markdown` (not
+- The macro is in `library::interface::tui::design::markdown` (not
   in the deprecated `interface::tui` paths). Use the canonical path.
 
 ## Why this exists
 
-Prior to rcommon 4.0, the 12 r* TUI apps each had their own F1–F7
+Prior to library 4.0, the 12 r* TUI apps each had their own F1–F7
 help panel implementation, with different in-memory string tables
 and different render paths. The 4.0 design-system consolidation
-moved all 12 apps to a single `rcommon::interface::tui::design`
+moved all 12 apps to a single `library::interface::tui::design`
 façade + this `embedded_docs!` macro + a single `MarkdownViewer`
 renderer. The 4.0 → 4.1 → 4.2 evolution has been about extending
 this pattern (e.g. the r* scene shim binaries don't use it because
@@ -96,8 +96,8 @@ they're too small to need in-TUI help).
 
 ## See also
 
-- `rcommon::interface::tui::design::markdown::MarkdownViewer` (the
+- `library::interface::tui::design::markdown::MarkdownViewer` (the
   renderer that consumes the `&'static str` content)
-- `rcommon::interface::tui::design::markdown::parse_markdown_to_lines`
+- `library::interface::tui::design::markdown::parse_markdown_to_lines`
   (lower-level; used internally by `MarkdownViewer`)
 - The r* TUI apps' `event_handler.rs` files for the F1–F7 binding pattern

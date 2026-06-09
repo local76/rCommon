@@ -6,7 +6,7 @@
 //!
 //! **Taxonomy Classification**: Interface (CLI) + Role (Application).
 
-/// Doctor/diagnostics helper (generalized from rTemplate/rFetch/rIdle).
+/// Doctor/diagnostics helper (generalized from template/helm/trance).
 /// Classification: Interface (CLI) + Role (Application).
 pub fn run_doctor() {
     run_doctor_with_custom(|_| {});
@@ -19,7 +19,7 @@ where
     F: FnOnce(&crate::sys_info::GlyphMap),
 {
     println!("===================================================");
-    println!("             rApps Diagnostic Doctor               ");
+    println!("             apps Diagnostic Doctor               ");
     println!("===================================================\n");
 
     let glyphs = crate::sys_info::GlyphMap::load();
@@ -37,7 +37,7 @@ where
     println!("\nChecking Configuration Storage Access...");
     #[cfg(all(target_os = "windows", feature = "reg"))]
     {
-        let test_path = "Software\\rApps\\Diagnostics";
+        let test_path = "Software\\apps\\Diagnostics";
         let test_key = "WriteTest";
         let test_val = "ok";
         let write_res = crate::platform::native::reg::write_string(

@@ -12,7 +12,7 @@
 //!
 //! Also includes retro effects (FallingGlyphs, RisingFlames, FlowingParticles, etc.),
 //! TerminalCell grid rendering, and game primitives for terminal UIs.
-//! Used by rIdle, rFetch, rMonitor, rTemplate, rWifi, etc.
+//! Used by trance, helm, pulse, template, scout, etc.
 //!
 //! # 4.0 design system
 //!

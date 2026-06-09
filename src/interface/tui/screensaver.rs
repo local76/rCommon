@@ -5,7 +5,7 @@
 //! In library 4.0, `Screensaver` / `ScreensaverState` / `ScreensaverEffect`
 //! moved to [`crate::core::screensaver`]. They are now backend-agnostic and
 //! can be implemented by both r* TUI apps and r* GDI screensaver apps
-//! (rIdle-scenes).
+//! (trance-scenes).
 //!
 //! What stays here is `ScreensaverRenderer`: a TUI-layer helper that owns a
 //! `[TerminalCell]` grid buffer and runs the active/focus lifecycle for a

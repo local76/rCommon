@@ -8,24 +8,24 @@
 //! index math. Visual correctness is verified by the human-eye test
 //! pattern (run a release build, look at it), not by these tests.
 //!
-//! As more effects migrate into `rcommon::scenes::*`, add one test per
+//! As more effects migrate into `library::scenes::*`, add one test per
 //! effect here. The matrix test exists from 4.1.0; the other 9 land
 //! alongside their migration in 4.1.x patch releases.
 
 use std::time::Duration;
 
-use rcommon::core::screensaver::Screensaver;
-use rcommon::core::TerminalCell;
-use rcommon::role::application::scenes::beams::Beams;
-use rcommon::role::application::scenes::bhop::BhopDashboard;
-use rcommon::role::application::scenes::fire::FireEffect;
-use rcommon::role::application::scenes::fireflies::Fireflies;
-use rcommon::role::application::scenes::fireworks::Fireworks;
-use rcommon::role::application::scenes::life::LifeEffect;
-use rcommon::role::application::scenes::matrix::{Matrix, Matrix as MatrixEffect};
-use rcommon::role::application::scenes::party::Party;
-use rcommon::role::application::scenes::pour::Pour;
-use rcommon::role::application::scenes::unstable::Unstable;
+use library::core::screensaver::Screensaver;
+use library::core::TerminalCell;
+use library::role::application::scenes::beams::Beams;
+use library::role::application::scenes::bhop::BhopDashboard;
+use library::role::application::scenes::fire::FireEffect;
+use library::role::application::scenes::fireflies::Fireflies;
+use library::role::application::scenes::fireworks::Fireworks;
+use library::role::application::scenes::life::LifeEffect;
+use library::role::application::scenes::matrix::{Matrix, Matrix as MatrixEffect};
+use library::role::application::scenes::party::Party;
+use library::role::application::scenes::pour::Pour;
+use library::role::application::scenes::unstable::Unstable;
 
 fn render_grid(effect: &mut dyn Screensaver, cols: usize, rows: usize) -> Vec<TerminalCell> {
     // Run a few update ticks so internal state settles into a non-degenerate

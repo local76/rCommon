@@ -29,9 +29,9 @@ pub const HKEY_USERS: HKEY = 3;
 #[cfg(not(all(feature = "reg", target_os = "windows")))]
 fn get_registry_file_path() -> Option<std::path::PathBuf> {
     if let Ok(xdg) = std::env::var("XDG_CONFIG_HOME") {
-        Some(std::path::PathBuf::from(xdg).join("rApps").join("registry.conf"))
+        Some(std::path::PathBuf::from(xdg).join("apps").join("registry.conf"))
     } else if let Ok(home) = std::env::var("HOME") {
-        Some(std::path::PathBuf::from(home).join(".config").join("rApps").join("registry.conf"))
+        Some(std::path::PathBuf::from(home).join(".config").join("apps").join("registry.conf"))
     } else {
         None
     }
@@ -351,7 +351,7 @@ mod tests {
         #[cfg(feature = "reg")]
         {
             let key_name = "test_config_key";
-            let path = "Software\\rApps\\Test";
+            let path = "Software\\apps\\Test";
             
             // 1. Initial read should be None
             let _ = delete_value(HKEY_CURRENT_USER, path, key_name);

@@ -126,7 +126,7 @@ pub mod helpers {
     }
 
     /// A premium button that draws an accent-colored border when hovered/focused,
-    /// or filled background when clicked, matching the rApps ecosystem TUI styling.
+    /// or filled background when clicked, matching the apps ecosystem TUI styling.
     pub struct AccentButton<'a> {
         text: &'a str,
         accent_color: egui::Color32,

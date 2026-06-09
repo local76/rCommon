@@ -1,15 +1,15 @@
-# rCommon Architecture
+# library Architecture
 
-rCommon is the shared foundation library for the local76 "r*" ecosystem of local-first terminal and system utilities (rIdle, rFetch, rMonitor, rTemplate, rWifi, rStartup, rIdle-scenes, etc.).
+library is the shared foundation library for the local76 "r*" ecosystem of local-first terminal and system utilities (trance, helm, pulse, template, scout, ignite, trance-scenes, etc.).
 
 ## Design Principles
 
 - **Avoid duplication**: Common utilities, platform abstractions, TUI widgets, effects, and system info live here so individual apps stay small and focused.
 - **Classification by Taxonomy**: Code is organized according to the 4-layer taxonomy to prevent accidental coupling between concerns (e.g., a TUI-only effect type being changed in a way that breaks a background service or CLI tool).
-- **Absolute Isolation & Non-Interference**: All `rApps` must work independently on their own and not interfere with one another. To guarantee this:
+- **Absolute Isolation & Non-Interference**: All `apps` must work independently on their own and not interfere with one another. To guarantee this:
   - **No Global Port Binding**: Do not bind to shared network ports (like HTTP servers on `127.0.0.1:8080`) for communication or single-instance locks. This prevents firewall prompts and port collisions. Use application-scoped Local IPC (Unix domain sockets on Linux and Named Pipes on Windows) instead.
-  - **Isolated Configuration Storage**: Ensure configuration schemas and storage access (like Registry paths or configuration files) are strictly namespaced under the application name (`Software\rApps\<AppName>`) so they never overwrite each other.
-  - **Executable-Scoped Guards**: Single-instance guards and Mutex locks must be scoped using the executable's name to avoid multi-instance conflicts without locking out other `rApps`.
+  - **Isolated Configuration Storage**: Ensure configuration schemas and storage access (like Registry paths or configuration files) are strictly namespaced under the application name (`Software\apps\<AppName>`) so they never overwrite each other.
+  - **Executable-Scoped Guards**: Single-instance guards and Mutex locks must be scoped using the executable's name to avoid multi-instance conflicts without locking out other `apps`.
 
 
 ### 1. Interface (Presentation Layer)
@@ -39,7 +39,7 @@ How the software is packaged and where it runs.
 
 Windows and Linux specifics (FFI, services, registry emulation, console behavior, power, monitors, etc.) live primarily here, with platform splits (e.g., `platform/native/windows.rs`).
 
-GitHub fits as the **distribution and collaboration mechanism** for the Native + git-dependency model used across the suite (e.g., `rcommon = { git = "https://github.com/local76/rCommon.git" }` + `[patch]` for local dev). It is not a runtime concern but enables the ecosystem.
+GitHub fits as the **distribution and collaboration mechanism** for the Native + git-dependency model used across the suite (e.g., `library = { git = "https://github.com/local76/library.git" }` + `[patch]` for local dev). It is not a runtime concern but enables the ecosystem.
 
 ### 4. System Role (Purpose)
 The software's ultimate objective.
@@ -130,7 +130,7 @@ All TUI effects in `interface::tui::effects` follow a 4-dimension naming system.
 ### Example Usage
 
 ```rust
-use rcommon::interface::tui::effects::{
+use library::interface::tui::effects::{
     FallingGlyphs, Style, Palette,
 };
 
@@ -158,16 +158,16 @@ let mut flare = FallingGlyphs::new(80, 24, 0.35)
 The structure has been cleaned up and aligned (see list of 10 tasks executed in the refactor session). Old flat files were moved into taxonomy categories. Re-exports preserve compat for r* consumers using git + [patch].
 
 **Audit of Ports from Other Projects** (valuable reusable pieces extracted and classified):
-- From rIdle-scenes/ridle-core: SystemInfo/get_system_info (core + platform), render_logo_block + 5x5 (interface/tui), LcgRng enhancements (core), registry/theme helpers (already via core/platform).
-- From rIdle-scenes effects (rObstacleJump, rLife, rMatrix, etc.): Particle systems, MatrixRain, ObstacleJump logic (interface/tui + role/application), console typing/dashboard patterns.
-- From rFetch: Package counting (role/application/packages.rs), monitor enumeration (platform/native/monitors.rs), accent/dark mode/power formatters (platform + lifecycle).
-- From rIdle (saver_win32): Advanced console (high contrast, thread exec state, titles, screensaver control) (lifecycle/foreground/console.rs), power/accent delegation.
-- From rMonitor/rStartup/rTemplate/rWifi: Common win32 shims, console hiding, system queries (now centralized in lifecycle/platform/role).
-- rpack bin and rgb/game already in rCommon (role/application).
+- From trance-scenes/trance-core: SystemInfo/get_system_info (core + platform), render_logo_block + 5x5 (interface/tui), LcgRng enhancements (core), registry/theme helpers (already via core/platform).
+- From trance-scenes effects (rObstacleJump, cosmos, glyphs, etc.): Particle systems, MatrixRain, ObstacleJump logic (interface/tui + role/application), console typing/dashboard patterns.
+- From helm: Package counting (role/application/packages.rs), monitor enumeration (platform/native/monitors.rs), accent/dark mode/power formatters (platform + lifecycle).
+- From trance (saver_win32): Advanced console (high contrast, thread exec state, titles, screensaver control) (lifecycle/foreground/console.rs), power/accent delegation.
+- From pulse/ignite/template/scout: Common win32 shims, console hiding, system queries (now centralized in lifecycle/platform/role).
+- rpack bin and rgb/game already in library (role/application).
 
 ## Migration Guide for Consumers
 
-To ensure long-term architecture sustainability, consumers should move away from the deprecated `rcommon::win32` module (legacy flat shim) and transition to the new 4-layer taxonomy modules.
+To ensure long-term architecture sustainability, consumers should move away from the deprecated `library::win32` module (legacy flat shim) and transition to the new 4-layer taxonomy modules.
 
 > [!NOTE]
 > **Taxonomy Features (Cargo features)** control what code is compiled in your `Cargo.toml` dependencies, whereas **Taxonomy Paths (module paths)** are the new Rust import locations in your code.
@@ -176,69 +176,69 @@ Here is a concrete "Before & After" mapping for imports and usage:
 
 ### 1. Presentation Layer (Interface)
 * **TUI Effects / Primitives**:
-  * *Before*: `use rcommon::win32::{TerminalCell, MatrixRain, SimpleParticles};`
-  * *After*: `use rcommon::interface::tui::effects::{TerminalCell, MatrixRain, SimpleParticles};` (or `rcommon::core::TerminalCell` / `rcommon::interface::tui::MatrixRain`)
+  * *Before*: `use library::win32::{TerminalCell, MatrixRain, SimpleParticles};`
+  * *After*: `use library::interface::tui::effects::{TerminalCell, MatrixRain, SimpleParticles};` (or `library::core::TerminalCell` / `library::interface::tui::MatrixRain`)
 * **TUI Focus Widgets**:
-  * *Before*: `use rcommon::widgets::{AccentList, AccentTabs};`
-  * *After*: `use rcommon::interface::tui::widgets::{AccentList, AccentTabs};`
+  * *Before*: `use library::widgets::{AccentList, AccentTabs};`
+  * *After*: `use library::interface::tui::widgets::{AccentList, AccentTabs};`
 * **Headless IPC**:
-  * *Before*: `use rcommon::api::{IpcServer, IpcClient};`
-  * *After*: `use rcommon::interface::api::{IpcServer, IpcClient};`
+  * *Before*: `use library::api::{IpcServer, IpcClient};`
+  * *After*: `use library::interface::api::{IpcServer, IpcClient};`
 
 ### 2. Execution State Layer (Lifecycle)
 * **Console & Window Controls**:
-  * *Before*: `use rcommon::win32::{hide_console_at_startup, BorderlessConsole, ConsoleTitleGuard};`
-  * *After*: `use rcommon::lifecycle::foreground::window::{hide_console_at_startup, BorderlessConsole, ConsoleTitleGuard};`
+  * *Before*: `use library::win32::{hide_console_at_startup, BorderlessConsole, ConsoleTitleGuard};`
+  * *After*: `use library::lifecycle::foreground::window::{hide_console_at_startup, BorderlessConsole, ConsoleTitleGuard};`
 * **Single Instance Lock**:
-  * *Before*: `use rcommon::win32::SingleInstanceGuard;`
-  * *After*: `use rcommon::lifecycle::foreground::guard::SingleInstanceGuard;`
+  * *Before*: `use library::win32::SingleInstanceGuard;`
+  * *After*: `use library::lifecycle::foreground::guard::SingleInstanceGuard;`
 * **Services & Notifications**:
-  * *Before*: `use rcommon::win32::{query_windows_service_status, show_toast_notification};`
-  * *After*: `use rcommon::lifecycle::background::service::query_service_status;` and `use rcommon::lifecycle::background::notification::show_toast_notification;`
+  * *Before*: `use library::win32::{query_windows_service_status, show_toast_notification};`
+  * *After*: `use library::lifecycle::background::service::query_service_status;` and `use library::lifecycle::background::notification::show_toast_notification;`
 
 ### 3. Platform & Architecture Layer (Deployment)
 * **System Theme & Uptime Helpers**:
-  * *Before*: `use rcommon::win32::{query_dark_mode, get_system_screen_resolution, get_dwm_accent_color};`
-  * *After*: `use rcommon::platform::native::sys_info::{query_dark_mode, get_system_screen_resolution, get_dwm_accent_color};`
+  * *Before*: `use library::win32::{query_dark_mode, get_system_screen_resolution, get_dwm_accent_color};`
+  * *After*: `use library::platform::native::sys_info::{query_dark_mode, get_system_screen_resolution, get_dwm_accent_color};`
 * **Monitor / Screen Enumeration**:
-  * *Before*: `use rcommon::win32::{get_monitors_summary, get_all_monitors};`
-  * *After*: `use rcommon::platform::native::monitors::{get_monitors_summary, get_all_monitors};`
+  * *Before*: `use library::win32::{get_monitors_summary, get_all_monitors};`
+  * *After*: `use library::platform::native::monitors::{get_monitors_summary, get_all_monitors};`
 
 ### 4. System Role Layer (Purpose)
 * **Application Roles (RGB/Packages)**:
-  * *Before*: `use rcommon::win32::{get_packages_breakdown, RgbController};`
-  * *After*: `use rcommon::role::application::packages::get_packages_breakdown;` and `use rcommon::role::application::rgb::controller::RgbController;`
+  * *Before*: `use library::win32::{get_packages_breakdown, RgbController};`
+  * *After*: `use library::role::application::packages::get_packages_breakdown;` and `use library::role::application::rgb::controller::RgbController;`
 * **Registry Access (Infrastructure)**:
-  * *Before*: `use rcommon::win32::{read_string, write_string, HKEY_CURRENT_USER};`
-  * *After*: `use rcommon::platform::native::reg::{read_string, write_string, HKEY_CURRENT_USER};`
+  * *Before*: `use library::win32::{read_string, write_string, HKEY_CURRENT_USER};`
+  * *After*: `use library::platform::native::reg::{read_string, write_string, HKEY_CURRENT_USER};`
 
-This structure allows multiple crates per section in the future (e.g., rcommon-interface-tui as a separate crate) while keeping the single-crate experience simple for git-based consumption in the r* apps.
+This structure allows multiple crates per section in the future (e.g., library-interface-tui as a separate crate) while keeping the single-crate experience simple for git-based consumption in the r* apps.
 
-## rCommon 4.0 Design System
+## library 4.0 Design System
 
-In rcommon 4.0 every r* TUI app (rFetch, rMonitor, rIdle, rTemplate, rWifi, hub) and every r* GDI screensaver app (rIdle-scenes: rLife, rFireflies, rMatrix, rFire, ...) consumes a **unified design system** from a single import path. The 4.0 release is the official v4.0.0 across rCommon + all rApps + the rScreensavers.
+In library 4.0 every r* TUI app (helm, pulse, trance, template, scout, hub) and every r* GDI screensaver app (trance-scenes: cosmos, gnats, glyphs, flame, ...) consumes a **unified design system** from a single import path. The 4.0 release is the official v4.0.0 across library + all apps + the rScreensavers.
 
 ### Single import path
 
 ```rust
-use rcommon::interface::tui::design::prelude::*;
+use library::interface::tui::design::prelude::*;
 ```
 
 This brings in the entire visual identity: theme, accent bundles, status bar, toast, markdown viewer, layout guard, title banner, effect preview, mouse selection, layout helpers, text utilities, terminal-size constants, all 12 canonical TUI effects, and the unified `Screensaver` trait. See `docs/DESIGN_SYSTEM.md` for the full onboarding guide.
 
 ### Why a design system now?
 
-Before 4.0, the same chrome types (`StatusBar`, `MarkdownViewerState`, `ThemeColors`, `AccentColors`, ...) were scattered across `rcommon::interface::tui::*`, `rcommon::widgets::*`, and the consumer apps' own `win32.rs` shims. Each r* app re-implemented its own `is_dark_mode()` registry read and its own HSL accent-rotation math. The result was visual drift between rFetch, rMonitor, and rIdle-scenes — and a lot of code duplication.
+Before 4.0, the same chrome types (`StatusBar`, `MarkdownViewerState`, `ThemeColors`, `AccentColors`, ...) were scattered across `library::interface::tui::*`, `library::widgets::*`, and the consumer apps' own `win32.rs` shims. Each r* app re-implemented its own `is_dark_mode()` registry read and its own HSL accent-rotation math. The result was visual drift between helm, pulse, and trance-scenes — and a lot of code duplication.
 
 The 4.0 design system fixes this in three moves:
 
-1. **One façade**: `rcommon::interface::tui::design` is the single import surface. Everything an r* TUI needs lives there.
-2. **One palette**: `rcommon::role::application::palette::ScreenPalette` is the canonical color story. The same RGB tuples drive both ratatui TUI chrome and GDI pixel renderers. `query_current_palette()` is the cross-platform helper that returns one.
-3. **One Screensaver trait**: `rcommon::core::screensaver::Screensaver` (backend-agnostic, in `core` so it can be implemented by both TUI effects and GDI screensavers). The pre-4.0 ratatui-coupled trait is a thin wrapper at `rcommon::interface::tui::screensaver::ScreensaverRenderer` for the buffer-management concerns only.
+1. **One façade**: `library::interface::tui::design` is the single import surface. Everything an r* TUI needs lives there.
+2. **One palette**: `library::role::application::palette::ScreenPalette` is the canonical color story. The same RGB tuples drive both ratatui TUI chrome and GDI pixel renderers. `query_current_palette()` is the cross-platform helper that returns one.
+3. **One Screensaver trait**: `library::core::screensaver::Screensaver` (backend-agnostic, in `core` so it can be implemented by both TUI effects and GDI screensavers). The pre-4.0 ratatui-coupled trait is a thin wrapper at `library::interface::tui::screensaver::ScreensaverRenderer` for the buffer-management concerns only.
 
 ### 4.0 source-of-truth files (the `design/` subfolder)
 
-In rcommon 4.0 every chrome file lives under `src/interface/tui/design/`:
+In library 4.0 every chrome file lives under `src/interface/tui/design/`:
 
 ```
 src/interface/tui/design/
@@ -257,7 +257,7 @@ src/interface/tui/design/
 └── text.rs               wrap_text, align_line, char_width, visible_len, ...
 ```
 
-The 3.x module paths (`rcommon::interface::tui::theme`, `rcommon::interface::tui::markdown`, `rcommon::interface::tui::status`, `rcommon::interface::tui::layout`, `rcommon::interface::tui::text`, `rcommon::widgets::colors`, ...) are kept as **deprecated** re-exports for one minor release (4.0 → 4.1). They will be removed in 4.1.
+The 3.x module paths (`library::interface::tui::theme`, `library::interface::tui::markdown`, `library::interface::tui::status`, `library::interface::tui::layout`, `library::interface::tui::text`, `library::widgets::colors`, ...) are kept as **deprecated** re-exports for one minor release (4.0 → 4.1). They will be removed in 4.1.
 
 ### `Screensaver` trait moved to `core`
 
@@ -298,7 +298,7 @@ pub struct ScreenPalette {
 }
 ```
 
-`ScreenPalette` is in `rcommon::role::application::palette` (Application role, backend-agnostic — no ratatui types). Every r* app constructs one via `query_current_palette()` and reads the same fields.
+`ScreenPalette` is in `library::role::application::palette` (Application role, backend-agnostic — no ratatui types). Every r* app constructs one via `query_current_palette()` and reads the same fields.
 
 The TUI-side `dimensions::Palette` enum exposes `ACCENT`, `ACCENT_DIM`, `ACCENT_HOT`, `ACCENT_COOL` variants that map 1:1 onto `ScreenPalette`'s accent/dim/hot/cool fields. This means r* TUI effects, r* GDI screensavers, and r* dashboards all derive the same color story from the same system accent.
 
@@ -315,26 +315,26 @@ The `tests/taxonomy_compliance.rs` AST-walker catches any future violation: a ne
 | `Screensaver` trait moved from `interface::tui::screensaver` to `core::screensaver` | Update import path; trait shape identical |
 | `Screensaver::update` takes `Duration` (was `f32`) | `Duration::from_secs_f32(dt)` to bridge |
 | `ScreensaverRenderer::tick` (3.x, `f32`) → `tick_duration` (4.0, `Duration`) | Rename call sites; old method is deprecated shim |
-| `Screensaver` methods `init/update/draw/has_scanlines` declared directly on the trait (no separate `ScreensaverState`/`Effect` supertraits) | rcommon effects: split `impl ScreensaverState` + `impl ScreensaverEffect` into `impl Screensaver` directly |
-| New `Screensaver::has_scanlines` (default `false`) | rIdle-scenes effects that want scanlines opt in |
-| TerminalCell `pub fn draw(&self, ...)` (was `&mut self`) | rcommon effects that mutated state in draw use `RefCell` (rcommon has 2; rIdle-scenes has 0) |
+| `Screensaver` methods `init/update/draw/has_scanlines` declared directly on the trait (no separate `ScreensaverState`/`Effect` supertraits) | library effects: split `impl ScreensaverState` + `impl ScreensaverEffect` into `impl Screensaver` directly |
+| New `Screensaver::has_scanlines` (default `false`) | trance-scenes effects that want scanlines opt in |
+| TerminalCell `pub fn draw(&self, ...)` (was `&mut self`) | library effects that mutated state in draw use `RefCell` (library has 2; trance-scenes has 0) |
 | `ScreensaverEffect` trait re-exported as deprecated trait alias | One minor of warnings; will be removed in 4.1 |
 | Module split into `design/` subfolder | 3.x paths re-exported as deprecated module aliases |
 | New `ScreenPalette` and `query_current_palette()` | r* apps replace hand-rolled HSL math + registry reads |
 | `dimensions::Palette` gains `AccentDim`, `AccentHot`, `AccentCool` variants | TUI effects opt in; old `Monochrome/Accent/Heat` unchanged |
-| Version bump 3.4.4 → 4.0.0 | Update r* `Cargo.toml` to require `rcommon = "4.0"` (or `rcommon = { git = "...", tag = "v4.0.0" }`) |
+| Version bump 3.4.4 → 4.0.0 | Update r* `Cargo.toml` to require `library = "4.0"` (or `library = { git = "...", tag = "v4.0.0" }`) |
 
 ## Related Projects (for context)
 
-- rIdle / rIdle-scenes: Heavy use of TUI effects, lifecycle (screensavers as background/foreground), platform (console/windowing).
-- rFetch / rMonitor / rStartup: System info, package inventory, monitors, power, dark mode (Role + Platform + Interface TUI).
-- rTemplate (incl. window subcrate): GUI custom + TUI, diagnostics.
-- rWifi: Platform (WLAN), TUI, lifecycle.
-- All use rCommon via git + local [patch] for development.
+- trance / trance-scenes: Heavy use of TUI effects, lifecycle (screensavers as background/foreground), platform (console/windowing).
+- helm / pulse / ignite: System info, package inventory, monitors, power, dark mode (Role + Platform + Interface TUI).
+- template (incl. window subcrate): GUI custom + TUI, diagnostics.
+- scout: Platform (WLAN), TUI, lifecycle.
+- All use library via git + local [patch] for development.
 
 ## Future
 
-- Full port of reusable effects from rIdle-scenes.
+- Full port of reusable effects from trance-scenes.
 - Stronger API/Headless support.
 - Better CLI vs TUI separation.
 - CI enforcement of taxonomy (no cross-layer imports).

@@ -1,12 +1,12 @@
-# Contributing to rCommon
+# Contributing to library
 
-Thank you for your interest in contributing to `rCommon`! This document outlines the guidelines and best practices for developing, testing, and contributing to the shared foundation of the `local76` ecosystem.
+Thank you for your interest in contributing to `library`! This document outlines the guidelines and best practices for developing, testing, and contributing to the shared foundation of the `local76` ecosystem.
 
 ---
 
 ## 🏛️ Architecture & Taxonomy
 
-All code added to `rCommon` must conform to the 4-layer taxonomy defined in [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/ARCHITECTURE.md). This classification prevents accidental coupling between distinct concerns.
+All code added to `library` must conform to the 4-layer taxonomy defined in [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/ARCHITECTURE.md). This classification prevents accidental coupling between distinct concerns.
 
 ### The 4 Layers
 
@@ -29,7 +29,7 @@ All code added to `rCommon` must conform to the 4-layer taxonomy defined in [ARC
    - Location: `src/role/`
    - Purpose: Purpose-driven operations (low-level system infrastructure in `role/system`, user-oriented application logic in `role/application`).
 
-*Note: Truly neutral primitives (data shapes, deterministic RNGs, etc.) that have zero heavy platform or presentation assumptions may be placed in [src/core.rs](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/src/core.rs).*
+*Note: Truly neutral primitives (data shapes, deterministic RNGs, etc.) that have zero heavy platform or presentation assumptions may be placed in [src/core.rs](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/src/core.rs).*
 
 ---
 
@@ -44,7 +44,7 @@ To prevent bloat in small CLI daemons, all new functionality must be gated behin
 
 ## 🛠️ Cross-Platform Standards
 
-`rCommon` supports both **Windows** and **Linux** targets.
+`library` supports both **Windows** and **Linux** targets.
 - Ensure that any code utilizing raw system APIs (such as Win32 or Linux `/sys`/`/proc`) has appropriate `#[cfg(target_os = "...")]` guard rails.
 - Provide clean cross-platform fallbacks or stubs for other operating systems to prevent compilation failures.
 
@@ -72,5 +72,5 @@ cargo check --all-targets --all-features
 1. **Fork & Branch**: Create a feature branch from `main`.
 2. **Implement**: Write code conforming to the taxonomy, add docstrings, and implement tests.
 3. **Audit**: Run cargo checks and tests.
-4. **Document**: Update the [CHANGELOG.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/CHANGELOG.md) under the `[Unreleased]` section if making any user-facing API changes.
-5. **Submit**: Create a PR targeting `main` at `https://github.com/local76/rCommon/pulls`.
+4. **Document**: Update the [CHANGELOG.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/CHANGELOG.md) under the `[Unreleased]` section if making any user-facing API changes.
+5. **Submit**: Create a PR targeting `main` at `https://github.com/local76/library/pulls`.

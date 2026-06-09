@@ -37,7 +37,7 @@ pub struct FallingGlyphs {
     rng: LcgRng,
     // Cached state mutated inside `draw`. Wrapped in RefCell so `draw` can
     // remain `&self` (the 4.0 unified ScreensaverEffect trait requirement,
-    // shared with rIdle-scenes GDI renderers).
+    // shared with trance-scenes GDI renderers).
     last_drawn: RefCell<Vec<usize>>,
     last_cols: RefCell<usize>,
     last_rows: RefCell<usize>,

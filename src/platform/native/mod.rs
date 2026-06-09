@@ -9,7 +9,7 @@
 
 pub mod sys_info;
 pub mod reg;
-pub mod monitors;  // Monitor enumeration from rFetch/rMonitor patterns.
+pub mod monitors;  // Monitor enumeration from helm/pulse patterns.
 pub mod config;
 
 #[cfg(feature = "gpu")]

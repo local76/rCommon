@@ -18,9 +18,9 @@
 
 use std::time::Duration;
 
-use rcommon::core::screensaver::Screensaver;
-use rcommon::core::TerminalCell;
-use rcommon::screensaver_runtime::{parse_args, Mode, print_usage};
+use library::core::screensaver::Screensaver;
+use library::core::TerminalCell;
+use library::screensaver_runtime::{parse_args, Mode, print_usage};
 
 #[derive(Default)]
 struct NoopSaver {
@@ -36,7 +36,7 @@ impl Screensaver for NoopSaver {
 
 #[test]
 fn parse_args_no_args_shows_usage() {
-    // The tests run with the harness's argv (which is `rcommon-test-binary`).
+    // The tests run with the harness's argv (which is `library-test-binary`).
     // To get a deterministic "no args" parse, we'd need to clear argv,
     // which we can't do. So we test that parse_args returns *some* valid
     // Mode for the test harness's actual argv. This is a smoke test
@@ -49,8 +49,8 @@ fn parse_args_no_args_shows_usage() {
 fn print_usage_does_not_panic() {
     // Smoke test: print_usage writes to stderr; just verify it doesn't
     // crash on a known effect name.
-    print_usage("rMatrix");
-    print_usage("rBeams");
+    print_usage("glyphs");
+    print_usage("beams");
     print_usage("");
 }
 

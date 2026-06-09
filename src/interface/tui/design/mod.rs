@@ -2,8 +2,8 @@
 //!
 //! **Taxonomy Classification**: Interface (TUI / Presentation Layer).
 //!
-//! In library 4.0 every UI-facing r* app (rFetch, rMonitor, rIdle, rTemplate,
-//! rWifi, etc.) imports its chrome from this single module. The 3.0-era
+//! In library 4.0 every UI-facing r* app (helm, pulse, trance, template,
+//! scout, etc.) imports its chrome from this single module. The 3.0-era
 //! scattered paths (`library::interface::tui::theme::*`,
 //! `library::interface::tui::StatusBar`, `library::widgets::*`, ...) are
 //! preserved as deprecated re-exports at `library::lib.rs` for one minor.

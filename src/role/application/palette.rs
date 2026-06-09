@@ -9,7 +9,7 @@
 //!
 //! In library 4.0 the goals are:
 //!
-//! - A single source of truth so `rFetch`, `rMonitor`, `rIdle-scenes`, and
+//! - A single source of truth so `helm`, `pulse`, `trance-scenes`, and
 //!   future r* apps all derive their visual identity from the same place.
 //! - Backend-agnostic: the struct only holds `(u8, u8, u8)` tuples. TUI apps
 //!   can wrap the tuples in `ratatui::style::Color`; GDI apps can use them
@@ -23,7 +23,7 @@
 //! 1. Query the system accent and dark-mode flag (via the platform
 //!    helpers, e.g. `platform::native::sys_info::query_system_theme`).
 //! 2. Pass both into [`ScreenPalette::from_system`] to construct the
-//!    canonical 4.0 palette for the rApps suite.
+//!    canonical 4.0 palette for the apps suite.
 //! 3. Re-use the palette fields directly in your rendering code.
 //!
 //! # See also
@@ -43,7 +43,7 @@ use crate::core::{hsl_to_rgb, rgb_to_hsl};
 /// but cached at the library layer so r* apps don't each maintain their own
 /// registry query + cache.
 ///
-/// Use this from rFetch, rMonitor, rIdle-scenes, etc. instead of locally
+/// Use this from helm, pulse, trance-scenes, etc. instead of locally
 /// re-implementing the registry read.
 #[cfg(feature = "sys-info")]
 pub fn query_current_palette() -> ScreenPalette {
@@ -57,7 +57,7 @@ pub fn query_current_palette() -> ScreenPalette {
     ScreenPalette::default_dark()
 }
 
-/// The canonical rApps 4.0 screen palette.
+/// The canonical apps 4.0 screen palette.
 ///
 /// All fields are RGB triples so the palette is usable by both ratatui
 /// (via `Color::Rgb`) and GDI pixel renderers (via direct `(r, g, b)`).
@@ -115,7 +115,7 @@ impl ScreenPalette {
 
     /// A "high contrast" variant that boosts the accent to full saturation
     /// and uses near-black/near-white extremes. Useful for accessibility
-    /// mode and the rIdle-scenes CRT look.
+    /// mode and the trance-scenes CRT look.
     pub fn high_contrast(accent: (u8, u8, u8), is_dark_mode: bool) -> Self {
         let mut p = Self::from_system(accent, is_dark_mode);
         if is_dark_mode {
@@ -128,13 +128,13 @@ impl ScreenPalette {
         p
     }
 
-    /// The rApps cyan-ecosystem default for fallbacks when the system accent
+    /// The apps cyan-ecosystem default for fallbacks when the system accent
     /// is unavailable (e.g. in tests, headless contexts, or non-accent themes).
     pub fn default_dark() -> Self {
         Self::from_system((0, 245, 255), true)
     }
 
-    /// Light-mode default for the rApps cyan-ecosystem.
+    /// Light-mode default for the apps cyan-ecosystem.
     pub fn default_light() -> Self {
         Self::from_system((0, 180, 200), false)
     }

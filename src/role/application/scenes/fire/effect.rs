@@ -169,7 +169,7 @@ impl Screensaver for FireEffect {
             self.volcanic_globs.clear();
             // library 4.1: render the centered system-logo overlay from
             // the live system info (replaces the pre-4.1
-            // `ridle_core::logo_lines()` + `logo_dimensions()` Windows-only
+            // `trance_core::logo_lines()` + `logo_dimensions()` Windows-only
             // file read).
             let logo_text = get_system_info().logo_text;
             let lines = render_logo_block(&logo_text, None);

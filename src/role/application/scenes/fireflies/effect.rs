@@ -119,7 +119,7 @@ impl Screensaver for Fireflies {
             self.last_rows = rows;
 
             // library 4.1: fixed-size logo excitation buffer (pre-4.1
-            // `ridle_core::logo_dimensions()` was a Windows file read).
+            // `trance_core::logo_dimensions()` was a Windows file read).
             self.logo_excitation = vec![0.0; 80 * 12];
 
             // library 4.0: pull from the canonical ScreenPalette.
@@ -428,7 +428,7 @@ impl Screensaver for Fireflies {
 
         // 4. Update logo excitations from nearby fireflies
         // library 4.1: fixed 80x12 logo size (pre-4.1
-        // `ridle_core::logo_dimensions()` was a Windows file read).
+        // `trance_core::logo_dimensions()` was a Windows file read).
         let logo_w: usize = 80;
         let logo_h: usize = 12;
         if logo_w > 0 && logo_h > 0 && self.logo_excitation.len() == logo_w * logo_h {

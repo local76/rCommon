@@ -1,6 +1,6 @@
 # local76 Ecosystem: Visual Branding & Icon Standards
 
-This document establishes the design principles, visual guidelines, and technical specifications for icons in the `local76` suite of applications (`rFetch`, `rIdle`, `rMonitor`, `rWifi`, `rStartup`, `rTemplate`). 
+This document establishes the design principles, visual guidelines, and technical specifications for icons in the `local76` suite of applications (`helm`, `trance`, `pulse`, `scout`, `ignite`, `template`). 
 
 By defining a unified visual identity, we ensure that every utility feels like a first-class, cohesive member of the same family while remaining individually recognizable.
 
@@ -29,7 +29,7 @@ We define a signature style: **High-Contrast Monogram** (inspired by minimalist,
 
 ### Key Design Pillars:
 * **Solid White Squircle Base**: Icons use a solid white rounded square container as their base, providing maximum contrast and readability at all sizes.
-* **Bold Black Monogram**: The foreground utilizes a clean, modern, bold black sans-serif monogram (representing the utility prefix, e.g. `rF` for `rFetch`) centered perfectly.
+* **Bold Black Monogram**: The foreground utilizes a clean, modern, bold black sans-serif monogram (representing the utility prefix, e.g. `rF` for `helm`) centered perfectly.
 * **Thin Black Outline**: A crisp, thin black border details the perimeter of the squircle to maintain structure.
 * **Ecosystem Uniformity**: Rather than using varied glowing accent colors, the core application icons are uniformly styled in high-contrast black-and-white. This establishes a clean, unified brand that looks professional on any wallpaper or taskbar.
 
@@ -41,12 +41,12 @@ To make the icon set cohesive, all icons utilize a bold black monogram on a soli
 
 | Application | Monogram | Suffix Meaning |
 | :--- | :--- | :--- |
-| **`rFetch`** | **`rF`** | System polling, hardware query, static gathering. |
-| **`rMonitor`** | **`rM`** | Live metrics, resource utilization, telemetry. |
-| **`rWifi`** | **`rW`** | Signal telemetry, connection state, wireless data. |
-| **`rIdle`** | **`rI`** | Standby state, screensaver, screen locking. |
-| **`rStartup`** | **`rS`** | Service launching, startup boot, initialization. |
-| **`rTemplate`** | **`rT`** | Scaffold creation, skeleton template, boilerplate. |
+| **`helm`** | **`rF`** | System polling, hardware query, static gathering. |
+| **`pulse`** | **`rM`** | Live metrics, resource utilization, telemetry. |
+| **`scout`** | **`rW`** | Signal telemetry, connection state, wireless data. |
+| **`trance`** | **`rI`** | Standby state, screensaver, screen locking. |
+| **`ignite`** | **`rS`** | Service launching, startup boot, initialization. |
+| **`template`** | **`rT`** | Scaffold creation, skeleton template, boilerplate. |
 
 ---
 
@@ -70,7 +70,7 @@ To ensure the icons render crisp and sharp at all operating system scales (from 
 ### C. Windows Explorer Resource Metadata
 To ensure the applications look polished in Windows Explorer (e.g., when right-clicking the binary and viewing **Properties -> Details**), every utility must compile the following PE metadata into its resources using a build script (`build.rs`) and the `winres` crate:
 
-* **File Description**: A clean, descriptive name of the utility (e.g., `rFetch - System Info Utility`).
+* **File Description**: A clean, descriptive name of the utility (e.g., `helm - System Info Utility`).
 * **Product Name**: Grouped under the suite name: `local76 Suite`.
 * **Company Name**: Set as `local76`.
 * **Legal Copyright**: Set as `Copyright © 2026 local76`.

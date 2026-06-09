@@ -1,4 +1,4 @@
-//! Formatting and info helpers from rFetch etc.
+//! Formatting and info helpers from helm etc.
 //!
 //! **Taxonomy Classification**: System Role (Purpose - Application Software).
 //!

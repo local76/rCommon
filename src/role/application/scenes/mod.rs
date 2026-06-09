@@ -2,10 +2,10 @@
 //!
 //! **Taxonomy Classification**: System Role (Purpose - Application Software).
 //!
-//! In library 4.1 these effects are migrating here from `rIdle-scenes/` (now
-//! `rScenes/`). 4.1.0 ships `matrix` as the canonical reference impl; the
+//! In library 4.1 these effects are migrating here from `trance-scenes/` (now
+//! `screensavers/`). 4.1.0 ships `matrix` as the canonical reference impl; the
 //! other 9 land as 4.1.x patch releases. Each effect is a `Screensaver` impl
-//! that renders a TerminalCell grid. The `rScenes/` workspace will eventually
+//! that renders a TerminalCell grid. The `screensavers/` workspace will eventually
 //! hold only thin shim binaries that wire these effects into the GDI
 //! screen-saver runtime (also moving to library in a later 4.x release).
 //!

@@ -3,11 +3,11 @@
 //! **Taxonomy Classification**: Core (neutral foundation).
 //!
 //! This module is the single source of truth for the screensavers used across
-//! the rApps suite:
+//! the apps suite:
 //!
-//! - r* TUI apps (rMonitor, rIdle, rTemplate, rFetch) that drive effects in
+//! - r* TUI apps (pulse, trance, template, helm) that drive effects in
 //!   a ratatui/buffer-managed loop via `interface::tui::screensaver::ScreensaverRenderer`.
-//! - r* screensaver apps (rIdle-scenes: rLife, rFireflies, rMatrix, rFire, ...)
+//! - r* screensaver apps (trance-scenes: cosmos, gnats, glyphs, flame, ...)
 //!   that drive the same effects in a GDI/fullscreen pixel loop without ratatui.
 //!
 //! # What's here vs. what's not
@@ -25,7 +25,7 @@
 //!
 //! `Screensaver` is a single trait with `init`/`update`/`draw`/`has_scanlines`.
 //! This is a direct drop-in replacement for the pre-4.0 library trait AND the
-//! pre-4.0 rIdle-scenes `ridle_core::Screensaver` trait, so all consumers
+//! pre-4.0 trance-scenes `trance_core::Screensaver` trait, so all consumers
 //! migrate by simply changing the import path.
 //!
 //! `ScreensaverState` is provided as a **convenience sub-trait** for code
@@ -49,8 +49,8 @@ use crate::core::TerminalCell;
 ///
 /// In library 4.0 this is the single backend-agnostic entry point for
 /// both r* TUI apps (ratatui/buffer-managed) and r* GDI screensaver apps
-/// (rIdle-scenes). Direct drop-in for the pre-4.0 library trait AND the
-/// pre-4.0 rIdle-scenes `ridle_core::Screensaver` trait.
+/// (trance-scenes). Direct drop-in for the pre-4.0 library trait AND the
+/// pre-4.0 trance-scenes `trance_core::Screensaver` trait.
 ///
 /// # 4.0 design: `Screensaver: ScreensaverState`
 ///
@@ -84,7 +84,7 @@ pub trait Screensaver: ScreensaverState {
     /// Whether the host renderer should overlay a CRT scanline effect on
     /// top of the drawn cells. Default: `false`.
     ///
-    /// r* GDI screensaver apps (rIdle-scenes) have always drawn scanlines
+    /// r* GDI screensaver apps (trance-scenes) have always drawn scanlines
     /// separately; r* TUI apps typically don't. Returning `true` is opt-in.
     fn has_scanlines(&self) -> bool {
         false

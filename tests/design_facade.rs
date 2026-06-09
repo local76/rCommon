@@ -11,7 +11,7 @@ use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
 use ratatui::style::Color;
 use ratatui::widgets::Widget;
-use rcommon::interface::tui::design::prelude::*;
+use library::interface::tui::design::prelude::*;
 
 // ---------------------------------------------------------------------------
 // 1. Theme + accent-color façade is intact and produces a valid ThemeColors
@@ -107,11 +107,11 @@ fn facade_centered_rect_at_canonical_sizes() {
 }
 
 // ---------------------------------------------------------------------------
-// 6. render_logo_block (used by rIdle-scenes) produces non-empty lines
+// 6. render_logo_block (used by trance-scenes) produces non-empty lines
 // ---------------------------------------------------------------------------
 #[test]
 fn facade_render_logo_block_works() {
-    let lines = render_logo_block("rFetch", Some("v4.0"));
+    let lines = render_logo_block("helm", Some("v4.0"));
     assert!(!lines.is_empty(), "logo block should not be empty");
     let total_chars: usize = lines.iter().map(|l| l.chars().count()).sum();
     assert!(total_chars > 0, "logo should contain characters");
@@ -123,7 +123,7 @@ fn facade_render_logo_block_works() {
 #[test]
 fn facade_markdown_viewer_lifecycle() {
     let mut v = MarkdownViewerState::new()
-        .with_doc("README.md", "# rFetch\n\nA fast system fetch utility.");
+        .with_doc("README.md", "# helm\n\nA fast system fetch utility.");
     assert!(!v.is_open());
     let theme = get_theme(true, Color::Cyan);
     v.open("README.md", &theme);
@@ -169,9 +169,9 @@ fn facade_text_wrap_handles_ascii_and_wide() {
 // ---------------------------------------------------------------------------
 #[test]
 fn facade_all_effects_construct_at_80x24() {
-    use rcommon::interface::tui::design::prelude::*;
+    use library::interface::tui::design::prelude::*;
     let (c, r) = (80usize, 24usize);
-    let mut grid = vec![rcommon::core::TerminalCell::default(); c * r];
+    let mut grid = vec![library::core::TerminalCell::default(); c * r];
     let mut effects: Vec<Box<dyn TuiEffect>> = vec![
         Box::new(FallingGlyphs::new(c, r, 0.35)),
         Box::new(FlowingParticles::new(c, r)),

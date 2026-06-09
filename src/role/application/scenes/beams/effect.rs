@@ -435,7 +435,7 @@ impl Screensaver for Beams {
             }
         }
 
-        // 4. Centered system-logo overlay (was ridle_core::logo_lines in pre-4.1)
+        // 4. Centered system-logo overlay (was trance_core::logo_lines in pre-4.1)
         let sys = get_system_info();
         let logo_lines = render_logo_block(&sys.logo_text, None);
         if !logo_lines.is_empty() {

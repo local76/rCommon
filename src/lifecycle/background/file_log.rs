@@ -33,7 +33,7 @@ pub fn is_event_log_enabled() -> bool {
     EVENT_LOG_ENABLED.load(Ordering::Relaxed)
 }
 
-/// Set the per-app log file folder name (e.g. `"rfetch"`, `"rmonitor"`, `"rwifi"`, `"rstart"`).
+/// Set the per-app log file folder name (e.g. `"helm"`, `"pulse"`, `"scout"`, `"rstart"`).
 /// Subsequent calls to `log_message` will write to `%APPDATA%\<app_name>\log.txt`.
 /// Subsequent calls to `get_appdata_log_path` will return the same path.
 ///
@@ -50,7 +50,7 @@ fn get_log_app_name() -> &'static str {
 /// Helper to resolve the standard AppData folder for diagnostics logging.
 /// Path: `%APPDATA%\<app_name>\log.txt` where `<app_name>` is set via [`set_log_app_name`].
 /// Default folder name (before `set_log_app_name` is called) is `"library"`.
-/// (Pre-4.2.0 default was the rTemplate-specific string `"rTmp"`, a leftover
+/// (Pre-4.2.0 default was the template-specific string `"rTmp"`, a leftover
 /// from before the 2026-06-08 install-path-alignment sprint. Every consumer
 /// app calls `set_log_app_name` at startup, so the default is dead code
 /// in practice — the rename to `"library"` is purely a cleanliness fix.)

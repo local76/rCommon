@@ -2,7 +2,7 @@
 //!
 //! **Taxonomy Classification**: Platform & Architecture (Deployment - Native) + Role (System Software).
 //! 
-//! Ported/generalized from rFetch (worker_win.rs using EnumDisplayMonitors) and rMonitor.
+//! Ported/generalized from helm (worker_win.rs using EnumDisplayMonitors) and pulse.
 //! Provides human-readable monitor summaries for dashboards and system info.
 //!
 //! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/ARCHITECTURE.md).
@@ -29,7 +29,7 @@ pub fn get_monitors_summary() -> Vec<String> {
     get_all_monitors()
 }
 
-// Full Windows enumeration (from rFetch pattern).
+// Full Windows enumeration (from helm pattern).
 #[cfg(all(windows, feature = "windows-sys"))]
 unsafe extern "system" fn monitor_enum_proc(
     hmonitor: HMONITOR,

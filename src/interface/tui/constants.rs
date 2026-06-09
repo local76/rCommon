@@ -1,4 +1,4 @@
-//! TUI constants for rApps ecosystem TUI applications.
+//! TUI constants for apps ecosystem TUI applications.
 //!
 //! **Taxonomy Classification**: Interface (TUI / Presentation Layer) + Role (Application Software).
 

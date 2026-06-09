@@ -2,9 +2,9 @@
 //!
 //! **Taxonomy Classification**: System Role (Purpose - Application Software).
 //! 
-//! Ported and generalized from rFetch (worker_win.rs) and similar patterns in rMonitor/rStartup.
+//! Ported and generalized from helm (worker_win.rs) and similar patterns in pulse/ignite.
 //! Provides counts for common package managers and a breakdown string for dashboards/TUIs.
-//! Full detailed scanning lives in app-specific code (e.g. rFetch for async), but these are reusable helpers.
+//! Full detailed scanning lives in app-specific code (e.g. helm for async), but these are reusable helpers.
 //!
 //! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/ARCHITECTURE.md).
 //! Cross-platform with native features and platform-specific stubs.
@@ -359,7 +359,7 @@ pub static PACKAGE_MANAGERS: &[PackageManager] = &[
 
 /// Returns a human-readable breakdown of installed packages.
 /// Classification: Role (Application) + Platform (Native).
-/// Ported from rFetch. Useful for TUIs, CLIs, and dashboards.
+/// Ported from helm. Useful for TUIs, CLIs, and dashboards.
 pub fn get_packages_breakdown() -> String {
     static CACHE: std::sync::Mutex<Option<(std::time::Instant, String)>> = std::sync::Mutex::new(None);
     let mut lock = CACHE.lock().unwrap();

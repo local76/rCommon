@@ -10,7 +10,7 @@ impl Fireflies {
             return;
         }
 
-        // library 4.0: pull the canonical ScreenPalette so rFetch, rMonitor,
+        // library 4.0: pull the canonical ScreenPalette so helm, pulse,
         // and the screensaver effects all share the same color story.
         // The accent is the primary color; hot/cool give us the triadic
         // accents that hand-rolled HSL math used to compute locally.
@@ -284,7 +284,7 @@ impl Fireflies {
 
         // 6. Draw centered logo with glow excitation
         // library 4.1: render the system logo from the live OS info
-        // (replaces pre-4.1 `ridle_core::logo_lines()` + `logo_dimensions()`).
+        // (replaces pre-4.1 `trance_core::logo_lines()` + `logo_dimensions()`).
         let logo_text = get_system_info().logo_text;
         let lines = render_logo_block(&logo_text, None);
         let logo_h = lines.len();

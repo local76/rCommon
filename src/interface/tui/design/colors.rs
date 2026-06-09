@@ -2,7 +2,7 @@ use ratatui::style::Color;
 
 /// First-class bundle of accent/dim/text colors for the TUI accent widget family.
 /// 
-/// This makes it easy for consumers (rTemplate panels, rMonitor dashboards, etc.)
+/// This makes it easy for consumers (template panels, pulse dashboards, etc.)
 /// to pass a consistent theme to AccentList, AccentTabs, AccentGauge, etc.
 /// without repeating 3-4 color args everywhere.
 ///
@@ -138,7 +138,7 @@ impl AccentTheme {
         AccentColors::query_system()
     }
 
-    /// Returns a fallback dark-mode theme using standard rApps Cyan.
+    /// Returns a fallback dark-mode theme using standard apps Cyan.
     pub fn default_dark() -> AccentColors {
         AccentColors {
             accent: Color::Rgb(0, 245, 255),
@@ -147,7 +147,7 @@ impl AccentTheme {
         }
     }
 
-    /// Returns a fallback light-mode theme using standard rApps Cyan.
+    /// Returns a fallback light-mode theme using standard apps Cyan.
     pub fn default_light() -> AccentColors {
         AccentColors {
             accent: Color::Rgb(0, 180, 200),

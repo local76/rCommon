@@ -32,13 +32,13 @@ impl LcgRng {
 
 pub const COMMANDS: &[(&str, &[&str])] = &[
     (
-        "ping -c 3 ridle-labs.com",
+        "ping -c 3 trance-labs.com",
         &[
-            "PING ridle-labs.com (104.21.32.222): 56 data bytes",
+            "PING trance-labs.com (104.21.32.222): 56 data bytes",
             "64 bytes from 104.21.32.222: icmp_seq=0 ttl=56 time=12.4 ms",
             "64 bytes from 104.21.32.222: icmp_seq=1 ttl=56 time=14.1 ms",
             "64 bytes from 104.21.32.222: icmp_seq=2 ttl=56 time=11.8 ms",
-            "--- ridle-labs.com ping statistics ---",
+            "--- trance-labs.com ping statistics ---",
             "3 packets transmitted, 3 received, 0% packet loss",
             "rtt min/avg/max = 11.8/12.7/14.1 ms",
         ],
@@ -48,7 +48,7 @@ pub const COMMANDS: &[(&str, &[&str])] = &[
         &[
             "   Compiling once_cell v1.19.0",
             "   Compiling windows-sys v0.59.0",
-            "   Compiling ridle_screensaver v0.1.0",
+            "   Compiling trance_screensaver v0.1.0",
             "    Finished `release` profile [optimized] target(s) in 3.42s",
         ],
     ),
@@ -73,9 +73,9 @@ pub const COMMANDS: &[(&str, &[&str])] = &[
         ],
     ),
     (
-        "cat /etc/passwd | grep ridle",
+        "cat /etc/passwd | grep trance",
         &[
-            "ridle:x:1001:1001:Windows Admin,,,:/home/ridle:/bin/bash",
+            "trance:x:1001:1001:Windows Admin,,,:/home/trance:/bin/bash",
         ],
     ),
 ];

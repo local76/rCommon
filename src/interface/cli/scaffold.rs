@@ -37,20 +37,20 @@ pub struct CliCommandDef {
 ///
 /// Part of the Interface (Presentation Layer).
 /// Centralizes command-line argument parsing, help screens, version output, and
-/// common CLI behaviors (like running the diagnostic doctor) across rApps.
+/// common CLI behaviors (like running the diagnostic doctor) across apps.
 ///
 /// # Examples
 ///
 /// ```
 /// use library::interface::cli::CliParser;
 ///
-/// let parser = CliParser::new("rfetch", "A fast, modern system fetch utility in Rust.")
-///     .logo("====================\n      rFetch\n====================")
+/// let parser = CliParser::new("helm", "A fast, modern system fetch utility in Rust.")
+///     .logo("====================\n      helm\n====================")
 ///     .command("stdout", "Standard fastfetch stdout print mode")
 ///     .option('s', "stdout", "Standard fastfetch stdout print mode", false);
 ///
 /// // Standard parsing:
-/// let args = vec!["rfetch".to_string(), "stdout".to_string()];
+/// let args = vec!["helm".to_string(), "stdout".to_string()];
 /// let parsed = parser.parse(&args).unwrap();
 /// assert_eq!(parsed.command, Some("stdout".to_string()));
 /// ```
