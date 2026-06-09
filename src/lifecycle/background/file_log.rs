@@ -44,12 +44,16 @@ pub fn set_log_app_name(name: &str) {
 }
 
 fn get_log_app_name() -> &'static str {
-    LOG_APP_NAME.get_or_init(|| "rTmp".to_string())
+    LOG_APP_NAME.get_or_init(|| "rcommon".to_string())
 }
 
 /// Helper to resolve the standard AppData folder for diagnostics logging.
 /// Path: `%APPDATA%\<app_name>\log.txt` where `<app_name>` is set via [`set_log_app_name`].
-/// Default folder name (before `set_log_app_name` is called) is `"rTmp"`.
+/// Default folder name (before `set_log_app_name` is called) is `"rcommon"`.
+/// (Pre-4.2.0 default was the rTemplate-specific string `"rTmp"`, a leftover
+/// from before the 2026-06-08 install-path-alignment sprint. Every consumer
+/// app calls `set_log_app_name` at startup, so the default is dead code
+/// in practice — the rename to `"rcommon"` is purely a cleanliness fix.)
 pub fn get_appdata_log_path() -> Option<PathBuf> {
     #[cfg(windows)]
     {

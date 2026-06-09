@@ -168,6 +168,10 @@ If you are migrating an older application to `rCommon` version 3.0.0+, update yo
 
 All applications in the ecosystem share a cohesive user interface style and visual asset layout (e.g. icon containers, neon wireframe elements). See [docs/VISUAL_STANDARDS.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/docs/VISUAL_STANDARDS.md) for details on visual guidelines and branding asset packaging.
 
+## 📚 Embedding markdown docs (F1–F7 in-TUI help)
+
+The `rcommon::embedded_docs!` macro bakes a set of markdown files (README, LICENSE, CONTRIBUTING, etc.) directly into your binary at compile time, so your TUI can show help text without reading the filesystem at runtime (which would break in a single-file `.scr` Windows screensaver install). See [docs/EMBEDDED_DOCS.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/rCommon/docs/EMBEDDED_DOCS.md) for the canonical example and the F1–F7 wiring pattern. (This pattern originated in rTemplate; the doc is now in rcommon so the 5 other r* TUI apps have a single source of truth.)
+
 ---
 
 ## 📄 License
