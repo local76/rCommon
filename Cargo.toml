@@ -1,6 +1,6 @@
 [package]
 name = "library"
-version = "2026.06.09"
+version = "2026.6.9"
 authors = ["Jeryd <jerydleuck@gmail.com>"]
 edition = "2024"
 rust-version = "1.85"

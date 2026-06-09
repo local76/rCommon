@@ -5,7 +5,7 @@ All notable changes to library will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2026.06.09] - 2026-06-09
+## [2026.6.9] - 2026-06-09
 
 ### Renamed
 - **Project rename**: `library` was previously `rcommon` (and `rCommon` in some references). The Cargo package name, all module paths, and the 10 internal screensaver scene subdirectories are now lowercase `library`. The 10 scene subdirectory names now match the lowercase binary names from the [`screensavers`](https://github.com/local76/screensavers) workspace (`beams`, `bounce`, `flame`, `gnats`, `bursts`, `cosmos`, `glyphs`, `disco`, `storm`, `chaos`).
