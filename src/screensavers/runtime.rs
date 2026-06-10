@@ -13,7 +13,7 @@
 //! [`screensaver_shim!`] macro:
 //!
 //! ```ignore
-//! library::screensavers::screensaver_shim!(glyphs, Glyphs, "glyphs");
+//! library::screensaver_shim!(glyphs, Glyphs, "glyphs");
 //! ```
 //!
 //! The `screensaver-runtime` feature is **default-off** in library
@@ -391,17 +391,16 @@ impl Drop for Renderer {
 /// In `screensavers-glyphs/src/screensaver_shim.rs`:
 ///
 /// ```rust,ignore
-/// library::screensavers::screensaver_shim!(glyphs, Glyphs, "glyphs");
+/// library::screensaver_shim!(glyphs, Glyphs, "glyphs");
 /// ```
 ///
-/// This expands to:
+/// This expands to a 2-line module:
 ///
 /// ```rust,ignore
-/// #![cfg_attr(
+/// #[cfg_attr(
 ///     all(not(debug_assertions), target_os = "windows"),
 ///     windows_subsystem = "windows"
 /// )]
-///
 /// fn main() {
 ///     library::screensavers::runtime::run_main(
 ///         library::screensavers::glyphs::Glyphs::new(),
@@ -410,18 +409,23 @@ impl Drop for Renderer {
 /// }
 /// ```
 ///
-/// The scene module must export `<Scene>::new()` returning a type
+/// The `windows_subsystem` attribute is attached to `fn main()` as an
+/// **outer** attribute (not a crate-level inner attribute) so the
+/// macro is parseable in any module context, not just at the crate
+/// root. The linker still picks it up the same way because the
+/// `fn main()` of a `[[bin]]` is the entry point.
+///
+/// The scene module must export `<SceneTy>::new()` returning a type
 /// that implements `Screensaver + 'static`. All 10 scenes in
 /// `library::screensavers` (`Beams`, `Bounce`, `Bursts`, `Chaos`,
 /// `Cosmos`, `Disco`, `Flame`, `Glyphs`, `Gnats`, `Storm`) do.
 #[macro_export]
 macro_rules! screensaver_shim {
     ($scene_mod:ident, $scene_ty:ident, $name:literal) => {
-        #![cfg_attr(
+        #[cfg_attr(
             all(not(debug_assertions), target_os = "windows"),
             windows_subsystem = "windows"
         )]
-
         fn main() {
             $crate::screensavers::runtime::run_main(
                 $crate::screensavers::$scene_mod::$scene_ty::new(),
