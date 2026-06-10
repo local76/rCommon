@@ -10,15 +10,5 @@ pub mod application {
     pub use crate::core::screen_palette as palette;
     pub use crate::core::formatting;
     
-    pub mod rgb {
-        #[cfg(feature = "rgb")]
-        pub use crate::toolkit::rgb_controller as controller;
-        #[cfg(feature = "rgb")]
-        pub use crate::toolkit::rgb_protocol as protocol;
-        
-        #[cfg(feature = "rgb")]
-        pub use crate::toolkit::rgb_controller::is_openrgb_enabled;
-        #[cfg(feature = "rgb")]
-        pub use crate::toolkit::rgb_controller::RgbController;
-    }
+
 }

@@ -69,8 +69,7 @@ pub use platform::native::sys_info;
 #[cfg(feature = "reg")]
 pub use platform::native::reg;
 
-#[cfg(feature = "rgb")]
-pub use role::application::rgb;
+
 #[cfg(feature = "role-application")]
 pub use role::application::game;
 #[cfg(feature = "sys-info")]

@@ -72,7 +72,7 @@ lifecycle-background = ["service", "event-log", "notification", "clipboard"]
 platform-native = ["sys-info", "reg"]
 platform-gpu = ["gpu"]
 role-system = ["sys-info", "reg", "service", "event-log"]
-role-application = ["rgb"]
+role-application = []
 
 # library 4.1: the 10 screensaver effects (cosmos, glyphs, flame, bounce,
 # beams, storm, chaos, disco, bursts, gnats) live under
@@ -101,7 +101,7 @@ chrome = ["widgets"]
 gpu = ["dep:wgpu", "dep:pollster", "dep:bytemuck"]
 widgets = ["dep:ratatui", "dep:crossterm", "lifecycle-foreground", "window"]
 sys-info = ["dep:sysinfo", "windows-sys", "dep:winreg"]
-rgb = []
+
 winget = ["dep:rusqlite"]
 clipboard = ["windows-sys"]
 service = ["windows-sys"]

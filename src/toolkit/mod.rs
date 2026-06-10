@@ -27,10 +27,7 @@ pub mod ipc_messages;
 #[cfg(feature = "sys-info")]
 pub mod packages;
 
-#[cfg(feature = "rgb")]
-pub mod rgb_controller;
-#[cfg(feature = "rgb")]
-pub mod rgb_protocol;
+
 
 pub mod platform;
 pub mod platform_embedded;
