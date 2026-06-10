@@ -133,7 +133,7 @@ impl PulsingGlyphs {
     }
 }
 
-impl crate::interface::tui::screensaver::Screensaver for PulsingGlyphs {
+impl crate::interface::app::screensaver::Screensaver for PulsingGlyphs {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }

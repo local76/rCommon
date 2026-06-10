@@ -2,23 +2,32 @@
 //!
 //! **Taxonomy Classification**: Execution State (Lifecycle - Foreground) + Platform (Native).
 
-pub mod drag_to_move;
-pub mod position;
-pub mod relaunch;
-pub mod style;
 pub mod types;
-pub mod visibility;
+pub mod drag_to_move;
+
+#[cfg(target_os = "windows")]
+mod window_win;
+#[cfg(target_os = "windows")]
+pub use window_win::*;
+
+#[cfg(target_os = "linux")]
+mod window_linux;
+#[cfg(target_os = "linux")]
+pub use window_linux::*;
+
+#[cfg(target_os = "macos")]
+mod window_macos;
+#[cfg(target_os = "macos")]
+pub use window_macos::*;
+
+#[cfg(not(any(target_os = "windows", target_os = "linux", target_os = "macos")))]
+mod window_fallback;
+#[cfg(not(any(target_os = "windows", target_os = "linux", target_os = "macos")))]
+pub use window_fallback::*;
 
 pub use types::{
     RECT, MONITORINFO, COORD, SMALL_RECT, CONSOLE_SELECTION_INFO, POINT,
 };
-pub use position::{
-    get_console_rect, get_window_rect, set_window_pos, center_console_window, query_cursor_pos,
-};
-#[allow(deprecated)] // Intentional: Re-exporting legacy relaunch helpers for backward compatibility with older apps
-pub use relaunch::{relaunch_in_conhost_if_needed, should_relaunch_in_conhost, relaunch_in_conhost};
-pub use visibility::{hide_console_at_startup, is_console_focused, show_console_window};
-pub use style::{BorderlessConsole, ConsoleTitleGuard};
 
 // Re-export SingleInstanceGuard from guard module to preserve API compatibility
 pub use crate::apps::guard::SingleInstanceGuard;

@@ -130,7 +130,7 @@ impl FlowingParticles {
     }
 }
 
-impl crate::interface::tui::screensaver::Screensaver for FlowingParticles {
+impl crate::interface::app::screensaver::Screensaver for FlowingParticles {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }

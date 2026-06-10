@@ -135,7 +135,7 @@ impl RisingGlyphs {
     }
 }
 
-impl crate::interface::tui::screensaver::Screensaver for RisingGlyphs {
+impl crate::interface::app::screensaver::Screensaver for RisingGlyphs {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }

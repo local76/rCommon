@@ -1,7 +1,7 @@
 //! Visual dimensions for TUI effects.
 //!
 //! **Taxonomy Classification**: Interface (TUI) configuration. Used by all
-//! effects in `interface::tui::effects` to standardize their render treatment
+//! effects in `interface::app::effects` to standardize their render treatment
 //! and color source.
 //!
 //! Each effect exposes a `style: Style` and `palette: Palette` field, with

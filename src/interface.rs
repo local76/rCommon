@@ -2,7 +2,7 @@
 //! Re-exports from the new ui and app modules.
 
 #[cfg(feature = "widgets")]
-pub mod tui {
+pub mod app {
     #[cfg(feature = "effects")]
     pub use crate::ui::effects;
     pub use crate::ui::screensaver_renderer as screensaver;
@@ -44,10 +44,10 @@ pub mod tui {
             pub use crate::ui::markdown::parse_markdown_to_lines;
             pub use crate::ui::status_bar::StatusBar;
             pub use crate::ui::title_banner::ButtonRect;
-            pub use crate::ui::mouse_selection::MouseSelection;
         }
     }
 }
+
 
 #[cfg(feature = "gui")]
 pub mod gui {

@@ -156,7 +156,7 @@ impl FlowingBlocks {
     }
 }
 
-impl crate::interface::tui::screensaver::Screensaver for FlowingBlocks {
+impl crate::interface::app::screensaver::Screensaver for FlowingBlocks {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }

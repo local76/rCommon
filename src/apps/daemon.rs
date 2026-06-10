@@ -112,25 +112,6 @@ pub fn set_process_priority(priority: ProcessPriority) {
     }
 }
 
-/// Set below normal process priority class for background operation.
-///
-/// # Deprecated
-/// Use `set_process_priority(ProcessPriority::BelowNormal)` instead.
-#[deprecated(since = "1.9.25", note = "Use set_process_priority instead")]
-#[allow(deprecated)]
-pub fn set_low_priority() {
-    set_process_priority(ProcessPriority::BelowNormal);
-}
-
-/// Set extreme idle/background priority class for low importance daemons.
-///
-/// # Deprecated
-/// Use `set_process_priority(ProcessPriority::Idle)` instead.
-#[deprecated(since = "1.9.25", note = "Use set_process_priority instead")]
-#[allow(deprecated)]
-pub fn set_idle_priority() {
-    set_process_priority(ProcessPriority::Idle);
-}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PowerRequest {
@@ -375,11 +356,7 @@ mod tests {
         set_process_priority(ProcessPriority::BelowNormal);
         set_process_priority(ProcessPriority::Idle);
 
-        #[allow(deprecated)]
-        {
-            set_low_priority();
-            set_idle_priority();
-        }
+
 
         prevent_system_sleep(true);
         prevent_system_sleep(false);

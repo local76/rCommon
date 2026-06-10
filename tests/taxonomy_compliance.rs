@@ -143,15 +143,13 @@ fn strip_comments(content: &str) -> String {
 }
 
 #[test]
-
-#[ignore = "Re-ignored in 5d: the screensavers (10 files) have struct fields and method bodies that depend on RgbController/RgbColor from the `rgb` feature. Feature-gating those requires gating the field declaration, the constructor line, and every self.rgb.X() call site in every method, which is a larger refactor than the 2-hour stop-the-line budget for 5d allows. The library builds cleanly with default features and --all-features; this test will re-enable once the screensavers are either (a) feature-gated throughout, or (b) reworked to use a trait-object pattern that abstracts over the rgb-vs-no-rgb split. Tracked as a 4.3 follow-up."]
 fn test_taxonomy_features_compile() {
     let cargo = std::env::var("CARGO").unwrap_or_else(|_| "cargo".to_string());
 
     // We test that each key taxonomy feature compiles independently
     let feature_sets = &[
         vec!["--no-default-features"],
-        vec!["--no-default-features", "--features", "interface-tui"],
+        vec!["--no-default-features", "--features", "interface-app"],
         vec!["--no-default-features", "--features", "interface-api"],
         vec!["--no-default-features", "--features", "lifecycle-foreground"],
         vec!["--no-default-features", "--features", "platform-native"],

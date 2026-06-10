@@ -123,7 +123,7 @@ impl RisingFlames {
     }
 }
 
-impl crate::interface::tui::screensaver::Screensaver for RisingFlames {
+impl crate::interface::app::screensaver::Screensaver for RisingFlames {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }

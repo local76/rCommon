@@ -146,11 +146,6 @@ pub fn query_service_status(service_name: &str) -> String {
     }
 }
 
-/// Legacy wrapper for query_service_status.
-#[deprecated(since = "1.0.0", note = "Use query_service_status instead")]
-pub fn query_windows_service_status(service_name: &str) -> String {
-    query_service_status(service_name)
-}
 
 /// Check if the current process has administrative/root privileges required for service mutations.
 pub fn has_admin_privileges() -> bool {
@@ -174,7 +169,7 @@ pub fn has_admin_privileges() -> bool {
     }
     #[cfg(target_os = "linux")]
     {
-        extern "C" {
+        unsafe extern "C" {
             fn getuid() -> u32;
         }
         unsafe { getuid() == 0 }

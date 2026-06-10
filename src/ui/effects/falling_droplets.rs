@@ -104,7 +104,7 @@ impl FallingDroplets {
     }
 }
 
-impl crate::interface::tui::screensaver::Screensaver for FallingDroplets {
+impl crate::interface::app::screensaver::Screensaver for FallingDroplets {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }

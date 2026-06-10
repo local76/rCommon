@@ -13,7 +13,7 @@
 //!
 //! # Migration from 3.x
 //!
-//! - 3.x: `use library::interface::tui::screensaver::{Screensaver, ...}` — all in this module.
+//! - 3.x: `use library::interface::app::screensaver::{Screensaver, ...}` — all in this module.
 //! - 4.0: traits live at `library::core::screensaver::*`. They are re-exported from
 //!   this module for one minor release for back-compat:
 //!
@@ -21,13 +21,11 @@
 //! // Both work in 4.0 (the second form is deprecated and will be removed in 4.1):
 //! use library::core::screensaver::Screensaver;
 //! #[allow(deprecated)]
-//! use library::interface::tui::screensaver::Screensaver as OldScreensaver;
+//! use library::interface::app::screensaver::Screensaver as OldScreensaver;
 //! ```
 //!
-//! - The `update(&mut self, dt: f32, ...)` method is now `update(&mut self, dt: Duration, ...)`.
+//! - The `update(&mut self, dt: Duration, ...)` method takes a Duration.
 //!   Use `ScreensaverRenderer::tick_duration` (the new Duration-based tick).
-//!   `ScreensaverRenderer::tick` (the f32 version) remains for one minor and
-//!   delegates internally.
 
 use std::time::Duration;
 
@@ -35,11 +33,8 @@ use crate::core::TerminalCell;
 
 // ---------------------------------------------------------------------------
 // 4.0: re-export the core traits so consumers can keep one import path.
-// `ScreensaverEffect` is preserved as a deprecated trait alias for 4.0
-// back-compat (3.x consumers that imported it from this module).
 // ---------------------------------------------------------------------------
-#[allow(deprecated)]
-pub use crate::core::screensaver::{Screensaver, ScreensaverEffect, ScreensaverState};
+pub use crate::core::screensaver::{Screensaver, ScreensaverState};
 
 /// Helper utility that manages the execution and rendering of a [`Screensaver`].
 ///
@@ -48,9 +43,7 @@ pub use crate::core::screensaver::{Screensaver, ScreensaverEffect, ScreensaverSt
 /// directly, so a r* consumer can call `grid()` and render however it likes
 /// (or wrap it in a `Paragraph`).
 ///
-/// In library 4.0 the `tick` method takes `Duration` to match the core trait.
-/// The pre-4.0 `tick(&mut self, saver, dt: f32)` signature remains available
-/// and is implemented in terms of `tick_duration`.
+/// In library 4.0 the tick method is `tick_duration` which takes `Duration` to match the core trait.
 pub struct ScreensaverRenderer {
     cols: usize,
     rows: usize,
@@ -115,11 +108,7 @@ impl ScreensaverRenderer {
         self.was_focused = Some(focused);
     }
 
-    /// Advance + render the screensaver (3.x back-compat shim: `dt: f32` seconds).
-    #[deprecated(note = "use tick_duration; update signature is now Duration in 4.0")]
-    pub fn tick<S: Screensaver + ?Sized>(&mut self, saver: &mut S, dt: f32) {
-        self.tick_duration(saver, Duration::from_secs_f32(dt));
-    }
+
 
     /// Access the rendered grid/buffer.
     pub fn grid(&self) -> &[TerminalCell] {

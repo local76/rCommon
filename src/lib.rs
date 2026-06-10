@@ -26,20 +26,20 @@ pub mod error {
 }
 pub use error::{LibraryError, Result as LibraryResult};
 #[cfg(feature = "effects")]
-pub use interface::tui::screensaver::{Screensaver, ScreensaverRenderer};
+pub use interface::app::screensaver::{Screensaver, ScreensaverRenderer};
 
 // =====================================================
 // Backward compatibility re-exports (3.x -> 4.x)
 // =====================================================
 #[cfg(feature = "widgets")]
-pub use interface::tui::widgets;
+pub use interface::app::widgets;
 #[cfg(feature = "effects")]
-pub use interface::tui::effects;
+pub use interface::app::effects;
 #[cfg(feature = "widgets")]
-pub use interface::tui::text;
+pub use interface::app::text;
 #[cfg(feature = "effects")]
 #[allow(deprecated)]
-pub use interface::tui::screensaver;
+pub use interface::app::screensaver;
 #[cfg(feature = "gui")]
 #[allow(deprecated)]
 pub use interface::gui::egui_helpers as gui;
@@ -105,27 +105,15 @@ pub use platform::native::sys_info::get_system_info;
 // GPU compute
 #[cfg(feature = "gpu")]
 pub use platform::native::gpu::{init_headless_gpu, run_compute_shader};
+#[cfg(feature = "gpu")]
+pub use platform::native::wgpu_renderer::WgpuRenderer;
+
+// eBPF tracking
+pub use toolkit::ebpf::EbpfTracker;
 
 // Theme
 #[cfg(feature = "sys-info")]
 pub use platform::native::sys_info::{SystemTheme, query_accent_color, query_system_theme};
-
-// Deprecated type aliases
-#[cfg(feature = "effects")]
-#[deprecated(note = "renamed to FallingGlyphs; use library::ui::effects::FallingGlyphs")]
-pub type MatrixRain = ui::effects::FallingGlyphs;
-#[cfg(feature = "effects")]
-#[deprecated(note = "renamed to FlowingParticles; use library::ui::effects::FlowingParticles")]
-pub type SimpleParticles = ui::effects::FlowingParticles;
-#[cfg(feature = "effects")]
-#[deprecated(note = "renamed to PulledParticles; use library::ui::effects::PulledParticles")]
-pub type GravityParticles = ui::effects::PulledParticles;
-#[cfg(feature = "effects")]
-#[deprecated(note = "renamed to FallingDroplets; use library::ui::effects::FallingDroplets")]
-pub type RainEffect = ui::effects::FallingDroplets;
-#[cfg(feature = "effects")]
-#[deprecated(note = "renamed to RisingFlames; use library::ui::effects::RisingFlames")]
-pub type FireEffect = ui::effects::RisingFlames;
 
 /// Extension trait to expose background daemon services over IPC.
 #[cfg(feature = "interface-api")]
@@ -135,7 +123,7 @@ pub trait DaemonIpcExt {
         F: Fn(interface::api::IpcRequest) -> interface::api::IpcResponse;
 }
 
-#[cfg(feature = "interface-api")]
+#[cfg(all(feature = "interface-api", feature = "service"))]
 impl DaemonIpcExt for apps::daemon::DaemonService {
     fn run_ipc_server<F>(&self, handler: F) -> Result<(), crate::core::error::LibraryError>
     where

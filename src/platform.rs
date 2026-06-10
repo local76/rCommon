@@ -7,6 +7,8 @@ pub mod native {
     pub use crate::toolkit::monitors;
     #[cfg(feature = "gpu")]
     pub use crate::toolkit::gpu;
+    #[cfg(feature = "gpu")]
+    pub use crate::toolkit::wgpu_renderer;
     pub use crate::toolkit::config;
     
     #[cfg(feature = "sys-info")]

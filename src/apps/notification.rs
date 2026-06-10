@@ -56,6 +56,7 @@ pub fn show_toast_notification_with_id(app_id: &str, title: &str, message: &str)
 
     #[cfg(target_os = "linux")]
     {
+        let _ = app_id;
         let _ = Command::new("notify-send")
             .arg(title)
             .arg(message)
@@ -64,7 +65,7 @@ pub fn show_toast_notification_with_id(app_id: &str, title: &str, message: &str)
 
     #[cfg(not(any(target_os = "windows", target_os = "linux")))]
     {
-        let _ = (title, message);
+        let _ = (app_id, title, message);
     }
 }
 

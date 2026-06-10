@@ -324,8 +324,9 @@ pub fn count_emerge() -> usize {
                 }
             }
         }
-        return count;
+        count
     }
+    #[cfg(not(target_os = "linux"))]
     0
 }
 

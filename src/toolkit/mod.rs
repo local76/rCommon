@@ -9,6 +9,10 @@ pub mod monitors;
 
 #[cfg(feature = "gpu")]
 pub mod gpu;
+#[cfg(feature = "gpu")]
+pub mod wgpu_renderer;
+
+pub mod ebpf;
 
 pub mod config;
 

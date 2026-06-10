@@ -82,12 +82,23 @@ mod tests {
 /// and any text-based visual output. It is deliberately backend-agnostic
 /// (works with ratatui, custom GDI renderers in trance-scenes, headless
 /// logging, etc.).
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct TerminalCell {
     pub ch: char,
     pub fg: (u8, u8, u8),
     pub bg: (u8, u8, u8),
     pub bold: bool,
+}
+
+impl Default for TerminalCell {
+    fn default() -> Self {
+        Self {
+            ch: ' ',
+            fg: (248, 248, 242), // Standard near-white foreground
+            bg: (0, 0, 0),        // Pitch black background
+            bold: false,
+        }
+    }
 }
 
 /// Rich live system context used by effects, dashboards, and monitoring tools.
@@ -250,16 +261,12 @@ pub fn rgb_to_hsl(r: u8, g: u8, b: u8) -> (f32, f32, f32) {
 ///
 /// In library 4.0 this is the single source of truth for the screensavers used
 /// across r* TUI apps and r* GDI screensaver apps (trance-scenes). The ratatui
-/// renderer wrapper lives in `interface::tui::screensaver::ScreensaverRenderer`.
-///
-/// `ScreensaverEffect` is re-exported as a deprecated trait alias for 4.0
-/// back-compat — the method set is identical to `Screensaver`.
+/// renderer wrapper lives in `interface::app::screensaver::ScreensaverRenderer`.
 pub mod screensaver;
-#[allow(deprecated)]
-pub use screensaver::{Screensaver, ScreensaverEffect, ScreensaverState};
+pub use screensaver::{Screensaver, ScreensaverState};
 
 /// library 4.1: 5x5 block-letter logo renderer. Moved from
-/// `interface::tui::effects::logo` to `core` so both the r* TUI effects
+/// `interface::app::effects::logo` to `core` so both the r* TUI effects
 /// (interface layer) and the r* screensaver effects (role layer) can
 /// import it without violating the 4-layer taxonomy (role is not
 /// allowed to import from interface).

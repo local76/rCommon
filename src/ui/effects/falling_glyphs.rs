@@ -192,7 +192,7 @@ impl FallingGlyphs {
     }
 }
 
-impl crate::interface::tui::screensaver::Screensaver for FallingGlyphs {
+impl crate::interface::app::screensaver::Screensaver for FallingGlyphs {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows, self.density);
     }

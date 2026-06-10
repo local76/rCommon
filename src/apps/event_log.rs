@@ -75,8 +75,3 @@ pub fn log_system_event(source_name: &str, event_type: u16, event_id: u32, messa
     }
 }
 
-/// Legacy wrapper for log_system_event.
-#[deprecated(since = "1.0.0", note = "Use log_system_event instead")]
-pub fn log_windows_event(source_name: &str, event_type: u16, event_id: u32, message: &str) {
-    log_system_event(source_name, event_type, event_id, message);
-}

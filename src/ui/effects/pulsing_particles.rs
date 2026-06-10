@@ -123,7 +123,7 @@ impl PulsingParticles {
     }
 }
 
-impl crate::interface::tui::screensaver::Screensaver for PulsingParticles {
+impl crate::interface::app::screensaver::Screensaver for PulsingParticles {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }

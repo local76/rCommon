@@ -181,7 +181,7 @@ pub fn query_gpu_names() -> Vec<String> {
             if line.contains("VGA compatible controller") || line.contains("3D controller") {
                 if let Some(idx) = line.find(':') {
                     let desc = line[idx + 1..].trim().to_string();
-                    if let Some(first_bracket) = desc.find('[') {
+                    if desc.find('[').is_some() {
                         gpus.push(desc);
                     } else {
                         let parts: Vec<&str> = desc.split("controller:").collect();

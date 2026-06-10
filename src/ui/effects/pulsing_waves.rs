@@ -133,7 +133,7 @@ impl PulsingWaves {
     }
 }
 
-impl crate::interface::tui::screensaver::Screensaver for PulsingWaves {
+impl crate::interface::app::screensaver::Screensaver for PulsingWaves {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }

@@ -27,7 +27,7 @@ use library::core::logo_block::render_logo_block;
 
 // The 4.0 unified design system targets a 100x35 minimum canvas for all
 // r* TUIs (see library::apps::tui_bootstrap SetSize comment). These
-// constants were previously in `interface::tui::constants`, which was
+// constants were previously in `interface::app::constants`, which was
 // removed in the 4.2 flat-tree restructure; the test now inlines them.
 const MIN_TERMINAL_WIDTH: u16 = 100;
 const MIN_TERMINAL_HEIGHT: u16 = 35;

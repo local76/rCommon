@@ -30,7 +30,7 @@
 //!
 //! - `library::core::hsl_to_rgb` / `rgb_to_hsl` for the math used to
 //!   derive `hot` and `cool` from the accent.
-//! - `library::interface::tui::effects::dimensions::Palette` for the
+//! - `library::interface::app::effects::dimensions::Palette` for the
 //!   TUI-typed `(u8, u8, u8)` palette used by the canonical 12 effects
 //!   (FallingGlyphs, RisingFlames, etc.). A `From<&ScreenPalette>` impl
 //!   bridges the two so effects can consume a `ScreenPalette` directly.
@@ -61,6 +61,13 @@ pub struct ScreenPalette {
     pub mid: (u8, u8, u8),
     /// Pure white for "high energy" peaks (fire fronts, etc).
     pub peak: (u8, u8, u8),
+}
+
+impl Default for ScreenPalette {
+    fn default() -> Self {
+        // Default to a green accent in dark mode
+        Self::from_system((46, 204, 113), true)
+    }
 }
 
 impl ScreenPalette {

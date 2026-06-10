@@ -58,16 +58,16 @@ windows = { version = "0.52.0", features = [
 libc = { version = "0.2", optional = true }
 
 [features]
-default = ["interface-tui", "interface-api", "lifecycle-foreground", "lifecycle-background", "platform-native", "role-system", "role-application", "scenes", "winget"]
+default = ["interface-app", "interface-api", "lifecycle-foreground", "lifecycle-background", "platform-native", "role-system", "role-application", "scenes", "winget"]
 
 # Windows target helpers
 windows-sys = ["dep:windows-sys"]
 
 # Taxonomy-aligned features (preferred for new code)
-interface-tui = ["widgets", "effects"]
+interface-app = ["widgets", "effects"]
 interface-gui = ["gui"]
 interface-api = ["windows-sys"]
-lifecycle-foreground = ["window"]
+lifecycle-foreground = ["window", "sys-info"]
 lifecycle-background = ["service", "event-log", "notification", "clipboard"]
 platform-native = ["sys-info", "reg"]
 platform-gpu = ["gpu"]
@@ -99,7 +99,7 @@ chrome = ["widgets"]
 
 # Granular / legacy (kept for compatibility with existing consumers)
 gpu = ["dep:wgpu", "dep:pollster", "dep:bytemuck"]
-widgets = ["dep:ratatui", "dep:crossterm"]
+widgets = ["dep:ratatui", "dep:crossterm", "lifecycle-foreground", "window"]
 sys-info = ["dep:sysinfo", "windows-sys", "dep:winreg"]
 rgb = []
 winget = ["dep:rusqlite"]
@@ -119,7 +119,4 @@ codegen-units = 1        # Reduce codegen units to maximize size reduction
 panic = "abort"          # Remove panic unwinding code
 strip = true             # Strip symbols and debuginfo
 
-[[test]]
-name = "screensaver_runtime_facade"
-path = "tests/screensaver_runtime_facade.rs"
-required-features = ["screensaver-runtime"]
+

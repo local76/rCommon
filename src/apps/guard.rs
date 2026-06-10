@@ -15,6 +15,7 @@ enum SingleInstanceHandle {
     #[cfg(target_os = "windows")]
     Windows(MutexHandle),
     #[cfg(target_os = "linux")]
+    #[allow(dead_code)]
     Unix(std::fs::File),
     #[cfg(not(any(target_os = "windows", target_os = "linux")))]
     None,

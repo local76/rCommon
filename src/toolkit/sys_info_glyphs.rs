@@ -2,6 +2,8 @@
 //!
 //! **Taxonomy Classification**: Platform & Architecture (Deployment - Native) + Role (System Software).
 
+
+#[cfg(target_os = "windows")]
 use super::query_shell_and_terminal;
 
 #[derive(Debug, Clone, Copy)]

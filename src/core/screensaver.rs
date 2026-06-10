@@ -6,20 +6,20 @@
 //! the apps suite:
 //!
 //! - r* TUI apps (pulse, trance, template, helm) that drive effects in
-//!   a ratatui/buffer-managed loop via `interface::tui::screensaver::ScreensaverRenderer`.
+//!   a ratatui/buffer-managed loop via `interface::app::screensaver::ScreensaverRenderer`.
 //! - r* screensaver apps (trance-scenes: cosmos, gnats, glyphs, flame, ...)
 //!   that drive the same effects in a GDI/fullscreen pixel loop without ratatui.
 //!
 //! # What's here vs. what's not
 //!
-//! - `Screensaver` / `ScreensaverState` / `ScreensaverEffect` traits live
+//! - `Screensaver` / `ScreensaverState` traits live
 //!   **here** (Core) because they depend only on `TerminalCell` (also Core)
 //!   and `std::time::Duration`. They are backend-agnostic.
 //! - `ScreensaverRenderer` (the buffer-management helper that produces
 //!   `[TerminalCell]` grids for ratatui) stays in
-//!   `interface::tui::screensaver` because it is a TUI-layer concern.
+//!   `interface::app::screensaver` because it is a TUI-layer concern.
 //! - All other r* effects (`FallingGlyphs`, `RisingFlames`, etc.) live in
-//!   `interface::tui::effects` and implement these traits.
+//!   `interface::app::effects` and implement these traits.
 //!
 //! # Trait composition
 //!
@@ -35,11 +35,9 @@
 //!
 //! # Migration shim
 //!
-//! The pre-4.0 ratatui-coupled trait in `interface::tui::screensaver` re-exports
+//! The pre-4.0 ratatui-coupled trait in `interface::app::screensaver` re-exports
 //! these types. The pre-4.0 library signature used `dt: f32`; in 4.0 it is
-//! `dt: Duration`. Use `ScreensaverRenderer::tick_duration` (the 4.0 API) or
-//! `ScreensaverRenderer::tick` (the deprecated `f32` shim that converts
-//! internally).
+//! `dt: Duration`. Use `ScreensaverRenderer::tick_duration` (the 4.0 API).
 
 use std::time::Duration;
 
@@ -128,15 +126,6 @@ impl<T: Screensaver + ?Sized> ScreensaverState for T {
     fn set_focused(&mut self, _focused: bool) {}
 }
 
-// `ScreensaverEffect` is preserved as a deprecated type alias to the
-// `Screensaver` trait for 4.0 source-compat with library 3.x consumers
-// that imported `interface::tui::screensaver::ScreensaverEffect`. The
-// method set is identical.
-#[deprecated(note = "renamed to Screensaver in 4.0; use library::core::screensaver::Screensaver")]
-pub trait ScreensaverEffect: Screensaver {}
-
-#[allow(deprecated)]
-impl<T: Screensaver + ?Sized> ScreensaverEffect for T {}
 
 #[cfg(test)]
 mod tests {

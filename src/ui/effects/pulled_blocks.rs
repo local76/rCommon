@@ -148,7 +148,7 @@ impl PulledBlocks {
     }
 }
 
-impl crate::interface::tui::screensaver::Screensaver for PulledBlocks {
+impl crate::interface::app::screensaver::Screensaver for PulledBlocks {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }
