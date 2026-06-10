@@ -8,11 +8,15 @@ use std::time::Duration;
 use crate::core::screensaver::Screensaver;
 use crate::core::logo_block::render_logo_block;
 #[cfg(feature = "sys-info")]
+#[cfg(feature = "sys-info")]
 use crate::platform::native::sys_info::get_system_info;
+#[cfg(feature = "sys-info")]
 use crate::apps::identity;
 use crate::core::screen_palette::query_current_palette;
 #[cfg(feature = "rgb")]
+#[cfg(feature = "rgb")]
 use crate::toolkit::rgb_controller::{RgbController, is_openrgb_enabled};
+#[cfg(feature = "rgb")]
 #[cfg(feature = "rgb")]
 use crate::toolkit::rgb_protocol::RgbColor;
 
@@ -172,9 +176,14 @@ impl Bounce {
         let os_name = sys.os;
         let kernel_version = sys.kernel;
 
-        let username = identity::username();
-        let shell_name = identity::shell_name();
-        let refresh_rate = identity::refresh_rate_hz();
+        #[cfg(feature = "sys-info")]
+        let (username, shell_name, refresh_rate) = (
+            identity::username(),
+            identity::shell_name(),
+            identity::refresh_rate_hz(),
+        );
+        #[cfg(not(feature = "sys-info"))]
+        let (username, shell_name, refresh_rate) = (String::new(), String::new(), 0i32);
 
         // library 4.0: pull the accent from the canonical ScreenPalette.
         let theme_accent = query_current_palette().accent;

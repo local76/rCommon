@@ -149,8 +149,11 @@ fn get_all_monitors_uncached() -> Vec<String> {
             target_os = "uefi"
         )))]
         {
-            let (w, h) = crate::sys_info::get_system_screen_resolution();
-            monitors.push(format!("Primary: {}x{}", w, h));
+            #[cfg(feature = "sys-info")]
+            {
+                let (w, h) = crate::sys_info::get_system_screen_resolution();
+                monitors.push(format!("Primary: {}x{}", w, h));
+            }
         }
     }
     monitors

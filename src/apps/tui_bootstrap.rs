@@ -54,7 +54,7 @@ unsafe extern "system" fn tui_ctrl_handler(ctrl_type: u32) -> windows_sys::Win32
 mod imp {
     use std::io;
 
-    use ratatui::{Terminal, backend::CrosstermBackend};
+    use ratatui::{Terminal, backend::TermwizBackend};
     use crossterm::{
         execute,
         terminal::{EnterAlternateScreen, LeaveAlternateScreen, SetSize, disable_raw_mode, enable_raw_mode},
@@ -140,7 +140,7 @@ mod imp {
     /// Returns the Terminal + Drop guards. The caller should hold onto `guards` until shutdown.
     pub fn bootstrap_tui(
         config: TuiBootstrapConfig,
-    ) -> io::Result<(Terminal<CrosstermBackend<io::Stdout>>, TuiGuards)> {
+    ) -> io::Result<(Terminal<TermwizBackend>, TuiGuards)> {
         super::set_app_shutting_down(false);
 
         #[cfg(target_os = "windows")]
@@ -183,7 +183,7 @@ mod imp {
             center_console_window();
         }
 
-        let backend = CrosstermBackend::new(stdout);
+        let backend = TermwizBackend::new().map_err(|e| io::Error::new(io::ErrorKind::Other, format!("{}", e)))?;
         let mut terminal = Terminal::new(backend)?;
         terminal.clear()?;
 
@@ -202,19 +202,19 @@ mod imp {
 
     /// Restore raw-mode terminal state. Call this at the end of `main` (or in a Drop).
     pub fn shutdown_tui(
-        terminal: &mut Terminal<CrosstermBackend<io::Stdout>>,
+        _terminal: &mut Terminal<TermwizBackend>,
     ) -> io::Result<()> {
         super::set_app_shutting_down(true);
 
         #[cfg(feature = "notification")]
         crate::apps::notification::clear_my_toast_notifications();
 
-        disable_raw_mode()?;
-        execute!(
-            terminal.backend_mut(),
+        let _ = disable_raw_mode();
+        let _ = execute!(
+            io::stdout(),
             LeaveAlternateScreen,
             DisableMouseCapture
-        )?;
+        );
         Ok(())
     }
 }

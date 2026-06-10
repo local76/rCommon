@@ -14,6 +14,8 @@ pub fn should_relaunch_in_conhost() -> bool {
     #[cfg(target_os = "windows")]
     {
         // Detect if we are in conhost or a pseudoconsole (like Windows Terminal)
+        #[cfg(feature = "sys-info")]
+        {
         let (_, terminal) = crate::sys_info::query_shell_and_terminal();
         let is_conhost = terminal == "Windows Console Host" && unsafe {
             if let Some(hwnd) = get_console_hwnd() {
@@ -32,6 +34,7 @@ pub fn should_relaunch_in_conhost() -> bool {
         };
 
         !is_conhost
+        }
     }
     #[cfg(not(target_os = "windows"))]
     {

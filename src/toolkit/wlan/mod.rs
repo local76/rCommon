@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 use std::fmt::{Debug, Formatter};
 
-#[cfg(not(windows))]
+#[cfg(any(not(windows), not(feature = "windows-sys")))]
 pub mod windows_sys {
     pub mod core {
         #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]

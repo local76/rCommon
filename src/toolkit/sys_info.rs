@@ -336,11 +336,25 @@ fn get_dashboard_info_uncached() -> DashboardInfo {
             kernel = kv;
         }
         
-        let brand = sys.global_cpu_info().brand().trim().to_string();
+        let mut brand = sys.global_cpu_info().brand().trim().to_string();
+        if brand.is_empty() && !sys.cpus().is_empty() {
+            brand = sys.cpus()[0].brand().trim().to_string();
+        }
+        #[cfg(target_os = "windows")]
+        {
+            if brand.is_empty() {
+                use winreg::enums::HKEY_LOCAL_MACHINE;
+                use winreg::RegKey;
+                let hklm = RegKey::predef(HKEY_LOCAL_MACHINE);
+                if let Ok(cpu_key) = hklm.open_subkey("HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0") {
+                    if let Ok(reg_brand) = cpu_key.get_value::<String, _>("ProcessorNameString") {
+                        brand = reg_brand.trim().to_string();
+                    }
+                }
+            }
+        }
         if !brand.is_empty() {
             cpu = brand;
-        } else if !sys.cpus().is_empty() {
-            cpu = sys.cpus()[0].brand().trim().to_string();
         }
 
         uptime_secs = System::uptime();

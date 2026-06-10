@@ -55,9 +55,12 @@ pub fn set_window_pos(x: i32, y: i32) {
 pub fn center_console_window() {
     #[cfg(target_os = "windows")]
     unsafe {
-        let (_, terminal) = crate::sys_info::query_shell_and_terminal();
-        if terminal != "Windows Console Host" {
-            return;
+        #[cfg(feature = "sys-info")]
+        {
+            let (_, terminal) = crate::sys_info::query_shell_and_terminal();
+            if terminal != "Windows Console Host" {
+                return;
+            }
         }
 
         let hwnd = match get_console_hwnd() {

@@ -22,6 +22,8 @@ impl BorderlessConsole {
     pub fn enable() -> Self {
         #[cfg(target_os = "windows")]
         {
+            #[cfg(feature = "sys-info")]
+            {
             let (_, terminal) = crate::sys_info::query_shell_and_terminal();
             if terminal != "Windows Console Host" {
                 return BorderlessConsole {
@@ -30,6 +32,7 @@ impl BorderlessConsole {
                     original_rect: RECT::default(),
                     active: false,
                 };
+            }
             }
 
             let hwnd = match unsafe { get_console_hwnd() } {
@@ -109,14 +112,17 @@ impl BorderlessConsole {
     pub fn enable_preserving_size() -> Self {
         #[cfg(target_os = "windows")]
         {
-            let (_, terminal) = crate::sys_info::query_shell_and_terminal();
-            if terminal != "Windows Console Host" {
-                return BorderlessConsole {
-                    hwnd: std::ptr::null_mut(),
-                    original_style: 0,
-                    original_rect: RECT::default(),
-                    active: false,
-                };
+            #[cfg(feature = "sys-info")]
+            {
+                let (_, terminal) = crate::sys_info::query_shell_and_terminal();
+                if terminal != "Windows Console Host" {
+                    return BorderlessConsole {
+                        hwnd: std::ptr::null_mut(),
+                        original_style: 0,
+                        original_rect: RECT::default(),
+                        active: false,
+                    };
+                }
             }
 
             let hwnd = match unsafe { get_console_hwnd() } {

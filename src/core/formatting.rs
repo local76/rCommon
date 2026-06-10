@@ -56,15 +56,20 @@ pub fn get_cpu_info(sys: &System) -> String {
 /// assert!(uptime.contains('h') || uptime.contains('d'));
 /// ```
 pub fn get_formatted_uptime() -> String {
-    let uptime_secs = crate::sys_info::get_system_info().uptime_secs;
-    let days = uptime_secs / 86400;
-    let hours = (uptime_secs % 86400) / 3600;
-    let minutes = (uptime_secs % 3600) / 60;
-    if days > 0 {
-        format!("{}d {}h {}m", days, hours, minutes)
-    } else {
-        format!("{}h {}m", hours, minutes)
+    #[cfg(feature = "sys-info")]
+    {
+        let uptime_secs = crate::sys_info::get_system_info().uptime_secs;
+        let days = uptime_secs / 86400;
+        let hours = (uptime_secs % 86400) / 3600;
+        let minutes = (uptime_secs % 3600) / 60;
+        return if days > 0 {
+            format!("{}d {}h {}m", days, hours, minutes)
+        } else {
+            format!("{}h {}m", hours, minutes)
+        };
     }
+    #[cfg(not(feature = "sys-info"))]
+    { "n/a".to_string() }
 }
 
 /// Get battery status summary text.
@@ -78,11 +83,16 @@ pub fn get_formatted_uptime() -> String {
 /// println!("Battery status: {}", battery);
 /// ```
 pub fn get_battery_info() -> String {
-    if let Some(power) = crate::sys_info::query_power_status() {
-        format!("{}% ({})", power.battery_percent, if power.ac_online { "AC" } else { "Battery" })
-    } else {
-        "N/A".to_string()
+    #[cfg(feature = "sys-info")]
+    {
+        return if let Some(power) = crate::sys_info::query_power_status() {
+            format!("{}% ({})", power.battery_percent, if power.ac_online { "AC" } else { "Battery" })
+        } else {
+            "N/A".to_string()
+        };
     }
+    #[cfg(not(feature = "sys-info"))]
+    { "N/A".to_string() }
 }
 
 /// Get formatted memory usage (used / total in MB).
@@ -111,33 +121,46 @@ pub fn get_memory_info(sys: &System) -> String {
 /// println!("Drives: {}", disks);
 /// ```
 pub fn get_disks_info() -> String {
-    let drives = crate::sys_info::query_disk_drives();
-    let mut parts = Vec::new();
-    for d in drives {
-        let total_gb = d.total_bytes / (1024 * 1024 * 1024);
-        let free_gb = d.free_bytes / (1024 * 1024 * 1024);
-        parts.push(format!("{}: {}/{} GB free", d.path, free_gb, total_gb));
+    #[cfg(feature = "sys-info")]
+    {
+        let drives = crate::sys_info::query_disk_drives();
+        let mut parts = Vec::new();
+        for d in drives {
+            let total_gb = d.total_bytes / (1024 * 1024 * 1024);
+            let free_gb = d.free_bytes / (1024 * 1024 * 1024);
+            parts.push(format!("{}: {}/{} GB free", d.path, free_gb, total_gb));
+        }
+        return if parts.is_empty() {
+            "N/A".to_string()
+        } else {
+            parts.join(", ")
+        };
     }
-    if parts.is_empty() {
-        "N/A".to_string()
-    } else {
-        parts.join(", ")
-    }
+    #[cfg(not(feature = "sys-info"))]
+    { "N/A".to_string() }
 }
 
 /// Get formatted GPU list.
 pub fn get_gpu_names() -> String {
-    let gpus = crate::sys_info::query_gpu_names();
-    if gpus.is_empty() {
-        "Unknown GPU".to_string()
-    } else {
-        gpus.join(", ")
+    #[cfg(feature = "sys-info")]
+    {
+        let gpus = crate::sys_info::query_gpu_names();
+        return if gpus.is_empty() {
+            "Unknown GPU".to_string()
+        } else {
+            gpus.join(", ")
+        };
     }
+    #[cfg(not(feature = "sys-info"))]
+    { "Unknown GPU".to_string() }
 }
 
 /// Detect host shell and active terminal type.
 pub fn detect_shell_and_terminal() -> (String, String) {
-    crate::sys_info::query_shell_and_terminal()
+    #[cfg(feature = "sys-info")]
+    { return crate::sys_info::query_shell_and_terminal(); }
+    #[cfg(not(feature = "sys-info"))]
+    { (String::new(), String::new()) }
 }
 
 /// Helper to convert a hex color string (e.g. "#D41020" or "D41020") to RGB (u8, u8, u8).

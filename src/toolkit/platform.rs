@@ -132,10 +132,10 @@ pub use crate::toolkit::platform_web::WebPlatform;
 pub use crate::toolkit::platform_mobile::MobilePlatform;
 pub use crate::toolkit::platform_embedded::EmbeddedPlatform;
 
-#[cfg(target_os = "windows")]
+#[cfg(all(target_os = "windows", feature = "sys-info"))]
 pub type CurrentPlatform = WindowsPlatform;
 
-#[cfg(target_os = "linux")]
+#[cfg(all(target_os = "linux", feature = "sys-info"))]
 pub type CurrentPlatform = LinuxPlatform;
 
 #[cfg(all(not(any(target_os = "windows", target_os = "linux")), target_arch = "wasm32"))]
@@ -151,7 +151,8 @@ pub type CurrentPlatform = EmbeddedPlatform;
     not(any(target_os = "windows", target_os = "linux")),
     not(target_arch = "wasm32"),
     not(any(target_os = "android", target_os = "ios")),
-    not(any(target_os = "none", target_os = "uefi"))
+    not(any(target_os = "none", target_os = "uefi")),
+    feature = "sys-info"
 ))]
 pub type CurrentPlatform = FallbackPlatform;
 

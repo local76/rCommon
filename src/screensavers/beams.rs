@@ -6,9 +6,12 @@
 use crate::core::{LcgRng, TerminalCell, hsl_to_rgb, rgb_to_hsl};
 use std::time::Duration;
 use crate::core::screensaver::Screensaver;
+#[cfg(feature = "sys-info")]
 use crate::platform::native::sys_info::get_system_info;
 use crate::core::screen_palette::query_current_palette;
+#[cfg(feature = "rgb")]
 use crate::toolkit::rgb_controller::{RgbController, is_openrgb_enabled};
+#[cfg(feature = "rgb")]
 use crate::toolkit::rgb_protocol::RgbColor;
 use crate::core::logo_block::render_logo_block;
 
