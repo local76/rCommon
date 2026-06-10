@@ -13,9 +13,9 @@ use std::collections::HashMap;
 /// State machine + keybindings for the F1-F7 in-TUI markdown documentation viewer.
 ///
 /// # Examples
-/// ```ignore
-/// use library::interface::tui::markdown_viewer::MarkdownViewerState;
-/// use library::interface::tui::theme::get_theme;
+/// ```
+/// use library::ui::markdown_viewer::MarkdownViewerState;
+/// use library::ui::theme::get_theme;
 /// use ratatui::style::Color;
 /// let mut v = MarkdownViewerState::new();
 /// v.docs.insert("README.md", "# hello");

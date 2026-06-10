@@ -9,8 +9,9 @@ use super::colors::AccentColors;
 ///
 /// # Examples
 ///
-/// ```ignore
-/// use library::interface::tui::widgets::{AccentTheme, AccentTextBox};
+/// ```
+/// use library::ui::colors::AccentTheme;
+/// use library::ui::textbox::AccentTextBox;
 ///
 /// let colors = AccentTheme::default_dark();
 /// let is_focused = true;

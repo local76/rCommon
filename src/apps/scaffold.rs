@@ -41,8 +41,8 @@ pub struct CliCommandDef {
 ///
 /// # Examples
 ///
-/// ```ignore
-/// use library::interface::cli::CliParser;
+/// ```
+/// use library::apps::scaffold::CliParser;
 ///
 /// let parser = CliParser::new("helm", "A fast, modern system fetch utility in Rust.")
 ///     .logo("====================\n      helm\n====================")

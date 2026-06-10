@@ -13,8 +13,9 @@ use super::colors::AccentColors;
 ///
 /// # Examples
 ///
-/// ```ignore
-/// use library::interface::tui::widgets::{AccentTheme, AccentGauge};
+/// ```
+/// use library::ui::colors::AccentTheme;
+/// use library::ui::accent_gauge::AccentGauge;
 ///
 /// let colors = AccentTheme::default_dark();
 /// let is_focused = true;

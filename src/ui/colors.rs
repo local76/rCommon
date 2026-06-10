@@ -8,8 +8,8 @@ use ratatui::style::Color;
 ///
 /// # Examples
 ///
-/// ```ignore
-/// use library::interface::tui::widgets::AccentColors;
+/// ```
+/// use library::ui::colors::AccentColors;
 /// use ratatui::style::Color;
 ///
 /// // Create from custom colors
@@ -119,14 +119,14 @@ impl AccentColors {
 ///
 /// # Examples
 ///
-/// ```ignore
-/// use library::interface::tui::widgets::AccentTheme;
+/// ```
+/// use library::ui::colors::AccentTheme;
 ///
 /// // Get the active system theme (expensive query)
 /// let colors = AccentTheme::current();
 /// println!("Active accent color: {:?}", colors.accent);
 ///
-/// // Or get dark/light fallback defaults directly (cheap static return)
+/// // Or get dark/light fallback defaults (cheap static return)
 /// let dark_colors = AccentTheme::default_dark();
 /// let light_colors = AccentTheme::default_light();
 /// ```
