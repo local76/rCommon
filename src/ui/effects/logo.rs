@@ -1,4 +1,4 @@
-//! Centered block-letter logo renderer.
+﻿//! Centered block-letter logo renderer.
 //!
 //! **Taxonomy Classification**: Interface (TUI) — original home, but the
 //! function is a pure string-transformer with a static cache, so library
@@ -10,4 +10,4 @@
 pub use crate::core::logo_block::render_logo_block;
 
 /// Dynamic system information getter.
-pub use crate::platform::native::sys_info::get_system_info;
+pub use crate::toolkit::sys_info::get_system_info;

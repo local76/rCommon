@@ -1,4 +1,4 @@
-//! Host system information and theme querying utilities.
+﻿//! Host system information and theme querying utilities.
 //!
 //! **Taxonomy Classification**: Platform & Architecture (Deployment - Native) + Role (System Software).
 //! For taxonomy details, see [ARCHITECTURE.md](file:///C:/Users/jeryd/Synology/Home/Projects/local76/library/ARCHITECTURE.md).
@@ -86,11 +86,11 @@ pub fn get_win_accent_color_hex() -> String {
 }
 
 pub fn get_system_screen_resolution() -> (i32, i32) {
-    crate::platform::CurrentPlatform::get_system_screen_resolution()
+    crate::toolkit::platform::CurrentPlatform::get_system_screen_resolution()
 }
 
 pub fn get_console_window_dpi() -> u32 {
-    crate::platform::CurrentPlatform::get_console_window_dpi()
+    crate::toolkit::platform::CurrentPlatform::get_console_window_dpi()
 }
 
 pub fn query_accent_color() -> (u8, u8, u8) {
@@ -101,7 +101,7 @@ pub fn query_accent_color() -> (u8, u8, u8) {
             return *val;
         }
     }
-    let val = crate::platform::CurrentPlatform::query_accent_color();
+    let val = crate::toolkit::platform::CurrentPlatform::query_accent_color();
     *lock = Some((std::time::Instant::now(), val));
     val
 }
@@ -114,7 +114,7 @@ pub fn query_high_contrast() -> bool {
             return *val;
         }
     }
-    let val = crate::platform::CurrentPlatform::query_high_contrast();
+    let val = crate::toolkit::platform::CurrentPlatform::query_high_contrast();
     *lock = Some((std::time::Instant::now(), val));
     val
 }
@@ -161,7 +161,7 @@ pub fn query_os_version() -> String {
             return val.clone();
         }
     }
-    let val = crate::platform::CurrentPlatform::query_os_version();
+    let val = crate::toolkit::platform::CurrentPlatform::query_os_version();
     *lock = Some((std::time::Instant::now(), val.clone()));
     val
 }
@@ -174,7 +174,7 @@ pub fn query_dark_mode() -> bool {
             return *val;
         }
     }
-    let val = crate::platform::CurrentPlatform::query_dark_mode();
+    let val = crate::toolkit::platform::CurrentPlatform::query_dark_mode();
     *lock = Some((std::time::Instant::now(), val));
     val
 }
@@ -187,7 +187,7 @@ pub fn query_power_status() -> Option<PowerStatus> {
             return val.clone();
         }
     }
-    let val = crate::platform::CurrentPlatform::query_power_status();
+    let val = crate::toolkit::platform::CurrentPlatform::query_power_status();
     *lock = Some((std::time::Instant::now(), val.clone()));
     val
 }
@@ -200,7 +200,7 @@ pub fn query_bios_info() -> Option<SystemBiosInfo> {
             return val.clone();
         }
     }
-    let val = crate::platform::CurrentPlatform::query_bios_info();
+    let val = crate::toolkit::platform::CurrentPlatform::query_bios_info();
     *lock = Some((std::time::Instant::now(), val.clone()));
     val
 }
@@ -208,7 +208,7 @@ pub fn query_bios_info() -> Option<SystemBiosInfo> {
 pub fn query_shell_and_terminal() -> (String, String) {
     static SHELL_AND_TERM: std::sync::OnceLock<(String, String)> = std::sync::OnceLock::new();
     SHELL_AND_TERM
-        .get_or_init(crate::platform::CurrentPlatform::query_shell_and_terminal)
+        .get_or_init(crate::toolkit::platform::CurrentPlatform::query_shell_and_terminal)
         .clone()
 }
 
@@ -222,7 +222,7 @@ pub fn query_disk_drives() -> Vec<DiskDriveInfo> {
             return val.clone();
         }
     }
-    let val = crate::platform::CurrentPlatform::query_disk_drives();
+    let val = crate::toolkit::platform::CurrentPlatform::query_disk_drives();
     *lock = Some((std::time::Instant::now(), val.clone()));
     val
 }
@@ -235,7 +235,7 @@ pub fn query_gpu_names() -> Vec<String> {
             return val.clone();
         }
     }
-    let val = crate::platform::CurrentPlatform::query_gpu_names();
+    let val = crate::toolkit::platform::CurrentPlatform::query_gpu_names();
     *lock = Some((std::time::Instant::now(), val.clone()));
     val
 }
@@ -248,7 +248,7 @@ pub fn query_network_adapters() -> Vec<NetworkAdapterInfo> {
             return val.clone();
         }
     }
-    let val = crate::platform::CurrentPlatform::query_network_adapters();
+    let val = crate::toolkit::platform::CurrentPlatform::query_network_adapters();
     *lock = Some((std::time::Instant::now(), val.clone()));
     val
 }

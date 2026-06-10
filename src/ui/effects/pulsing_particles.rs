@@ -1,4 +1,4 @@
-//! PulsingParticles — Verb (Pulsing) × Noun (Particles).
+﻿//! PulsingParticles — Verb (Pulsing) × Noun (Particles).
 //!
 //! Particles that pulse (scale/brighten) in place, no net motion.
 //! Useful as ambient focus indicator or starfield-style twinkle.
@@ -123,7 +123,7 @@ impl PulsingParticles {
     }
 }
 
-impl crate::interface::app::screensaver::Screensaver for PulsingParticles {
+impl crate::ui::screensaver_renderer::Screensaver for PulsingParticles {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }

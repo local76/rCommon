@@ -97,6 +97,6 @@ impl<T: ConfigFields> AppConfig<T> {
             content.push_str(&format!("{}: {}\n", k, v));
         }
 
-        crate::write_file_atomic(path, content)
+        crate::core::write_file_atomic(path, content)
     }
 }

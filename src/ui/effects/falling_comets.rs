@@ -1,4 +1,4 @@
-//! FallingComets — Verb (Falling) × Noun (Comets).
+﻿//! FallingComets — Verb (Falling) × Noun (Comets).
 //!
 //! Shooting-star streaks: long bright trails moving diagonally downward.
 //! Default style: `Trailing`. Default palette: `Monochrome(White)`.
@@ -173,7 +173,7 @@ impl FallingComets {
     }
 }
 
-impl crate::interface::app::screensaver::Screensaver for FallingComets {
+impl crate::ui::screensaver_renderer::Screensaver for FallingComets {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }

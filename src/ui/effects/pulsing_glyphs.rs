@@ -1,4 +1,4 @@
-//! PulsingGlyphs — Verb (Pulsing) × Noun (Glyphs).
+﻿//! PulsingGlyphs — Verb (Pulsing) × Noun (Glyphs).
 //!
 //! Characters that rhythmically scale/brighten in place (no net motion).
 //! Useful as audio-visualizer "heartbeat" or focus indicator.
@@ -133,7 +133,7 @@ impl PulsingGlyphs {
     }
 }
 
-impl crate::interface::app::screensaver::Screensaver for PulsingGlyphs {
+impl crate::ui::screensaver_renderer::Screensaver for PulsingGlyphs {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }

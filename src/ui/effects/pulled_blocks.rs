@@ -1,4 +1,4 @@
-//! PulledBlocks — Verb (Pulled) × Noun (Blocks).
+﻿//! PulledBlocks — Verb (Pulled) × Noun (Blocks).
 //!
 //! Small block shapes pulled toward gravity centers. Combines
 //! `PulledParticles` motion with `Blocks` rendering.
@@ -148,7 +148,7 @@ impl PulledBlocks {
     }
 }
 
-impl crate::interface::app::screensaver::Screensaver for PulledBlocks {
+impl crate::ui::screensaver_renderer::Screensaver for PulledBlocks {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }

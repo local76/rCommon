@@ -1,4 +1,4 @@
-use crate::toolkit::platform::{PowerStatus, SystemBiosInfo, DiskDriveInfo};
+﻿use crate::toolkit::platform::{PowerStatus, SystemBiosInfo, DiskDriveInfo};
 
 pub fn get_system_screen_resolution() -> (i32, i32) {
     if let Ok(entries) = std::fs::read_dir("/sys/class/drm") {
@@ -217,8 +217,8 @@ pub fn query_gpu_names() -> Vec<String> {
     gpus
 }
 
-pub fn query_network_adapters() -> Vec<crate::platform::NetworkAdapterInfo> {
-    use crate::platform::NetworkAdapterInfo;
+pub fn query_network_adapters() -> Vec<crate::toolkit::platform::NetworkAdapterInfo> {
+    use crate::toolkit::platform::NetworkAdapterInfo;
     let mut adapters: Vec<NetworkAdapterInfo> = Vec::new();
 
     // Use "ip -o addr" for IPs + interfaces (common on Linux).

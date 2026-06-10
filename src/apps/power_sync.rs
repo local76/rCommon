@@ -1,4 +1,4 @@
-//! Power-status and theme-status throttled poller for TUI render loops.
+﻿//! Power-status and theme-status throttled poller for TUI render loops.
 //!
 //! **Taxonomy Classification**: Execution State (Lifecycle - Foreground) + Platform (Native).
 //!
@@ -10,7 +10,7 @@
 
 use std::time::{Duration, Instant};
 
-use crate::platform::native::sys_info;
+use crate::toolkit::sys_info;
 
 /// How often to re-query power status (5 s).
 pub const POWER_CHECK_INTERVAL: Duration = Duration::from_millis(5000);

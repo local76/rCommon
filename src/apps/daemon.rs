@@ -1,4 +1,4 @@
-//! Daemon / background power and priority helpers.
+﻿//! Daemon / background power and priority helpers.
 //!
 //! **Taxonomy Classification**: Execution State (Lifecycle - Background) + Platform (Native).
 //!
@@ -10,7 +10,7 @@
 //!
 //! Lowering process priority class for silent background work:
 //! ```
-//! use library::lifecycle::background::daemon::{self, ProcessPriority};
+//! use library::apps::daemon::{self, ProcessPriority};
 //!
 //! // Yield CPU time slice to user-facing applications
 //! daemon::set_process_priority(ProcessPriority::BelowNormal);
@@ -18,7 +18,7 @@
 //!
 //! Keeping the CPU awake while executing a long background job:
 //! ```
-//! use library::lifecycle::background::daemon::BackgroundPowerGuard;
+//! use library::apps::daemon::BackgroundPowerGuard;
 //!
 //! // Acquire the guard; sleep prevention is active
 //! let guard = BackgroundPowerGuard::acquire();
@@ -79,7 +79,7 @@ pub enum ProcessPriority {
 /// # Examples
 ///
 /// ```
-/// use library::lifecycle::background::daemon::{self, ProcessPriority};
+/// use library::apps::daemon::{self, ProcessPriority};
 ///
 /// daemon::set_process_priority(ProcessPriority::BelowNormal);
 /// ```
@@ -157,7 +157,7 @@ pub fn set_thread_execution_state(request: PowerRequest) {
 /// # Examples
 ///
 /// ```
-/// use library::lifecycle::background::daemon;
+/// use library::apps::daemon;
 ///
 /// // Keep the system awake during a critical section
 /// daemon::prevent_system_sleep(true);
@@ -184,7 +184,7 @@ pub fn prevent_system_sleep(prevent: bool) {
 /// # Examples
 ///
 /// ```
-/// use library::lifecycle::background::daemon::BackgroundPowerGuard;
+/// use library::apps::daemon::BackgroundPowerGuard;
 ///
 /// {
 ///     let _guard = BackgroundPowerGuard::acquire();
@@ -259,7 +259,7 @@ pub struct DaemonService {
     config: DaemonConfig,
     _power_guard: Option<BackgroundPowerGuard>,
     #[cfg(feature = "window")]
-    _instance_guard: Option<crate::lifecycle::foreground::guard::SingleInstanceGuard>,
+    _instance_guard: Option<crate::apps::guard::SingleInstanceGuard>,
 }
 
 impl DaemonService {
@@ -269,7 +269,7 @@ impl DaemonService {
     /// # Examples
     ///
     /// ```no_run
-    /// use library::lifecycle::background::daemon::{DaemonService, DaemonConfig, DaemonPriority};
+    /// use library::apps::daemon::{DaemonService, DaemonConfig, DaemonPriority};
     ///
     /// let config = DaemonConfig {
     ///     name: "my_daemon".to_string(),
@@ -283,7 +283,7 @@ impl DaemonService {
     pub fn bootstrap(config: DaemonConfig) -> crate::error::Result<Self> {
         #[cfg(feature = "window")]
         let instance_guard = if config.single_instance {
-            Some(crate::lifecycle::foreground::guard::SingleInstanceGuard::try_new()?)
+            Some(crate::apps::guard::SingleInstanceGuard::try_new()?)
         } else {
             None
         };

@@ -1,4 +1,4 @@
-//! RisingFlames — Verb (Rising) × Noun (Flames).
+﻿//! RisingFlames — Verb (Rising) × Noun (Flames).
 //!
 //! Heat plume of rising bright particles. Default style: `Solid`. Default palette: `Heat`.
 //!
@@ -123,7 +123,7 @@ impl RisingFlames {
     }
 }
 
-impl crate::interface::app::screensaver::Screensaver for RisingFlames {
+impl crate::ui::screensaver_renderer::Screensaver for RisingFlames {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }

@@ -1,4 +1,4 @@
-//! Windows-specific console and window management.
+﻿//! Windows-specific console and window management.
 //!
 //! **Taxonomy Classification**: Execution State (Lifecycle - Foreground) + Platform (Native).
 
@@ -111,7 +111,7 @@ pub fn center_console_window() {
     unsafe {
         #[cfg(feature = "sys-info")]
         {
-            let (_, terminal) = crate::sys_info::query_shell_and_terminal();
+            let (_, terminal) = crate::toolkit::sys_info::query_shell_and_terminal();
             if terminal != "Windows Console Host" {
                 return;
             }
@@ -190,7 +190,7 @@ pub fn should_relaunch_in_conhost() -> bool {
     // Detect if we are in conhost or a pseudoconsole (like Windows Terminal)
     #[cfg(feature = "sys-info")]
     {
-        let (_, terminal) = crate::sys_info::query_shell_and_terminal();
+        let (_, terminal) = crate::toolkit::sys_info::query_shell_and_terminal();
         let is_conhost = terminal == "Windows Console Host" && unsafe {
             if let Some(hwnd) = get_console_hwnd() {
                 if let Some(rect) = get_console_window_rect(hwnd) {
@@ -258,7 +258,7 @@ pub fn relaunch_in_conhost_if_needed() {
 pub fn hide_console_at_startup() -> Option<*mut std::ffi::c_void> {
     #[cfg(feature = "sys-info")]
     {
-        let (_, terminal) = crate::sys_info::query_shell_and_terminal();
+        let (_, terminal) = crate::toolkit::sys_info::query_shell_and_terminal();
         if terminal != "Windows Console Host" {
             return None;
         }
@@ -308,7 +308,7 @@ impl BorderlessConsole {
     pub fn enable() -> Self {
         #[cfg(feature = "sys-info")]
         {
-            let (_, terminal) = crate::sys_info::query_shell_and_terminal();
+            let (_, terminal) = crate::toolkit::sys_info::query_shell_and_terminal();
             if terminal != "Windows Console Host" {
                 return BorderlessConsole {
                     hwnd: std::ptr::null_mut(),
@@ -386,7 +386,7 @@ impl BorderlessConsole {
     pub fn enable_preserving_size() -> Self {
         #[cfg(feature = "sys-info")]
         {
-            let (_, terminal) = crate::sys_info::query_shell_and_terminal();
+            let (_, terminal) = crate::toolkit::sys_info::query_shell_and_terminal();
             if terminal != "Windows Console Host" {
                 return BorderlessConsole {
                     hwnd: std::ptr::null_mut(),

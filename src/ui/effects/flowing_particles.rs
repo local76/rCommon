@@ -1,4 +1,4 @@
-//! FlowingParticles — Verb (Flowing) × Noun (Particles).
+﻿//! FlowingParticles — Verb (Flowing) × Noun (Particles).
 //!
 //! Ambient particles drifting in arbitrary directions with downward gravity.
 //! Default style: `Solid`. Default palette: `Monochrome(White)`.
@@ -130,7 +130,7 @@ impl FlowingParticles {
     }
 }
 
-impl crate::interface::app::screensaver::Screensaver for FlowingParticles {
+impl crate::ui::screensaver_renderer::Screensaver for FlowingParticles {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }

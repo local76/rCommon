@@ -1,4 +1,4 @@
-//! Retro terminal effects, games, and visual primitives.
+﻿//! Retro terminal effects, games, and visual primitives.
 //!
 //! **Taxonomy Classification**: Interface (TUI / Presentation Layer) + Role (Application Software).
 //!
@@ -18,7 +18,7 @@
 //! - **Active**: Controls CPU/resource utilization. Active effects update and animate physics normally. Inactive effects pause updates and render empty cells, reducing CPU usage to zero.
 
 pub use crate::core::{LcgRng, TerminalCell};
-pub use crate::interface::app::screensaver::{Screensaver, ScreensaverRenderer, ScreensaverState};
+pub use crate::ui::screensaver_renderer::{Screensaver, ScreensaverRenderer, ScreensaverState};
 
 pub mod dimensions;
 

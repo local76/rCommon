@@ -33,7 +33,7 @@ unsafe extern "system" fn tui_ctrl_handler(ctrl_type: u32) -> windows_sys::Win32
 
             // Clear notifications
             #[cfg(feature = "notification")]
-            crate::lifecycle::background::notification::clear_my_toast_notifications();
+            crate::apps::notification::clear_my_toast_notifications();
 
             // Restore terminal state
             let _ = crossterm::terminal::disable_raw_mode();
@@ -61,8 +61,8 @@ mod imp {
         event::{EnableMouseCapture, DisableMouseCapture},
     };
 
-    use crate::lifecycle::foreground::panic::set_tui_panic_hook;
-    use crate::lifecycle::foreground::window::{BorderlessConsole, ConsoleTitleGuard, SingleInstanceGuard, center_console_window};
+    use crate::apps::panic::set_tui_panic_hook;
+    use crate::apps::window::{BorderlessConsole, ConsoleTitleGuard, SingleInstanceGuard, center_console_window};
 
     /// Configuration for `bootstrap_tui`.
     #[derive(Debug, Clone)]

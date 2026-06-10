@@ -1,4 +1,4 @@
-//! PulledParticles — Verb (Pulled) × Noun (Particles).
+﻿//! PulledParticles — Verb (Pulled) × Noun (Particles).
 //!
 //! Particles attracted toward one or more gravity centers.
 //! Default style: `Solid`. Default palette: `Monochrome(Blue)`.
@@ -139,7 +139,7 @@ impl PulledParticles {
     }
 }
 
-impl crate::interface::app::screensaver::Screensaver for PulledParticles {
+impl crate::ui::screensaver_renderer::Screensaver for PulledParticles {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }

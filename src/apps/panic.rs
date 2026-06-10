@@ -1,4 +1,4 @@
-//! Graceful panic handler hook for TUI applications.
+﻿//! Graceful panic handler hook for TUI applications.
 //!
 //! **Taxonomy Classification**: Execution State (Lifecycle - Foreground).
 
@@ -53,7 +53,7 @@ fn handle_tui_panic(panic_info: &PanicHookInfo) {
         location, msg, backtrace
     );
     #[cfg(feature = "event-log")]
-    crate::lifecycle::background::file_log::log_message("PANIC", &crash_report);
+    crate::apps::file_log::log_message("PANIC", &crash_report);
 
     // 5. Print a clean, user-friendly report to stderr
     eprintln!("\n══════════════════════════════════════════════════════════════");

@@ -1,4 +1,4 @@
-//! FallingGlyphs — Verb (Falling) × Noun (Glyphs).
+﻿//! FallingGlyphs — Verb (Falling) × Noun (Glyphs).
 //!
 //! Matrix-style falling characters with bright heads and fading trails.
 //! Default style: `Trailing`. Default palette: `Monochrome(Green)`.
@@ -192,7 +192,7 @@ impl FallingGlyphs {
     }
 }
 
-impl crate::interface::app::screensaver::Screensaver for FallingGlyphs {
+impl crate::ui::screensaver_renderer::Screensaver for FallingGlyphs {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows, self.density);
     }

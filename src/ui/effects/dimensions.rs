@@ -1,4 +1,4 @@
-//! Visual dimensions for TUI effects.
+﻿//! Visual dimensions for TUI effects.
 //!
 //! **Taxonomy Classification**: Interface (TUI) configuration. Used by all
 //! effects in `interface::app::effects` to standardize their render treatment
@@ -32,7 +32,7 @@ pub fn accent_color() -> (u8, u8, u8) {
 fn query_accent_color_platform() -> (u8, u8, u8) {
     // query_accent_color returns (r, g, b). On non-Windows or on error, the
     // platform helper returns (0, 120, 215) as a sensible blue default.
-    crate::platform::native::sys_info::query_accent_color()
+    crate::toolkit::sys_info::query_accent_color()
 }
 
 #[cfg(not(feature = "sys-info"))]

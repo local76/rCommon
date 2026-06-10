@@ -1,4 +1,4 @@
-use crate::toolkit::platform::{PowerStatus, SystemBiosInfo, DiskDriveInfo};
+﻿use crate::toolkit::platform::{PowerStatus, SystemBiosInfo, DiskDriveInfo};
 #[cfg(feature = "widgets")]
 use ratatui::style::Color;
 
@@ -258,8 +258,8 @@ pub fn query_gpu_names() -> Vec<String> {
     gpus
 }
 
-pub fn query_network_adapters() -> Vec<crate::platform::NetworkAdapterInfo> {
-    use crate::platform::NetworkAdapterInfo;
+pub fn query_network_adapters() -> Vec<crate::toolkit::platform::NetworkAdapterInfo> {
+    use crate::toolkit::platform::NetworkAdapterInfo;
     let mut adapters = Vec::new();
 
     // Pragmatic but effective: use ipconfig /all (widely available, no extra FFI complexity for sockaddr parsing).

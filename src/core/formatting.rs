@@ -1,4 +1,4 @@
-//! Formatting and info helpers from helm etc.
+﻿//! Formatting and info helpers from helm etc.
 //!
 //! **Taxonomy Classification**: System Role (Purpose - Application Software).
 //!
@@ -58,7 +58,7 @@ pub fn get_cpu_info(sys: &System) -> String {
 pub fn get_formatted_uptime() -> String {
     #[cfg(feature = "sys-info")]
     {
-        let uptime_secs = crate::sys_info::get_system_info().uptime_secs;
+        let uptime_secs = crate::toolkit::sys_info::get_system_info().uptime_secs;
         let days = uptime_secs / 86400;
         let hours = (uptime_secs % 86400) / 3600;
         let minutes = (uptime_secs % 3600) / 60;
@@ -85,7 +85,7 @@ pub fn get_formatted_uptime() -> String {
 pub fn get_battery_info() -> String {
     #[cfg(feature = "sys-info")]
     {
-        return if let Some(power) = crate::sys_info::query_power_status() {
+        return if let Some(power) = crate::toolkit::sys_info::query_power_status() {
             format!("{}% ({})", power.battery_percent, if power.ac_online { "AC" } else { "Battery" })
         } else {
             "N/A".to_string()
@@ -123,7 +123,7 @@ pub fn get_memory_info(sys: &System) -> String {
 pub fn get_disks_info() -> String {
     #[cfg(feature = "sys-info")]
     {
-        let drives = crate::sys_info::query_disk_drives();
+        let drives = crate::toolkit::sys_info::query_disk_drives();
         let mut parts = Vec::new();
         for d in drives {
             let total_gb = d.total_bytes / (1024 * 1024 * 1024);
@@ -144,7 +144,7 @@ pub fn get_disks_info() -> String {
 pub fn get_gpu_names() -> String {
     #[cfg(feature = "sys-info")]
     {
-        let gpus = crate::sys_info::query_gpu_names();
+        let gpus = crate::toolkit::sys_info::query_gpu_names();
         return if gpus.is_empty() {
             "Unknown GPU".to_string()
         } else {
@@ -158,7 +158,7 @@ pub fn get_gpu_names() -> String {
 /// Detect host shell and active terminal type.
 pub fn detect_shell_and_terminal() -> (String, String) {
     #[cfg(feature = "sys-info")]
-    { return crate::sys_info::query_shell_and_terminal(); }
+    { return crate::toolkit::sys_info::query_shell_and_terminal(); }
     #[cfg(not(feature = "sys-info"))]
     { (String::new(), String::new()) }
 }

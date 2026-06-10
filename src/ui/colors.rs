@@ -1,4 +1,4 @@
-use ratatui::style::Color;
+﻿use ratatui::style::Color;
 
 /// First-class bundle of accent/dim/text colors for the TUI accent widget family.
 /// 
@@ -45,7 +45,7 @@ impl AccentColors {
     pub fn query_system() -> Self {
         #[cfg(feature = "sys-info")]
         {
-            let theme = crate::platform::native::sys_info::query_system_theme();
+            let theme = crate::toolkit::sys_info::query_system_theme();
             let (r, g, b) = theme.accent_color;
             let accent = Color::Rgb(r, g, b);
             

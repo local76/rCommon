@@ -1,4 +1,4 @@
-//! RisingGlyphs — Verb (Rising) × Noun (Glyphs).
+﻿//! RisingGlyphs — Verb (Rising) × Noun (Glyphs).
 //!
 //! Characters rising from a heat source at the bottom, fading as they ascend.
 //! Like text drifting up off a fire. Default style: `Trailing`. Default palette: `Heat`.
@@ -135,7 +135,7 @@ impl RisingGlyphs {
     }
 }
 
-impl crate::interface::app::screensaver::Screensaver for RisingGlyphs {
+impl crate::ui::screensaver_renderer::Screensaver for RisingGlyphs {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }

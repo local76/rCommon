@@ -1,4 +1,4 @@
-#![allow(dead_code)]
+﻿#![allow(dead_code)]
 
 #[cfg(feature = "gui")]
 pub mod helpers {
@@ -18,7 +18,7 @@ pub mod helpers {
         // Best-effort center using library's cross-platform screen resolution.
         #[cfg(feature = "sys-info")]
         {
-            let (sw, sh) = crate::platform::native::sys_info::get_system_screen_resolution();
+            let (sw, sh) = crate::toolkit::sys_info::get_system_screen_resolution();
             let w = width as i32;
             let h = height as i32;
             let x = ((sw - w).max(0) / 2) as f32;

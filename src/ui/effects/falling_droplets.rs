@@ -1,4 +1,4 @@
-//! FallingDroplets — Verb (Falling) × Noun (Droplets).
+﻿//! FallingDroplets — Verb (Falling) × Noun (Droplets).
 //!
 //! Plain falling droplets (no trail). Default style: `Solid`. Default palette: `Monochrome(Blue)`.
 //!
@@ -104,7 +104,7 @@ impl FallingDroplets {
     }
 }
 
-impl crate::interface::app::screensaver::Screensaver for FallingDroplets {
+impl crate::ui::screensaver_renderer::Screensaver for FallingDroplets {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }

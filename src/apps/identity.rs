@@ -1,4 +1,4 @@
-//! Identity helpers (username, hostname, OS string) for TUI banner rendering.
+﻿//! Identity helpers (username, hostname, OS string) for TUI banner rendering.
 //!
 //! **Taxonomy Classification**: Execution State (Lifecycle - Foreground) + Platform (Native).
 //!
@@ -6,7 +6,7 @@
 //! and the cached system OS version string. Used by every r* TUI's title banner.
 
 use crate::core::UNKNOWN_HOST;
-use crate::platform::native::sys_info::query_os_version;
+use crate::toolkit::sys_info::query_os_version;
 
 /// Returns the current OS username (Windows: `$USERNAME`, POSIX: `$USER`).
 pub fn username() -> String {

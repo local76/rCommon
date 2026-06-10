@@ -1,4 +1,4 @@
-//! Monitor / display enumeration utilities.
+﻿//! Monitor / display enumeration utilities.
 //!
 //! **Taxonomy Classification**: Platform & Architecture (Deployment - Native) + Role (System Software).
 //! 
@@ -129,18 +129,18 @@ fn get_all_monitors_uncached() -> Vec<String> {
     if monitors.is_empty() {
         #[cfg(target_arch = "wasm32")]
         {
-            use crate::platform::PlatformProvider;
-            monitors.extend(crate::platform::WebPlatform::get_all_monitors());
+            use crate::toolkit::platform::PlatformProvider;
+            monitors.extend(crate::toolkit::platform::WebPlatform::get_all_monitors());
         }
         #[cfg(any(target_os = "android", target_os = "ios"))]
         {
-            use crate::platform::PlatformProvider;
-            monitors.extend(crate::platform::MobilePlatform::get_all_monitors());
+            use crate::toolkit::platform::PlatformProvider;
+            monitors.extend(crate::toolkit::platform::MobilePlatform::get_all_monitors());
         }
         #[cfg(any(target_os = "none", target_os = "uefi"))]
         {
-            use crate::platform::PlatformProvider;
-            monitors.extend(crate::platform::EmbeddedPlatform::get_all_monitors());
+            use crate::toolkit::platform::PlatformProvider;
+            monitors.extend(crate::toolkit::platform::EmbeddedPlatform::get_all_monitors());
         }
         #[cfg(not(any(
             target_arch = "wasm32",
@@ -152,7 +152,7 @@ fn get_all_monitors_uncached() -> Vec<String> {
         {
             #[cfg(feature = "sys-info")]
             {
-                let (w, h) = crate::sys_info::get_system_screen_resolution();
+                let (w, h) = crate::toolkit::sys_info::get_system_screen_resolution();
                 monitors.push(format!("Primary: {}x{}", w, h));
             }
         }

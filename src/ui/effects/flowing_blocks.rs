@@ -1,4 +1,4 @@
-//! FlowingBlocks — Verb (Flowing) × Noun (Blocks).
+﻿//! FlowingBlocks — Verb (Flowing) × Noun (Blocks).
 //!
 //! Tetris-style block shapes drifting horizontally across the screen.
 //! Default style: `Solid`. Default palette: `Accent`.
@@ -156,7 +156,7 @@ impl FlowingBlocks {
     }
 }
 
-impl crate::interface::app::screensaver::Screensaver for FlowingBlocks {
+impl crate::ui::screensaver_renderer::Screensaver for FlowingBlocks {
     fn init(&mut self, cols: usize, rows: usize) {
         *self = Self::new(cols, rows);
     }
