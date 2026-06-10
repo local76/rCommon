@@ -95,6 +95,7 @@ fn get_all_monitors_uncached() -> Vec<String> {
 
 #[cfg(any(not(windows), not(feature = "windows-sys")))]
 fn get_all_monitors_uncached() -> Vec<String> {
+    #[allow(unused_mut)]
     let mut monitors = Vec::new();
     #[cfg(target_os = "linux")]
     {
