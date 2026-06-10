@@ -26,7 +26,7 @@
 //! ```
 //!
 //! In its `build.rs`:
-//! ```no_run
+//! ```ignore
 //! use std::path::Path;
 //! use library::build_resources::{write_brand_rc, DEFAULT_COMPANY_NAME, DEFAULT_LEGAL_COPYRIGHT, DEFAULT_PRODUCT_NAME};
 //!

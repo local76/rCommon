@@ -14,7 +14,7 @@
 //! ```ignore
 //! fn main() {
 //!     library::screensaver_runtime::run_main(
-//!         library::role::application::scenes::matrix::Matrix::new(),
+//!         library::role::application::scenes::glyphs::Glyphs::new(),
 //!         "glyphs",
 //!     );
 //! }

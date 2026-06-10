@@ -16,10 +16,10 @@
 //! To embed an effect in an app:
 //!
 //! ```no_run
-//! use library::role::application::scenes::glyphs::Matrix;
+//! use library::role::application::scenes::glyphs::Glyphs;
 //! use library::core::screensaver::Screensaver;
 //!
-//! let mut effect = Matrix::new();
+//! let mut effect = Glyphs::new();
 //! effect.update(std::time::Duration::from_millis(16), 80, 24);
 //! let mut grid = vec![library::core::TerminalCell::default(); 80 * 24];
 //! effect.draw(&mut grid, 80, 24);

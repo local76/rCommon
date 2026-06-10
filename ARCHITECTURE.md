@@ -167,15 +167,15 @@ All 10 scene implementations live at `library::role::application::scenes::<name>
 | Module | Type | What it is |
 |---|---|---|
 | `scenes::beams` | `Beams` | 4 colored spotlight cones sweeping over a starfield with rising dust + lens flares. Centered system logo. |
-| `scenes::bounce` | `BhopDashboard` | 3-panel cyberpunk TUI dashboard: live system info, fake command console, bunny-hop mini-game. |
-| `scenes::flame` | `FireEffect` | Bottom-up cellular-automaton fire, Doom-style. Centered system logo warms with the fire. |
-| `scenes::gnats` | `Fireflies` | 30–60 fireflies in a triadic palette. Boid-style predator/prey. Wireframe network. Starfield. |
-| `scenes::bursts` | `Fireworks` | City skyline at bottom. Rockets launch and explode into colored particle bursts. Windows light up. |
-| `scenes::cosmos` | `LifeEffect` | Full universe lifecycle: Darkness → BigBang → Expansion → Accretion → Singularity → Collapse. |
+| `scenes::bounce` | `Bounce` | 3-panel cyberpunk TUI dashboard: live system info, fake command console, bunny-hop mini-game. |
+| `scenes::flame` | `Flame` | Bottom-up cellular-automaton fire, Doom-style. Centered system logo warms with the fire. |
+| `scenes::gnats` | `Gnats` | 30–60 fireflies in a triadic palette. Boid-style predator/prey. Wireframe network. Starfield. |
+| `scenes::bursts` | `Bursts` | City skyline at bottom. Rockets launch and explode into colored particle bursts. Windows light up. |
+| `scenes::cosmos` | `Cosmos` | Full universe lifecycle: Darkness → BigBang → Expansion → Accretion → Singularity → Collapse. |
 | `scenes::glyphs` | `Glyphs` | Falling katakana+digit rain. Head of each stream draws from the host's hostname+OS+kernel. |
-| `scenes::disco` | `Party` | Disco ball + 8 sweeping rays + neon confetti + VU-meter equalizer + audio beat. |
-| `scenes::storm` | `Pour` | Cold rain over mountains + pine forest. Periodic lightning. Bird on a tree. Deer/bear/bigfoot walk by. |
-| `scenes::chaos` | `Unstable` | System logo disassembles. 7 chaos types: Supernova, BlackHole, Vortex, GlitchWave, Shockwave, Entropy, Resonance. RGB chromatic-aberration glitch + spring snap-back. |
+| `scenes::disco` | `Disco` | Disco ball + 8 sweeping rays + neon confetti + VU-meter equalizer + audio beat. |
+| `scenes::storm` | `Storm` | Cold rain over mountains + pine forest. Periodic lightning. Bird on a tree. Deer/bear/bigfoot walk by. |
+| `scenes::chaos` | `Chaos` | System logo disassembles. 7 chaos types: Supernova, BlackHole, Vortex, GlitchWave, Shockwave, Entropy, Resonance. RGB chromatic-aberration glitch + spring snap-back. |
 
 Each scene exposes a `new()` constructor (no args) and a `name()` method returning the lowercase scene name. Each implements the `Screensaver` trait (init, update, draw, has_scanlines). `ScreensaverRenderer` is the TUI-side buffer manager; the GDI / raw-termios loop in `library::screensaver_runtime` is what the `screensavers` workspace's shim binaries call.
 

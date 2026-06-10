@@ -106,15 +106,15 @@ Available scenes (all in `library::role::application::scenes::*`):
 | Module | Type | Default look |
 |---|---|---|
 | `beams` | `Beams` | 4 colored spotlight cones over a starfield |
-| `bounce` | `BhopDashboard` | 3-panel cyberpunk TUI dashboard |
-| `flame` | `FireEffect` | Bottom-up cellular-automaton fire |
-| `gnats` | `Fireflies` | Boid-style firefly swarm |
-| `bursts` | `Fireworks` | City skyline + rockets + bursts |
-| `cosmos` | `LifeEffect` | Universe lifecycle simulation |
+| `bounce` | `Bounce` | 3-panel cyberpunk TUI dashboard |
+| `flame` | `Flame` | Bottom-up cellular-automaton fire |
+| `gnats` | `Gnats` | Boid-style firefly swarm |
+| `bursts` | `Bursts` | City skyline + rockets + bursts |
+| `cosmos` | `Cosmos` | Universe lifecycle simulation |
 | `glyphs` | `Glyphs` | Falling katakana+digit rain |
-| `disco` | `Party` | Disco ball + rays + VU-meter |
-| `storm` | `Pour` | Rain + mountains + lightning |
-| `chaos` | `Unstable` | System-logo deconstruction + chaos types |
+| `disco` | `Disco` | Disco ball + rays + VU-meter |
+| `storm` | `Storm` | Rain + mountains + lightning |
+| `chaos` | `Chaos` | System-logo deconstruction + chaos types |
 
 ### Host a screensaver process
 

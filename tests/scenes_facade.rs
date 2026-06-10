@@ -9,27 +9,28 @@
 //! pattern (run a release build, look at it), not by these tests.
 //!
 //! As more effects migrate into `library::scenes::*`, add one test per
-//! effect here. The matrix test exists from 4.1.0; the other 9 land
-//! alongside their migration in 4.1.x patch releases.
+//! effect here. The 10 scene structs are uniformly named `<SceneName>`
+//! (Beams, Bounce, Bursts, Chaos, Cosmos, Disco, Flame, Glyphs, Gnats,
+//! Storm); this file's tests are organized 1:1 with that naming.
 
 use std::time::Duration;
 
 use library::core::screensaver::Screensaver;
 use library::core::TerminalCell;
 use library::role::application::scenes::beams::Beams;
-use library::role::application::scenes::bounce::BhopDashboard;
-use library::role::application::scenes::flame::FireEffect;
-use library::role::application::scenes::gnats::Fireflies;
-use library::role::application::scenes::bursts::Fireworks;
-use library::role::application::scenes::cosmos::LifeEffect;
-use library::role::application::scenes::glyphs::{Matrix, Matrix as MatrixEffect};
-use library::role::application::scenes::disco::Party;
-use library::role::application::scenes::storm::Pour;
-use library::role::application::scenes::chaos::Unstable;
+use library::role::application::scenes::bounce::Bounce;
+use library::role::application::scenes::flame::Flame;
+use library::role::application::scenes::gnats::Gnats;
+use library::role::application::scenes::bursts::Bursts;
+use library::role::application::scenes::cosmos::Cosmos;
+use library::role::application::scenes::glyphs::Glyphs;
+use library::role::application::scenes::disco::Disco;
+use library::role::application::scenes::storm::Storm;
+use library::role::application::scenes::chaos::Chaos;
 
 fn render_grid(effect: &mut dyn Screensaver, cols: usize, rows: usize) -> Vec<TerminalCell> {
     // Run a few update ticks so internal state settles into a non-degenerate
-    // configuration (e.g. matrix initializes its rain drop list on the first
+    // configuration (e.g. glyphs initializes its rain drop list on the first
     // non-zero-sized update).
     for _ in 0..3 {
         effect.update(Duration::from_millis(16), cols, rows);
@@ -40,43 +41,43 @@ fn render_grid(effect: &mut dyn Screensaver, cols: usize, rows: usize) -> Vec<Te
 }
 
 #[test]
-fn matrix_constructs_and_renders_at_80x24() {
-    let mut m = Matrix::new();
-    let grid = render_grid(&mut m, 80, 24);
+fn glyphs_constructs_and_renders_at_80x24() {
+    let mut g = Glyphs::new();
+    let grid = render_grid(&mut g, 80, 24);
     assert_eq!(grid.len(), 80 * 24);
 }
 
 #[test]
-fn matrix_constructs_and_renders_at_60x40() {
-    let mut m = Matrix::new();
-    let grid = render_grid(&mut m, 60, 40);
+fn glyphs_constructs_and_renders_at_60x40() {
+    let mut g = Glyphs::new();
+    let grid = render_grid(&mut g, 60, 40);
     assert_eq!(grid.len(), 60 * 40);
 }
 
 #[test]
-fn matrix_constructs_and_renders_at_200x60() {
-    let mut m = Matrix::new();
-    let grid = render_grid(&mut m, 200, 60);
+fn glyphs_constructs_and_renders_at_200x60() {
+    let mut g = Glyphs::new();
+    let grid = render_grid(&mut g, 200, 60);
     assert_eq!(grid.len(), 200 * 60);
 }
 
 #[test]
-fn matrix_handles_resize_between_updates() {
-    let mut m = MatrixEffect::new();
-    let _ = render_grid(&mut m, 80, 24);
+fn glyphs_handles_resize_between_updates() {
+    let mut g = Glyphs::new();
+    let _ = render_grid(&mut g, 80, 24);
     // Resize larger, then back smaller — should not panic.
-    let _ = render_grid(&mut m, 200, 60);
-    let _ = render_grid(&mut m, 40, 20);
+    let _ = render_grid(&mut g, 200, 60);
+    let _ = render_grid(&mut g, 40, 20);
 }
 
 #[test]
-fn matrix_handles_zero_size_grid() {
+fn glyphs_handles_zero_size_grid() {
     // A 0x0 grid is degenerate but should not panic. Useful as a
     // regression net for "index = y * cols + x" math when cols=0.
-    let mut m = Matrix::new();
+    let mut g = Glyphs::new();
     let mut grid: Vec<TerminalCell> = Vec::new();
-    m.update(Duration::from_millis(16), 0, 0);
-    m.draw(&mut grid, 0, 0);
+    g.update(Duration::from_millis(16), 0, 0);
+    g.draw(&mut grid, 0, 0);
     assert!(grid.is_empty());
 }
 
@@ -111,29 +112,29 @@ fn beams_handles_zero_size_grid() {
 }
 
 #[test]
-fn bhop_constructs_and_renders_at_80x24() {
-    let mut b = BhopDashboard::new();
+fn bounce_constructs_and_renders_at_80x24() {
+    let mut b = Bounce::new();
     let grid = render_grid(&mut b, 80, 24);
     assert_eq!(grid.len(), 80 * 24);
 }
 
 #[test]
-fn bhop_constructs_and_renders_at_60x40() {
-    let mut b = BhopDashboard::new();
+fn bounce_constructs_and_renders_at_60x40() {
+    let mut b = Bounce::new();
     let grid = render_grid(&mut b, 60, 40);
     assert_eq!(grid.len(), 60 * 40);
 }
 
 #[test]
-fn bhop_constructs_and_renders_at_200x60() {
-    let mut b = BhopDashboard::new();
+fn bounce_constructs_and_renders_at_200x60() {
+    let mut b = Bounce::new();
     let grid = render_grid(&mut b, 200, 60);
     assert_eq!(grid.len(), 200 * 60);
 }
 
 #[test]
-fn bhop_handles_zero_size_grid() {
-    let mut b = BhopDashboard::new();
+fn bounce_handles_zero_size_grid() {
+    let mut b = Bounce::new();
     let mut grid: Vec<TerminalCell> = Vec::new();
     b.update(Duration::from_millis(16), 0, 0);
     b.draw(&mut grid, 0, 0);
@@ -141,35 +142,35 @@ fn bhop_handles_zero_size_grid() {
 }
 
 #[test]
-fn bhop_has_scanlines_returns_true() {
-    let b = BhopDashboard::new();
+fn bounce_has_scanlines_returns_true() {
+    let b = Bounce::new();
     assert!(b.has_scanlines());
 }
 
 #[test]
-fn fire_constructs_and_renders_at_80x24() {
-    let mut f = FireEffect::new();
+fn flame_constructs_and_renders_at_80x24() {
+    let mut f = Flame::new();
     let grid = render_grid(&mut f, 80, 24);
     assert_eq!(grid.len(), 80 * 24);
 }
 
 #[test]
-fn fire_constructs_and_renders_at_60x40() {
-    let mut f = FireEffect::new();
+fn flame_constructs_and_renders_at_60x40() {
+    let mut f = Flame::new();
     let grid = render_grid(&mut f, 60, 40);
     assert_eq!(grid.len(), 60 * 40);
 }
 
 #[test]
-fn fire_constructs_and_renders_at_200x60() {
-    let mut f = FireEffect::new();
+fn flame_constructs_and_renders_at_200x60() {
+    let mut f = Flame::new();
     let grid = render_grid(&mut f, 200, 60);
     assert_eq!(grid.len(), 200 * 60);
 }
 
 #[test]
-fn fire_handles_zero_size_grid() {
-    let mut f = FireEffect::new();
+fn flame_handles_zero_size_grid() {
+    let mut f = Flame::new();
     let mut grid: Vec<TerminalCell> = Vec::new();
     f.update(Duration::from_millis(16), 0, 0);
     f.draw(&mut grid, 0, 0);
@@ -177,181 +178,181 @@ fn fire_handles_zero_size_grid() {
 }
 
 #[test]
-fn fireflies_constructs_and_renders_at_80x24() {
-    let mut f = Fireflies::new();
-    let grid = render_grid(&mut f, 80, 24);
+fn gnats_constructs_and_renders_at_80x24() {
+    let mut g = Gnats::new();
+    let grid = render_grid(&mut g, 80, 24);
     assert_eq!(grid.len(), 80 * 24);
 }
 
 #[test]
-fn fireflies_constructs_and_renders_at_60x40() {
-    let mut f = Fireflies::new();
-    let grid = render_grid(&mut f, 60, 40);
+fn gnats_constructs_and_renders_at_60x40() {
+    let mut g = Gnats::new();
+    let grid = render_grid(&mut g, 60, 40);
     assert_eq!(grid.len(), 60 * 40);
 }
 
 #[test]
-fn fireflies_constructs_and_renders_at_200x60() {
-    let mut f = Fireflies::new();
-    let grid = render_grid(&mut f, 200, 60);
+fn gnats_constructs_and_renders_at_200x60() {
+    let mut g = Gnats::new();
+    let grid = render_grid(&mut g, 200, 60);
     assert_eq!(grid.len(), 200 * 60);
 }
 
 #[test]
-fn fireflies_handles_zero_size_grid() {
-    let mut f = Fireflies::new();
+fn gnats_handles_zero_size_grid() {
+    let mut g = Gnats::new();
     let mut grid: Vec<TerminalCell> = Vec::new();
-    f.update(Duration::from_millis(16), 0, 0);
-    f.draw(&mut grid, 0, 0);
+    g.update(Duration::from_millis(16), 0, 0);
+    g.draw(&mut grid, 0, 0);
     assert!(grid.is_empty());
 }
 
 #[test]
-fn fireworks_constructs_and_renders_at_80x24() {
-    let mut f = Fireworks::new();
-    let grid = render_grid(&mut f, 80, 24);
+fn bursts_constructs_and_renders_at_80x24() {
+    let mut b = Bursts::new();
+    let grid = render_grid(&mut b, 80, 24);
     assert_eq!(grid.len(), 80 * 24);
 }
 
 #[test]
-fn fireworks_constructs_and_renders_at_60x40() {
-    let mut f = Fireworks::new();
-    let grid = render_grid(&mut f, 60, 40);
+fn bursts_constructs_and_renders_at_60x40() {
+    let mut b = Bursts::new();
+    let grid = render_grid(&mut b, 60, 40);
     assert_eq!(grid.len(), 60 * 40);
 }
 
 #[test]
-fn fireworks_constructs_and_renders_at_200x60() {
-    let mut f = Fireworks::new();
-    let grid = render_grid(&mut f, 200, 60);
+fn bursts_constructs_and_renders_at_200x60() {
+    let mut b = Bursts::new();
+    let grid = render_grid(&mut b, 200, 60);
     assert_eq!(grid.len(), 200 * 60);
 }
 
 #[test]
-fn fireworks_handles_zero_size_grid() {
-    let mut f = Fireworks::new();
+fn bursts_handles_zero_size_grid() {
+    let mut b = Bursts::new();
     let mut grid: Vec<TerminalCell> = Vec::new();
-    f.update(Duration::from_millis(16), 0, 0);
-    f.draw(&mut grid, 0, 0);
+    b.update(Duration::from_millis(16), 0, 0);
+    b.draw(&mut grid, 0, 0);
     assert!(grid.is_empty());
 }
 
 #[test]
-fn life_constructs_and_renders_at_80x24() {
-    let mut l = LifeEffect::new();
-    let grid = render_grid(&mut l, 80, 24);
+fn cosmos_constructs_and_renders_at_80x24() {
+    let mut c = Cosmos::new();
+    let grid = render_grid(&mut c, 80, 24);
     assert_eq!(grid.len(), 80 * 24);
 }
 
 #[test]
-fn life_constructs_and_renders_at_60x40() {
-    let mut l = LifeEffect::new();
-    let grid = render_grid(&mut l, 60, 40);
+fn cosmos_constructs_and_renders_at_60x40() {
+    let mut c = Cosmos::new();
+    let grid = render_grid(&mut c, 60, 40);
     assert_eq!(grid.len(), 60 * 40);
 }
 
 #[test]
-fn life_constructs_and_renders_at_200x60() {
-    let mut l = LifeEffect::new();
-    let grid = render_grid(&mut l, 200, 60);
+fn cosmos_constructs_and_renders_at_200x60() {
+    let mut c = Cosmos::new();
+    let grid = render_grid(&mut c, 200, 60);
     assert_eq!(grid.len(), 200 * 60);
 }
 
 #[test]
-fn life_handles_zero_size_grid() {
-    let mut l = LifeEffect::new();
+fn cosmos_handles_zero_size_grid() {
+    let mut c = Cosmos::new();
     let mut grid: Vec<TerminalCell> = Vec::new();
-    l.update(Duration::from_millis(16), 0, 0);
-    l.draw(&mut grid, 0, 0);
+    c.update(Duration::from_millis(16), 0, 0);
+    c.draw(&mut grid, 0, 0);
     assert!(grid.is_empty());
 }
 
 #[test]
-fn party_constructs_and_renders_at_80x24() {
-    let mut p = Party::new();
-    let grid = render_grid(&mut p, 80, 24);
+fn disco_constructs_and_renders_at_80x24() {
+    let mut d = Disco::new();
+    let grid = render_grid(&mut d, 80, 24);
     assert_eq!(grid.len(), 80 * 24);
 }
 
 #[test]
-fn party_constructs_and_renders_at_60x40() {
-    let mut p = Party::new();
-    let grid = render_grid(&mut p, 60, 40);
+fn disco_constructs_and_renders_at_60x40() {
+    let mut d = Disco::new();
+    let grid = render_grid(&mut d, 60, 40);
     assert_eq!(grid.len(), 60 * 40);
 }
 
 #[test]
-fn party_constructs_and_renders_at_200x60() {
-    let mut p = Party::new();
-    let grid = render_grid(&mut p, 200, 60);
+fn disco_constructs_and_renders_at_200x60() {
+    let mut d = Disco::new();
+    let grid = render_grid(&mut d, 200, 60);
     assert_eq!(grid.len(), 200 * 60);
 }
 
 #[test]
-fn party_handles_zero_size_grid() {
-    let mut p = Party::new();
+fn disco_handles_zero_size_grid() {
+    let mut d = Disco::new();
     let mut grid: Vec<TerminalCell> = Vec::new();
-    p.update(Duration::from_millis(16), 0, 0);
-    p.draw(&mut grid, 0, 0);
+    d.update(Duration::from_millis(16), 0, 0);
+    d.draw(&mut grid, 0, 0);
     assert!(grid.is_empty());
 }
 
 #[test]
-fn pour_constructs_and_renders_at_80x24() {
-    let mut p = Pour::new();
-    let grid = render_grid(&mut p, 80, 24);
+fn storm_constructs_and_renders_at_80x24() {
+    let mut s = Storm::new();
+    let grid = render_grid(&mut s, 80, 24);
     assert_eq!(grid.len(), 80 * 24);
 }
 
 #[test]
-fn pour_constructs_and_renders_at_60x40() {
-    let mut p = Pour::new();
-    let grid = render_grid(&mut p, 60, 40);
+fn storm_constructs_and_renders_at_60x40() {
+    let mut s = Storm::new();
+    let grid = render_grid(&mut s, 60, 40);
     assert_eq!(grid.len(), 60 * 40);
 }
 
 #[test]
-fn pour_constructs_and_renders_at_200x60() {
-    let mut p = Pour::new();
-    let grid = render_grid(&mut p, 200, 60);
+fn storm_constructs_and_renders_at_200x60() {
+    let mut s = Storm::new();
+    let grid = render_grid(&mut s, 200, 60);
     assert_eq!(grid.len(), 200 * 60);
 }
 
 #[test]
-fn pour_handles_zero_size_grid() {
-    let mut p = Pour::new();
+fn storm_handles_zero_size_grid() {
+    let mut s = Storm::new();
     let mut grid: Vec<TerminalCell> = Vec::new();
-    p.update(Duration::from_millis(16), 0, 0);
-    p.draw(&mut grid, 0, 0);
+    s.update(Duration::from_millis(16), 0, 0);
+    s.draw(&mut grid, 0, 0);
     assert!(grid.is_empty());
 }
 
 #[test]
-fn unstable_constructs_and_renders_at_80x24() {
-    let mut u = Unstable::new();
-    let grid = render_grid(&mut u, 80, 24);
+fn chaos_constructs_and_renders_at_80x24() {
+    let mut c = Chaos::new();
+    let grid = render_grid(&mut c, 80, 24);
     assert_eq!(grid.len(), 80 * 24);
 }
 
 #[test]
-fn unstable_constructs_and_renders_at_60x40() {
-    let mut u = Unstable::new();
-    let grid = render_grid(&mut u, 60, 40);
+fn chaos_constructs_and_renders_at_60x40() {
+    let mut c = Chaos::new();
+    let grid = render_grid(&mut c, 60, 40);
     assert_eq!(grid.len(), 60 * 40);
 }
 
 #[test]
-fn unstable_constructs_and_renders_at_200x60() {
-    let mut u = Unstable::new();
-    let grid = render_grid(&mut u, 200, 60);
+fn chaos_constructs_and_renders_at_200x60() {
+    let mut c = Chaos::new();
+    let grid = render_grid(&mut c, 200, 60);
     assert_eq!(grid.len(), 200 * 60);
 }
 
 #[test]
-fn unstable_handles_zero_size_grid() {
-    let mut u = Unstable::new();
+fn chaos_handles_zero_size_grid() {
+    let mut c = Chaos::new();
     let mut grid: Vec<TerminalCell> = Vec::new();
-    u.update(Duration::from_millis(16), 0, 0);
-    u.draw(&mut grid, 0, 0);
+    c.update(Duration::from_millis(16), 0, 0);
+    c.draw(&mut grid, 0, 0);
     assert!(grid.is_empty());
 }
