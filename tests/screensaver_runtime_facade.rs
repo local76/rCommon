@@ -67,3 +67,37 @@ fn noop_screensaver_lifecycle_does_not_panic() {
     saver.draw(&mut grid, 80, 24);
     assert_eq!(grid.len(), 80 * 24);
 }
+
+// ---------------------------------------------------------------------------
+// screensaver_shim! macro: verify the 10 scene constructors it targets all
+// satisfy Screensaver + 'static. (The macro itself is a syntax-time
+// expansion; this is the smoke test for its inputs.)
+// ---------------------------------------------------------------------------
+#[test]
+fn screensaver_shim_macro_targets_all_10_scenes() {
+    // Each of the 10 scene struct constructors must be callable and
+    // must return a type that implements Screensaver. The macro in
+    // library::screensavers::screensaver_shim! hard-codes
+    // `$crate::screensavers::<scene_mod>::<SceneTy>::new()` so any
+    // rename that breaks one of these call sites would also break
+    // every screensavers-* binary that uses the macro.
+    use library::core::screensaver::Screensaver as _;
+    use library::screensavers::{
+        beams::Beams, bounce::Bounce, bursts::Bursts, chaos::Chaos,
+        cosmos::Cosmos, disco::Disco, flame::Flame, glyphs::Glyphs,
+        gnats::Gnats, storm::Storm,
+    };
+
+    fn assert_screensaver<S: Screensaver + 'static>(_: &S) {}
+
+    assert_screensaver(&Beams::new());
+    assert_screensaver(&Bounce::new());
+    assert_screensaver(&Bursts::new());
+    assert_screensaver(&Chaos::new());
+    assert_screensaver(&Cosmos::new());
+    assert_screensaver(&Disco::new());
+    assert_screensaver(&Flame::new());
+    assert_screensaver(&Glyphs::new());
+    assert_screensaver(&Gnats::new());
+    assert_screensaver(&Storm::new());
+}

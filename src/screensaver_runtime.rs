@@ -1,5 +1,5 @@
 ﻿//! Backward compatibility shim for screensaver_runtime.
-//! Re-exports from the new app module.
+//! Re-exports from the new screensavers::runtime module.
 
 #[cfg(feature = "screensaver-runtime")]
-pub use crate::apps::screensaver_runtime::*;
+pub use crate::screensavers::runtime::*;

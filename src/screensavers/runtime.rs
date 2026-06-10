@@ -9,15 +9,11 @@
 //! In library 4.1 this runtime lived in `screensavers/src/trance-core/` as a
 //! separate crate that re-exported `library`. In library 4.2 the
 //! runtime is consolidated here so the 10 r* effect crates in
-//! screensavers/ can become 20-line shim binaries:
+//! screensavers/ can become 1-line shim binaries via the
+//! [`screensaver_shim!`] macro:
 //!
 //! ```ignore
-//! fn main() {
-//!     library::screensaver_runtime::run_main(
-//!         library::role::application::scenes::glyphs::Glyphs::new(),
-//!         "glyphs",
-//!     );
-//! }
+//! library::screensavers::screensaver_shim!(glyphs, Glyphs, "glyphs");
 //! ```
 //!
 //! The `screensaver-runtime` feature is **default-off** in library
@@ -380,4 +376,57 @@ impl Drop for Renderer {
         print!("\x1b[0m\x1b[?25h\x1b[2J\x1b[H");
         let _ = std::io::stdout().flush();
     }
+}
+
+/// Generate a Windows-screensaver-compatible `main()` for the given
+/// scene. Place at the root of `src/main.rs` (or any file you point
+/// Cargo's `[[bin]] path` at).
+///
+/// Collapses the 4-line `windows_subsystem` cfg-attr + `fn main()`
+/// boilerplate that each of the 10 `screensavers-*` shim binaries
+/// needs into a single macro invocation.
+///
+/// # Example
+///
+/// In `screensavers-glyphs/src/screensaver_shim.rs`:
+///
+/// ```rust,ignore
+/// library::screensavers::screensaver_shim!(glyphs, Glyphs, "glyphs");
+/// ```
+///
+/// This expands to:
+///
+/// ```rust,ignore
+/// #![cfg_attr(
+///     all(not(debug_assertions), target_os = "windows"),
+///     windows_subsystem = "windows"
+/// )]
+///
+/// fn main() {
+///     library::screensavers::runtime::run_main(
+///         library::screensavers::glyphs::Glyphs::new(),
+///         "glyphs",
+///     );
+/// }
+/// ```
+///
+/// The scene module must export `<Scene>::new()` returning a type
+/// that implements `Screensaver + 'static`. All 10 scenes in
+/// `library::screensavers` (`Beams`, `Bounce`, `Bursts`, `Chaos`,
+/// `Cosmos`, `Disco`, `Flame`, `Glyphs`, `Gnats`, `Storm`) do.
+#[macro_export]
+macro_rules! screensaver_shim {
+    ($scene_mod:ident, $scene_ty:ident, $name:literal) => {
+        #![cfg_attr(
+            all(not(debug_assertions), target_os = "windows"),
+            windows_subsystem = "windows"
+        )]
+
+        fn main() {
+            $crate::screensavers::runtime::run_main(
+                $crate::screensavers::$scene_mod::$scene_ty::new(),
+                $name,
+            );
+        }
+    };
 }
