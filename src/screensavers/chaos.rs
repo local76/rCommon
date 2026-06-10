@@ -13,7 +13,7 @@ use crate::platform::native::sys_info::get_system_info;
 use crate::toolkit::rgb_controller::{RgbController, is_openrgb_enabled};
 #[cfg(feature = "rgb")]
 use crate::toolkit::rgb_protocol::RgbColor;
-use crate::core::screen_palette::query_current_palette;
+use crate::toolkit::sys_info::query_current_palette;
 
 pub struct Particle {
     pub home_x: f32,
@@ -507,7 +507,7 @@ impl Screensaver for Chaos {
             self.rgb_timer = 0.0;
             if let Some(ref r) = self.rgb {
                 // library 4.0: pull from the canonical ScreenPalette.
-                let accent = crate::core::screen_palette::query_current_palette().accent;
+                let accent = crate::toolkit::sys_info::query_current_palette().accent;
                 
                 if Some(self.phase) != self.last_phase {
                     self.last_phase = Some(self.phase);

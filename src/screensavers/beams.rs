@@ -8,7 +8,7 @@ use std::time::Duration;
 use crate::core::screensaver::Screensaver;
 #[cfg(feature = "sys-info")]
 use crate::platform::native::sys_info::get_system_info;
-use crate::core::screen_palette::query_current_palette;
+use crate::toolkit::sys_info::query_current_palette;
 #[cfg(feature = "rgb")]
 use crate::toolkit::rgb_controller::{RgbController, is_openrgb_enabled};
 #[cfg(feature = "rgb")]

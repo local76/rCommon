@@ -37,25 +37,6 @@
 
 use crate::core::{hsl_to_rgb, rgb_to_hsl};
 
-/// library 4.0: the cross-platform, single-call helper that returns a fully
-/// populated [`ScreenPalette`] for the current system. Equivalent to
-/// `ScreenPalette::from_system(query_accent_color(), query_dark_mode())`
-/// but cached at the library layer so r* apps don't each maintain their own
-/// registry query + cache.
-///
-/// Use this from helm, pulse, trance-scenes, etc. instead of locally
-/// re-implementing the registry read.
-#[cfg(feature = "sys-info")]
-pub fn query_current_palette() -> ScreenPalette {
-    let theme = crate::toolkit::sys_info::query_system_theme();
-    ScreenPalette::from_system(theme.accent_color, theme.is_dark_mode)
-}
-
-/// Fallback when `sys-info` is not enabled in the consumer's feature set.
-#[cfg(not(feature = "sys-info"))]
-pub fn query_current_palette() -> ScreenPalette {
-    ScreenPalette::default_dark()
-}
 
 /// The canonical apps 4.0 screen palette.
 ///

@@ -295,3 +295,63 @@ pub mod build_resources;
 pub mod rc_split;
 pub mod screen_palette;
 pub mod formatting;
+
+/// Calculate percentage from two unsigned integers.
+/// Returns 0.0 if total is 0 to avoid division by zero.
+/// 
+/// # Examples
+/// ```
+/// use library::core::percentage;
+/// assert_eq!(percentage(50, 100), 50.0);
+/// assert_eq!(percentage(0, 100), 0.0);
+/// assert_eq!(percentage(100, 100), 100.0);
+/// assert_eq!(percentage(0, 0), 0.0);
+/// ```
+pub fn percentage(used: u64, total: u64) -> f32 {
+    if total == 0 {
+        0.0
+    } else {
+        (used as f32 / total as f32) * 100.0
+    }
+}
+
+/// Simple pseudo-random noise based on time and index.
+/// Uses a combination of sine waves with irrational multipliers to create
+/// smooth, deterministic noise that varies over time.
+/// 
+/// This is more visually pleasing than pure random for animated UI elements
+/// like GPU usage indicators, as it provides smooth transitions.
+/// 
+/// # Arguments
+/// * `elapsed_secs` - Time in seconds since some reference point
+/// * `index` - Unique identifier for each instance (e.g., GPU index)
+/// * `amplitude` - Maximum value the noise should reach
+/// * `frequency_base` - Base frequency multiplier
+/// # Returns
+/// Noise value in range [-amplitude, amplitude]
+pub fn smooth_noise(elapsed_secs: f64, index: usize, amplitude: f64, frequency_base: f64) -> f64 {
+    // Use irrational multipliers to avoid periodic patterns
+    const IRRATIONAL_1: f64 = 1.618033988749895; // Golden ratio
+    const IRRATIONAL_2: f64 = 2.718281828459045; // e
+    
+    let freq1 = frequency_base * (1.0 + index as f64 * 0.3);
+    let freq2 = frequency_base * (1.0 + index as f64 * 0.5);
+    
+    // Combine multiple sine waves for richer noise
+    let noise = (elapsed_secs * freq1 * IRRATIONAL_1).sin() * 0.6
+              + (elapsed_secs * freq2 * IRRATIONAL_2).cos() * 0.4;
+    
+    noise * amplitude
+}
+
+/// Linear interpolation between two values.
+/// Clamps the factor to [0.0, 1.0] for safety.
+/// 
+/// # Arguments
+/// * `a` - Start value
+/// * `b` - End value  
+/// * `factor` - Interpolation factor (0.0 = a, 1.0 = b)
+pub fn lerp(a: f32, b: f32, factor: f32) -> f32 {
+    let clamped_factor = factor.clamp(0.0, 1.0);
+    a + (b - a) * clamped_factor
+}

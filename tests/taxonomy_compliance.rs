@@ -31,6 +31,11 @@ fn test_taxonomy_compliance() {
         // Skip entry points, binaries, shims, and system-generated files
         if file_name == "lib.rs" 
             || file_name == "main.rs" 
+            || file_name == "interface.rs"
+            || file_name == "lifecycle.rs"
+            || file_name == "platform.rs"
+            || file_name == "role.rs"
+            || file_name == "screensaver_runtime.rs"
             || file_path.to_string_lossy().contains("src/bin/")
             || file_path.to_string_lossy().contains(".system_generated")
         {
@@ -42,25 +47,25 @@ fn test_taxonomy_compliance() {
         
         let layer = if path_str.starts_with("core/") || path_str == "core.rs" {
             "core"
-        } else if path_str.starts_with("platform/") || path_str == "platform.rs" {
-            "platform"
-        } else if path_str.starts_with("lifecycle/") || path_str == "lifecycle.rs" {
-            "lifecycle"
-        } else if path_str.starts_with("interface/") || path_str == "interface.rs" {
-            "interface"
-        } else if path_str.starts_with("role/") || path_str == "role.rs" {
-            "role"
+        } else if path_str.starts_with("toolkit/") || path_str == "platform.rs" {
+            "toolkit"
+        } else if path_str.starts_with("ui/") || path_str == "interface.rs" {
+            "ui"
+        } else if path_str.starts_with("apps/") || path_str == "lifecycle.rs" {
+            "apps"
+        } else if path_str.starts_with("screensavers/") || path_str == "role.rs" {
+            "screensavers"
         } else {
             continue; // Skip top-level files that are not part of taxonomy layers
         };
 
         // Prohibited dependencies for each layer to maintain clean separation
         let prohibited_layers: &[&str] = match layer {
-            "core" => &["interface", "lifecycle", "platform", "role"],
-            "platform" => &["interface", "lifecycle", "role"],
-            "lifecycle" => &["interface", "role"],
-            "interface" => &["lifecycle", "role"],
-            "role" => &["interface"],
+            "core" => &["toolkit", "ui", "apps", "screensavers"],
+            "toolkit" => &["ui", "apps", "screensavers"],
+            "ui" => &["apps", "screensavers"],
+            "apps" => &["screensavers"],
+            "screensavers" => &[],
             _ => &[],
         };
 

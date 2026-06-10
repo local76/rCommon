@@ -11,7 +11,7 @@ use crate::platform::native::sys_info::get_system_info;
 #[cfg(feature = "rgb")]
 use crate::toolkit::rgb_controller::{ is_openrgb_enabled, RgbController };
 use crate::core::logo_block::render_logo_block;
-use crate::core::screen_palette::query_current_palette;
+use crate::toolkit::sys_info::query_current_palette;
 #[cfg(feature = "rgb")]
 use crate::toolkit::rgb_protocol::RgbColor;
 

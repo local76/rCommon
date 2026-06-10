@@ -147,6 +147,12 @@ pub fn query_system_theme() -> SystemTheme {
     val
 }
 
+/// Query the current system palette using system theme settings.
+pub fn query_current_palette() -> crate::core::screen_palette::ScreenPalette {
+    let theme = query_system_theme();
+    crate::core::screen_palette::ScreenPalette::from_system(theme.accent_color, theme.is_dark_mode)
+}
+
 pub fn query_os_version() -> String {
     static CACHE: std::sync::Mutex<Option<CachedString>> = std::sync::Mutex::new(None);
     let mut lock = CACHE.lock().unwrap();
