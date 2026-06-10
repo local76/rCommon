@@ -2,7 +2,7 @@ use crate::core::TerminalCell;
 use crate::platform::native::sys_info::get_system_info;
 use crate::role::application::palette::query_current_palette;
 use crate::core::logo_block::render_logo_block;
-use super::update::Beams;
+use super::state::Beams;
 
 impl Beams {
     pub fn draw_impl(&self, grid: &mut [TerminalCell], cols: usize, rows: usize) {

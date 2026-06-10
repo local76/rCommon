@@ -2,9 +2,9 @@ use crate::core::TerminalCell;
 use crate::core::logo_block::render_logo_block;
 use crate::platform::native::sys_info::get_system_info;
 use crate::role::application::palette::query_current_palette;
-use super::update::Fireflies;
+use super::state::Gnats;
 
-impl Fireflies {
+impl Gnats {
     pub fn draw_impl(&self, grid: &mut [TerminalCell], cols: usize, rows: usize) {
         if cols == 0 || rows == 0 {
             return;

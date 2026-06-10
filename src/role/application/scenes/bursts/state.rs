@@ -6,7 +6,7 @@ use crate::role::application::rgb::{RgbController, is_openrgb_enabled};
 use crate::role::application::rgb::protocol::RgbColor;
 use super::types::{Rocket, Particle, Star, FIREWORK_COLORS};
 
-pub struct Fireworks {
+pub struct Bursts {
     rng: LcgRng,
     pub(crate) rockets: Vec<Rocket>,
     pub(crate) particles: Vec<Particle>,
@@ -27,13 +27,13 @@ pub struct Fireworks {
     rgb: Option<RgbController>,
 }
 
-impl Default for Fireworks {
+impl Default for Bursts {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl Fireworks {
+impl Bursts {
     pub fn new() -> Self {
         // Pre-4.1 HKEY_CURRENT_USER registry reads (LaunchRate, SkylineStyle)
         // collapsed to defaults for the inline migration. Re-added in 4.2.
@@ -94,7 +94,7 @@ impl Fireworks {
     }
 }
 
-impl Screensaver for Fireworks {
+impl Screensaver for Bursts {
     fn update(&mut self, dt: Duration, cols: usize, rows: usize) {
         let delta = dt.as_secs_f32();
         self.time_elapsed += delta;

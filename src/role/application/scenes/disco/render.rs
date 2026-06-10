@@ -1,10 +1,10 @@
 use crate::core::{LcgRng, TerminalCell};
 use crate::core::logo_block::render_logo_block;
 use crate::platform::native::sys_info::get_system_info;
-use super::update::Party;
+use super::state::Disco;
 use super::types::NEON_COLORS;
 
-impl Party {
+impl Disco {
     pub fn draw_impl(&self, grid: &mut [TerminalCell], cols: usize, rows: usize) {
         if cols == 0 || rows == 0 {
             return;

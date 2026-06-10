@@ -5,7 +5,7 @@ use crate::platform::native::sys_info::get_system_info;
 use crate::role::application::rgb::{RgbController, is_openrgb_enabled};
 use super::types::{Confetti, Star, NEON_COLORS, CONFETTI_CHARS};
 
-pub struct Party {
+pub struct Disco {
     rng: LcgRng,
     pub(crate) confetti: Vec<Confetti>,
     pub(crate) stars: Vec<Star>,
@@ -25,13 +25,13 @@ pub struct Party {
     rgb_timer: f32,
 }
 
-impl Default for Party {
+impl Default for Disco {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl Party {
+impl Disco {
     pub fn new() -> Self {
         // Pre-4.1 HKEY_CURRENT_USER registry reads (ConfettiDensity, DiscoBall)
         // collapsed to defaults for the inline migration. Re-added in 4.2.
@@ -61,7 +61,7 @@ impl Party {
     }
 }
 
-impl Screensaver for Party {
+impl Screensaver for Disco {
     fn update(&mut self, dt: Duration, cols: usize, rows: usize) {
         let delta = dt.as_secs_f32();
         self.time_elapsed += delta;

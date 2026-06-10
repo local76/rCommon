@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Project rename**: `library` was previously `rcommon` (and `rCommon` in some references). The Cargo package name, all module paths, and the 10 internal screensaver scene subdirectories are now lowercase `library`. The 10 scene subdirectory names now match the lowercase binary names from the [`screensavers`](https://github.com/local76/screensavers) workspace (`beams`, `bounce`, `flame`, `gnats`, `bursts`, `cosmos`, `glyphs`, `disco`, `storm`, `chaos`).
 - **10 effect subdirs renamed**: `rbeams→beams`, `rbhop→bounce`, `rfire→flame`, `rfireflies→gnats`, `rfireworks→bursts`, `rlife→cosmos`, `rmatrix→glyphs`, `rparty→disco`, `rpour→storm`, `runstable→chaos`. The Rust struct names inside each effect (`Beams`, `BhopDashboard`, `FireEffect`, `Fireflies`, `Fireworks`, `LifeEffect`, `Glyphs`, `Party`, `Pour`, `Unstable`) are unchanged — they describe behavior, not the rename.
 
+### Refactored
+- **Screensaver consolidation**: Further simplified the 10 visual screensaver scenes by consolidating submodules and renaming `drawing.rs` -> `render.rs` and `update.rs` -> `state.rs` for clear data-presentation boundaries. Removed stale imports and obsolete module prefixes to ensure clean compilation.
+
 ### Fixed
 - **Test gate**: `tests/screensaver_runtime_facade.rs` is now `[[test]] required-features = ["screensaver-runtime"]`, so `cargo test --release` in the library no longer fails to find the runtime.
 - **Linux compilation**: Fixed cross-compilation errors for Linux targets in `screensaver_runtime`, `guard.rs`, `daemon.rs`, and `sys_info/linux.rs` by bringing `Write` into scope, ensuring correct `libc` dependency configuration under features, updating to `unsafe extern` blocks for Rust 2024 edition compliance, and adding explicit type annotations to resolve compiler E0282.

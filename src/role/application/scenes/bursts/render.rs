@@ -1,10 +1,10 @@
 use crate::core::TerminalCell;
 use crate::core::logo_block::render_logo_block;
 use crate::platform::native::sys_info::get_system_info;
-use super::update::Fireworks;
+use super::state::Bursts;
 use super::types::ActiveExplosion;
 
-impl Fireworks {
+impl Bursts {
     pub fn draw_impl(&self, grid: &mut [TerminalCell], cols: usize, rows: usize) {
         // Collect active explosions to light up the logo and buildings
         let mut active_explosions = Vec::new();

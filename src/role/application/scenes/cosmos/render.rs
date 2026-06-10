@@ -1,12 +1,12 @@
 use crate::core::TerminalCell;
 use crate::role::application::palette::query_current_palette;
-use super::LifeEffect;
+use super::Cosmos;
 use super::types::{UniverseState, to_screen};
 use self::draw_particles::draw_particles_and_trails;
 
-mod draw_particles;
 
-pub fn draw_life(effect: &LifeEffect, grid: &mut [TerminalCell], cols: usize, rows: usize) {
+
+pub fn draw_life(effect: &Cosmos, grid: &mut [TerminalCell], cols: usize, rows: usize) {
     if cols == 0 || rows == 0 {
         return;
     }
@@ -465,6 +465,80 @@ pub fn draw_life(effect: &LifeEffect, grid: &mut [TerminalCell], cols: usize, ro
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+use crate::core::TerminalCell;
+use super::super::state::Cosmos;
+use super::super::types::to_screen;
+
+pub fn draw_particles_and_trails(
+    effect: &Cosmos,
+    grid: &mut [TerminalCell],
+    cols: usize,
+    rows: usize,
+    dim: f32,
+) {
+    if dim <= 0.001 {
+        return;
+    }
+    // Trails
+    for p in &effect.particles {
+        let hist_len = p.history.len();
+        for (k, &(hx, hy)) in p.history.iter().enumerate() {
+            let (sx, sy) = to_screen(
+                hx as f32,
+                hy as f32,
+                effect.universe_cx,
+                effect.universe_cy,
+                effect.zoom,
+                cols,
+                rows,
+            );
+            if sx >= 0 && sx < cols as i32 && sy >= 0 && sy < rows as i32 {
+                let idx = sy as usize * cols + sx as usize;
+                if grid[idx].ch == ' ' {
+                    let t = (k + 1) as f32 / (hist_len + 1) as f32;
+                    let intensity = t * 0.35 * dim;
+                    let tr = (p.color.0 as f32 * intensity) as u8;
+                    let tg = (p.color.1 as f32 * intensity) as u8;
+                    let tb = (p.color.2 as f32 * intensity) as u8;
+                    grid[idx] = TerminalCell {
+                        ch: '·',
+                        fg: (tr, tg, tb),
+                        bg: (0, 0, 0),
+                        bold: false,
+                    };
+                }
+            }
+        }
+    }
+
+    // Particle Core
+    for p in &effect.particles {
+        let (sx, sy) = to_screen(
+            p.x,
+            p.y,
+            effect.universe_cx,
+            effect.universe_cy,
+            effect.zoom,
+            cols,
+            rows,
+        );
+        if sx >= 0 && sx < cols as i32 && sy >= 0 && sy < rows as i32 {
+            let idx = sy as usize * cols + sx as usize;
+            if grid[idx].ch == ' ' || grid[idx].ch == '·' {
+                let tr = (p.color.0 as f32 * dim) as u8;
+                let tg = (p.color.1 as f32 * dim) as u8;
+                let tb = (p.color.2 as f32 * dim) as u8;
+                grid[idx] = TerminalCell {
+                    ch: p.ch,
+                    fg: (tr, tg, tb),
+                    bg: (0, 0, 0),
+                    bold: dim > 0.35,
+                };
             }
         }
     }

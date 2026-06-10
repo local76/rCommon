@@ -1,5 +1,5 @@
-mod drawing;
-mod update;
+mod render;
+mod state;
 mod types;
 
-pub use update::FireEffect;
+pub use state::Flame;

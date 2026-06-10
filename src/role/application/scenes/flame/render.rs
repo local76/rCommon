@@ -1,8 +1,8 @@
 use crate::core::TerminalCell;
 use crate::role::application::palette::query_current_palette;
-use super::update::FireEffect;
+use super::state::Flame;
 
-pub fn draw_fire(effect: &FireEffect, grid: &mut [TerminalCell], cols: usize, rows: usize) {
+pub fn draw_fire(effect: &Flame, grid: &mut [TerminalCell], cols: usize, rows: usize) {
     const CHARS: &[char] = &[
         ' ', '.', ':', '-', '=', '+', '*', 'o', 's', 'x', 'z', '#', 'A', '@', '█'
     ];

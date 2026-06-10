@@ -1,6 +1,6 @@
-mod drawing;
+mod render;
+mod state;
 mod types;
-mod update;
 
+pub use state::Beams;
 pub use types::{default_spotlights, DustParticle, Spotlight, Star};
-pub use update::Beams;

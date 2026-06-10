@@ -8,9 +8,9 @@ use crate::role::application::rgb::{RgbController, is_openrgb_enabled};
 use crate::role::application::rgb::protocol::RgbColor;
 
 use super::types::{Spark, LogoCell, Star, VolcanicGlob, get_palette};
-use super::drawing::draw_fire;
+use super::render::draw_fire;
 
-pub struct FireEffect {
+pub struct Flame {
     pub(crate) rng: LcgRng,
     pub(crate) fire_grid: Vec<u8>,
     pub(crate) sparks: Vec<Spark>,
@@ -33,13 +33,13 @@ pub struct FireEffect {
     pub(crate) rgb: Option<RgbController>,
 }
 
-impl Default for FireEffect {
+impl Default for Flame {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl FireEffect {
+impl Flame {
     pub fn new() -> Self {
         // Pre-4.1 HKEY_CURRENT_USER registry reads (FlameHeight, SparkCount)
         // collapsed to defaults for the inline migration. Re-added in 4.2.
@@ -151,7 +151,7 @@ impl FireEffect {
     }
 }
 
-impl Screensaver for FireEffect {
+impl Screensaver for Flame {
     fn update(&mut self, dt: Duration, cols: usize, rows: usize) {
         let delta = dt.as_secs_f32();
         self.time_elapsed += delta;

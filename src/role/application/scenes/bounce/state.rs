@@ -9,9 +9,9 @@ use crate::role::application::rgb::{RgbController, is_openrgb_enabled};
 use crate::role::application::rgb::protocol::RgbColor;
 
 use super::types::{BhopState, CommandState, LcgRng, COMMANDS};
-use super::drawing::draw_dashboard;
+use super::render::draw_dashboard;
 
-pub struct BhopDashboard {
+pub struct Bounce {
     pub cols: usize,
     pub rows: usize,
     pub cell_w: i32,
@@ -63,13 +63,13 @@ pub struct BhopDashboard {
     pub last_rgb_color: Option<RgbColor>,
 }
 
-impl Default for BhopDashboard {
+impl Default for Bounce {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl BhopDashboard {
+impl Bounce {
     pub fn new() -> Self {
         // Pre-4.1 Windows-only cell sizing (GetDC/GetDeviceCaps) collapsed
         // to a sane default. The dpi-aware cell sizing returns in 4.2
@@ -173,7 +173,7 @@ fn get_system_info_theme_is_dark() -> bool {
     crate::platform::native::sys_info::query_system_theme().is_dark_mode
 }
 
-impl Screensaver for BhopDashboard {
+impl Screensaver for Bounce {
     fn update(&mut self, dt: Duration, cols: usize, rows: usize) {
         self.cols = cols;
         self.rows = rows;

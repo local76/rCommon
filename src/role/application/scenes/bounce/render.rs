@@ -1,5 +1,5 @@
 use crate::core::TerminalCell;
-use super::update::BhopDashboard;
+use super::state::Bounce;
 use super::types::{BhopState, CommandState, COMMANDS};
 
 #[allow(clippy::too_many_arguments)]
@@ -56,7 +56,7 @@ pub fn height_px(rows: usize, cell_h: i32) -> i32 {
     (rows as i32) * cell_h
 }
 
-pub fn draw_dashboard(db: &BhopDashboard, grid: &mut [TerminalCell], cols: usize, rows: usize) {
+pub fn draw_dashboard(db: &Bounce, grid: &mut [TerminalCell], cols: usize, rows: usize) {
     let default_cell = TerminalCell {
         ch: ' ',
         fg: db.theme_accent,

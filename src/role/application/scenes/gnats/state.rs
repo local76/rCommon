@@ -6,7 +6,7 @@ use crate::role::application::rgb::{RgbController, is_openrgb_enabled};
 use crate::role::application::rgb::protocol::RgbColor;
 use super::types::{Firefly, Attractor, Star, KillSpark};
 
-pub struct Fireflies {
+pub struct Gnats {
     rng: LcgRng,
     pub(crate) fireflies: Vec<Firefly>,
     pub(crate) attractors: Vec<Attractor>,
@@ -20,13 +20,13 @@ pub struct Fireflies {
     rgb_timer: f32,
 }
 
-impl Default for Fireflies {
+impl Default for Gnats {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl Fireflies {
+impl Gnats {
     pub fn new() -> Self {
         let rng = LcgRng::new(1357);
         Self {
@@ -83,7 +83,7 @@ impl Fireflies {
     }
 }
 
-impl Screensaver for Fireflies {
+impl Screensaver for Gnats {
     fn update(&mut self, dt: Duration, cols: usize, rows: usize) {
         let delta = dt.as_secs_f32().min(0.1);
         self.time_elapsed += delta;

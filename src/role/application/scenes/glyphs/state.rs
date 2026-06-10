@@ -7,7 +7,7 @@ use crate::role::application::rgb::protocol::RgbColor;
 
 use super::types::RainDrop;
 
-pub struct Matrix {
+pub struct Glyphs {
     rng: LcgRng,
     pub(super) drops: Vec<RainDrop>,
     pub(super) char_pool: Vec<char>,
@@ -24,13 +24,13 @@ pub struct Matrix {
     time_elapsed: f32,
 }
 
-impl Default for Matrix {
+impl Default for Glyphs {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl Matrix {
+impl Glyphs {
     pub fn new() -> Self {
         let char_pool_katakana = "ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ1234567890X:+-*<>|";
         let mut char_pool: Vec<char> = char_pool_katakana.chars().collect();
@@ -70,7 +70,7 @@ impl Matrix {
     }
 }
 
-impl Screensaver for Matrix {
+impl Screensaver for Glyphs {
     fn update(&mut self, dt: Duration, cols: usize, rows: usize) {
         let delta = dt.as_secs_f32();
         self.time_elapsed += delta;

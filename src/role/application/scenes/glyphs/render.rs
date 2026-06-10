@@ -1,8 +1,8 @@
 use crate::core::TerminalCell;
 use crate::role::application::palette::query_current_palette;
-use super::update::Matrix;
+use super::state::Glyphs;
 
-impl Matrix {
+impl Glyphs {
     pub fn draw_impl(&self, grid: &mut [TerminalCell], cols: usize, rows: usize) {
         // library 4.0: pull the canonical accent color from ScreenPalette.
         let accent = query_current_palette().accent;

@@ -1,5 +1,5 @@
-mod drawing;
+mod render;
+mod state;
 mod types;
-mod update;
 
-pub use update::LifeEffect;
+pub use state::Cosmos;

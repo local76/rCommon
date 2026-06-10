@@ -1,5 +1,5 @@
-mod update;
-mod drawing;
+mod render;
+mod state;
 mod types;
 
-pub use update::BhopDashboard;
+pub use state::Bounce;

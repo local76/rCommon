@@ -1,5 +1,5 @@
-mod drawing;
-mod update;
+mod render;
+mod state;
 mod types;
 
-pub use update::Fireworks;
+pub use state::Bursts;

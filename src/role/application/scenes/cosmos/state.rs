@@ -5,13 +5,7 @@ use crate::platform::native::sys_info::get_system_info;
 use crate::role::application::rgb::{RgbController, is_openrgb_enabled};
 
 use super::types::{UniverseState, Particle, GravityCenter, LogoPixel};
-
-pub mod core;
-pub mod expansion;
-pub mod collapse;
-pub mod accretion_helpers;
-
-pub struct LifeEffect {
+pub struct Cosmos {
     pub(crate) rng: LcgRng,
     pub(crate) state: UniverseState,
     pub(crate) state_timer: f32,
@@ -43,13 +37,13 @@ pub struct LifeEffect {
     pub(crate) last_state: Option<UniverseState>,
 }
 
-impl Default for LifeEffect {
+impl Default for Cosmos {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl LifeEffect {
+impl Cosmos {
     pub fn new() -> Self {
         // Pre-4.1 HKEY_CURRENT_USER registry reads (SeedDensity, SimSpeed)
         // collapsed to defaults for the inline migration. Re-added in 4.2.
@@ -87,14 +81,14 @@ impl LifeEffect {
             last_state: None,
         }
     }
-}
 
-impl Screensaver for LifeEffect {
+
+impl Screensaver for Cosmos {
     fn update(&mut self, dt: Duration, cols: usize, rows: usize) {
         self::core::update_life(self, dt, cols, rows);
     }
 
     fn draw(&self, grid: &mut [TerminalCell], cols: usize, rows: usize) {
-        super::drawing::draw_life(self, grid, cols, rows);
+        super::render::draw_life(self, grid, cols, rows);
     }
 }
