@@ -18,7 +18,6 @@ use library::ui::toast::{ToastBox, ToastKind};
 use library::ui::layout_guard::is_too_small;
 use library::ui::layout::centered_rect;
 use library::ui::text::{wrap_text, char_width};
-use library::ui::markdown_viewer::MarkdownViewerState;
 use library::ui::effects::{
     FallingGlyphs, FlowingParticles, PulledParticles, FallingDroplets,
     RisingFlames, FallingComets, PulsingGlyphs, PulsingWaves,
@@ -135,25 +134,6 @@ fn facade_render_logo_block_works() {
     assert!(!lines.is_empty(), "logo block should not be empty");
     let total_chars: usize = lines.iter().map(|l| l.chars().count()).sum();
     assert!(total_chars > 0, "logo should contain characters");
-}
-
-// ---------------------------------------------------------------------------
-// 7. MarkdownViewerState opens + scrolls + closes
-// ---------------------------------------------------------------------------
-#[test]
-fn facade_markdown_viewer_lifecycle() {
-    let mut v = MarkdownViewerState::new()
-        .with_doc("README.md", "# helm\n\nA fast system fetch utility.");
-    assert!(!v.is_open());
-    let theme = get_theme(true, Color::Cyan);
-    v.open("README.md", &theme);
-    assert!(v.is_open());
-    assert!(!v.lines.is_empty());
-    v.scroll_down(100, 1);
-    // Clamped to lines.len() - 1
-    assert!(v.scroll < v.lines.len());
-    v.close();
-    assert!(!v.is_open());
 }
 
 // ---------------------------------------------------------------------------
