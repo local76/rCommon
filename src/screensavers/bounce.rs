@@ -3,7 +3,7 @@
 //! **Taxonomy Classification**: System Role (Purpose - Application Software).
 
 
-use crate::core::{TerminalCell, hsl_to_rgb, rgb_to_hsl};
+use crate::core::TerminalCell;
 use std::time::Duration;
 use crate::core::screensaver::Screensaver;
 use crate::core::logo_block::render_logo_block;

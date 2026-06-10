@@ -3,7 +3,7 @@
 //! **Taxonomy Classification**: System Role (Purpose - Application Software).
 
 
-use crate::core::{LcgRng, TerminalCell, hsl_to_rgb, rgb_to_hsl};
+use crate::core::{LcgRng, TerminalCell};
 use std::time::Duration;
 use crate::core::screensaver::Screensaver;
 #[cfg(feature = "sys-info")]
