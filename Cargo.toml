@@ -58,7 +58,7 @@ windows = { version = "0.52.0", features = [
 libc = { version = "0.2", optional = true }
 
 [features]
-default = ["interface-app", "interface-api", "lifecycle-foreground", "lifecycle-background", "platform-native", "role-system", "role-application", "scenes", "winget"]
+default = ["interface-app", "interface-api", "lifecycle-foreground", "lifecycle-background", "platform-native", "role-system", "role-application", "scenes", "winget", "screensaver-runtime"]
 
 # Windows target helpers
 windows-sys = ["dep:windows-sys"]

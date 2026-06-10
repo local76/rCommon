@@ -14,6 +14,9 @@ pub mod ui;
 pub mod toolkit;
 pub mod apps;
 
+#[cfg(feature = "screensaver-runtime")]
+pub mod screensaver_runner;
+
 // Backward-compatibility shims (re-exporting from the new structure)
 pub mod interface;
 pub mod lifecycle;
